@@ -49,6 +49,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
+            'usename' => 'required|max:20|unique',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -64,11 +65,22 @@ class RegisterController extends Controller
     {
         $user = User::create([
             'name' => $data['name'],
+            'usename' => $data['username'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-        $user->roles()->attach(Role::where('nombre','Invitado')->first());
+        $user->roles()->attach(Role::where('nombre','Invit')->first());
 
         return $user;
+    }
+
+    // funciones para inhabilitar el registro de nuevos usuarios
+    public function showRegistrationForm()
+    {
+        return redirect('login');
+    }
+    public function register(Request $request)
+    {
+        abort(404);
     }
 }
