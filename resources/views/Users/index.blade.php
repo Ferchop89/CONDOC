@@ -18,6 +18,7 @@
         <th scope="col">Nombre</th>
         <th scope="col">Alias</th>
         <th scope="col">Correo</th>
+        <th scope="col">Activo</th>
         <th scope="col">Role</th>
         <th scope="col">Acciones</th>
       </tr>
@@ -29,6 +30,7 @@
           <td>{{ $user->name }}</td>
           <td>{{ $user->username }}</td>
           <td>{{ $user->email }}</td>
+          <td><input type="checkbox" {{ $user->is_active ? 'checked' : ''   }} name="activo" OnClick="return false;" ></td>
           <td>
               @foreach($user->roles()->where('user_id',$user->id)->get() as $roles)
                 /{{ $roles->nombre }}

@@ -41,6 +41,19 @@
           <input type="password" class="form-control" name="password" id="password" placeholder="mayor a seis caracteres"/>
         </div>
 
+        {{-- <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" name="is_active" id="is_active">
+            <label class="form-check-label" for="is_active">Usuario Activo</label>
+        </div> --}}
+        <div class="form-group">
+          {{ Form::checkbox('is_active', null, $user->is_active ,['class' => 'form-control']) }}
+          <label for="is_active">Usuario Activo</label>          
+        </div>
+
+
+
+{{-- $user->is_active ? 'Checked' : '' --}}
+
         <div>
           <label>Roles en el Sistema</label>
         </div>

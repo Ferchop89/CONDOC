@@ -91,11 +91,13 @@ class UserController extends Controller
     function update(User $user)
     {
         // $data = request()->all(); // no se debe usar
+        // dd($data);
         $data = request()->validate([
           'name' => 'required',
           'username' => ['required','min:6'],
           'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-          'password' => ''
+          'password' => '',
+          'is_active' => ''
           ],[
             'name.required' => 'El campo nombre es obligatorio',
             'username.required' => 'El campo alias obligatorio',
@@ -112,6 +114,10 @@ class UserController extends Controller
               unset($data['password']);
         }
 
+        // dd($data);
+        // el usuario es activo?
+        if( isset($_POST['is_active'])) { $data['is_active']=true ; } else { $data['is_active']=false ;  }
+
         // borramos todos los roles asociados en la tabla role_table
         $user->roles()->detach();
 
@@ -125,6 +131,8 @@ class UserController extends Controller
         if( isset($_POST['JArea'])) { $user->roles()->attach( $_POST['JArea'] ); }
         if( isset($_POST['Ofisi'])) { $user->roles()->attach( $_POST['Ofisi'] ); }
         $user->roles()->attach( '9' ); // por omision, el usuario tiene el rol de invitado
+
+        // dd($user);
 
         $user->update($data);
 

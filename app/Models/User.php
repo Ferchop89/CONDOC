@@ -9,21 +9,21 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    protected $casts = [
+      'is_active' => 'boolean',
+    ];
+
     protected $fillable = [
-        'name', 'username', 'email',  'password',
+        'name', 'username', 'email',  'password', 'is_active',
       ];
 
       protected $hidden = [
           'password', 'remember_token',
       ];
 
-      protected $casts = [
-        'is_active' => 'boolean',
-      ];
-
       public function roles()
       {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class)->withTimestamps();
       }
 
     public function hasAnyRole($roles)
