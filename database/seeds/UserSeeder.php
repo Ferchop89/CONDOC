@@ -15,17 +15,17 @@ class UserSeeder extends Seeder
     {
           // Usuario patrón
           $user= new User();
-          $user->name = 'Porfirio Remigio';
-          $user->username = 'premigio';
-          $user->email = 'premi@emilio.com';
-          $user->password = bcrypt('laravel');
+          $user->name = 'Administrador';
+          $user->username = 'Administrador';
+          $user->email = 'Admon@correo.com';
+          $user->password = bcrypt('Admon4974');
           $user->is_active = true;
           $user->save();
           $role=Role::where('nombre','FacEsc')->first();
           $user->roles()->attach($role);
 
           // Agregamos 10 usuarios fake
-          factory(User::class,10)->create();
+          factory(User::class,50)->create();
           // Les agregamos roles de forma aleatoria
           for ($i=0; $i < 5 ; $i++) {
             $users = User::all();

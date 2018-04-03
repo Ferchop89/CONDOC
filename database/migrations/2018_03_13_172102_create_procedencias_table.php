@@ -14,6 +14,10 @@ class CreateProcedenciasTable extends Migration
     public function up()
     {
         Schema::create('procedencias', function (Blueprint $table) {
+
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_spanish_ci';
+
             $table->increments('id');
             $table->string('procedencia');
             $table->timestamps();

@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('title','Usuarios')
 
@@ -32,7 +32,7 @@
           <td>{{ $user->email }}</td>
           <td><input type="checkbox" {{ $user->is_active ? 'checked' : ''   }} name="activo" OnClick="return false;" ></td>
           <td>
-              @foreach($user->roles()->where('user_id',$user->id)->get() as $roles)
+              @foreach($user->roles()->where('user_id',$user->id)->orderBy('role_id', 'asc')->get() as $roles)
                 /{{ $roles->nombre }}
               @endforeach
           </td>
@@ -40,15 +40,18 @@
             <form action="{{ route('users.destroy',[ $user ]) }}" method="POST">
               {{ csrf_field() }}
               {{ method_field('DELETE')}}
-              <a href="{{ route('users.show',[ $user ]) }}" class="btn btn-link"><span class="oi oi-eye"></span></a>
-              <a href="{{ route('users.edit',[ $user ]) }}" class="btn btn-link"><span class="oi oi-pencil"></span></a>
-              <button type="submit" class="btn btn-link"><span class="oi oi-trash"></span></button>
+              <a href="{{ route('users.show',[ $user ]) }}"><i class="fa fa-eye" style="font-size:34px;color:#c5911f"></i></a>
+              <a href="{{ route('users.edit',[ $user ]) }}"><i class="fa fa-edit" style="font-size:34px;color:#c5911f"></i></a>
+              <button type="submit"><i class="fa fa-trash" style="font-size:34px;color:#c5911f"></i></button>
             </form>
           </td>
         </tr>
         @endforeach
     </tbody>
   </table>
+
+  {{ $users->links() }}
+
   @else
     <p>
       No hay usuarios registrados.

@@ -17,7 +17,7 @@ Route::get('/', function () {
 });*/
 
 Route::get('/',function(){
-  return 'Hola Terricola';
+  return view("auth.login");
 });
 
 Route::get('/usuarios','UserController@index')
