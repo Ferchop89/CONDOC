@@ -37,8 +37,8 @@ Route::get('/usuarios/nuevo','UserController@create')
 Route::get('/usuarios/{user}/editar',[
   'uses'=> 'UserController@edit',
   'as'=> 'users.edit',
-  'middleware' => 'roles',
-  'roles' => ['FacEsc']
+  // 'middleware' => 'roles',
+  // 'roles' => ['FacEsc']
   ]);
 
 Route::put('/usuarios/{user}','UserController@update');
