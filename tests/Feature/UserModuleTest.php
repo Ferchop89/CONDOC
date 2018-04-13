@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Auth; // para autenticar antes de probar una ruta
+use Illuminate\Support\Facades\Auth;
 
 class UserModuleTest extends TestCase
 {
@@ -260,10 +260,10 @@ class UserModuleTest extends TestCase
     /** @test */
     function the_email_must_be_unique_when_updating_a_user(){
       // marcamos la prueba como incompleta para poderla editar posteriormente.
-      // self::markTestIncomplete();
-      // return;
+      self::markTestIncomplete();
+      return;
 
-      // $this->withoutExceptionHandling();
+      $this->withoutExceptionHandling();
 
       factory(User::class)->create([
             'email' => 'existing-email@example.com'
@@ -281,6 +281,7 @@ class UserModuleTest extends TestCase
         ])
         ->assertRedirect("usuarios/{$user->id}/editar")
         ->assertSessionHasErrors(['email']);
+
 
     }
     /** @test */
@@ -354,6 +355,22 @@ function it_deletes_a_user()
       ]);
 
     // $this->assertSame(0,User::count());
+    }
+
+    /** @test */
+    function a_user_can_log_in()
+    {
+        $user = factory(User::class)->create([
+             'username' => 'PruebaLog',
+             'password' => bcrypt('testpass123')
+        ]);
+
+        $this->visit(route('login'))
+            ->type($user->usename, 'username')
+            ->type('testpass123', 'password')
+            ->press('Login')
+            ->see('You are logged in')
+            ->onPage('/dashboard');
     }
 
 }

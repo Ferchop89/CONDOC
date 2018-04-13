@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\Route;
+
 use Closure;
 
 class CheckRole

@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
+use App\Models\Menu;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -14,13 +16,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      /* Originalmente estaba vacio y se coloco por falla en el migrate
-      //C:\xampp\htdocs\Instala_Laravel\LV_SPE1>php artisan migrate
-      Migration table created successfully.
-      In Connection.php line 664:
-      SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes (SQL:
-      alter table `users` add unique `users_email_unique`(`email`))*/
-        Schema::defaultStringLength(191);
+      Schema::defaultStringLength(191);
+      // Data de estructura del menu + items de rutas por role del usuarios autenticado
+      view()->composer('layouts.app', function($view) {
+        $view ->with([
+          'menus' => Menu::menus() ,
+          'items_role' => Menu::items()
+        ]);
+        // $view->with('menus', Menu::menus());
+      });    
     }
 
     /**

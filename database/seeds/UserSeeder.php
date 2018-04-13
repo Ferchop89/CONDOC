@@ -18,10 +18,11 @@ class UserSeeder extends Seeder
           $user->name = 'Administrador';
           $user->username = 'Administrador';
           $user->email = 'Admon@correo.com';
-          $user->password = bcrypt('Admon4974');
+          $user->password = bcrypt('111111');
           $user->is_active = true;
           $user->save();
-          $role=Role::where('nombre','FacEsc')->first();
+          // $role=Role::where('nombre',['Admin'])->first();
+          $role=Role::where('nombre','Admin')->first();
           $user->roles()->attach($role);
 
           // Agregamos 10 usuarios fake

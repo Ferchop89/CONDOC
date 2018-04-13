@@ -9,10 +9,12 @@
     <meta name="theme-color" content="#1C3D6C">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- Sección: Title del Sitio -->
     <title>@yield('title')</title>
     <!-- /Sección: Title del Sitio -->
     <!-- Sección: Links -->
+
     <link href="{{ asset('images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
     <link href="{{ asset('images/custom_icon.png') }}" rel="apple-touch-icon">
     <link href="{{ asset('images/custom_icon.png') }}" sizes="150x150" rel="icon">
@@ -22,9 +24,33 @@
     <link href="{{ asset('icss/mdb.css') }}" rel="stylesheet">
     <link href="{{ asset('css/estilo_dgae.css') }}" rel="stylesheet">
     <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('css/MenuDinamico.css') }}" rel="stylesheet">
+
     <!-- /Sección: Links -->
 </head id="inicio">
-<body id="inicio">
+    <body id="inicio">
+
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse">
+                {{-- <ul class="nav navbar-nav"> --}}
+                <ul class="nav navbar-nav menu">
+                  @if (count($items_role)>0)
+
+                    @foreach ($menus as $key => $item)
+                        @if ($item['parent'] != 0)
+                            @break
+                        @endif
+                        @include('partials.menu-item', ['item' => $item])
+                    @endforeach
+
+                  @endif
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div id="skiptocontent"><a href="#maincontent">Saltarse al contenido</a></div>
     <!-- Navegacion -->
     <nav role="navigation">
@@ -45,6 +71,7 @@
                 <!-- Sección: Navegación -->
                 <div class="collapse navbar-collapse">
                     <!-- Left Side Of Navbar -->
+
                     <ul class="nav navbar-nav">
                         &nbsp;
                     </ul>
