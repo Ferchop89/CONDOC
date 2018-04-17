@@ -31,25 +31,7 @@
 </head id="inicio">
     <body id="inicio">
 
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="collapse navbar-collapse">
-                {{-- <ul class="nav navbar-nav"> --}}
-                <ul class="nav navbar-nav menu">
-                  @if (count($items_role)>0)
 
-                    @foreach ($menus as $key => $item)
-                        @if ($item['parent'] != 0)
-                            @break
-                        @endif
-                        @include('partials.menu-item', ['item' => $item])
-                    @endforeach
-
-                  @endif
-                </ul>
-            </div>
-        </div>
-    </nav>
 
     <div id="skiptocontent"><a href="#maincontent">Saltarse al contenido</a></div>
     <!-- Navegacion -->
@@ -71,11 +53,26 @@
                 <!-- Sección: Navegación -->
                 <div class="collapse navbar-collapse">
                     <!-- Left Side Of Navbar -->
-
                     <ul class="nav navbar-nav">
-                        &nbsp;
-                    </ul>
+                        @if (auth()->user())
+                          <div class="container-fluid">
+                                <div class="collapse navbar-collapse">
+                                  {{-- <ul class="nav navbar-nav"> --}}
+                                    <ul class="nav navbar-nav menu">
+                                        @if (count($items_role)>0)
 
+                                            @foreach ($menus as $key => $item)
+                                                @if ($item['parent'] != 0)
+                                                    @break
+                                                @endif
+                                                @include('partials.menu-item', ['item' => $item])
+                                            @endforeach
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
+                    </ul>
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->

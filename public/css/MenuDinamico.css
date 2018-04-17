@@ -65,9 +65,6 @@
         display: block;
     }
 
-    .menu {
-      background: black;
-      display: block;
-      position: fixed;
-      z-index: 1000;
+    ul.menu>.dropdown>a{
+      color:white;
     }

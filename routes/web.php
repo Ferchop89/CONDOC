@@ -20,24 +20,24 @@ Route::get('/',function(){
   return view("auth.login");
 });
 
-Route::get('/usuarios','UserController@index')
+Route::get('/usuarios','UserController@usuarios')
       ->name('users')
       ->middleware('auth');
 
-Route::get('/usuarios/{user}','UserController@show')
+Route::get('/usuarios/{user}','UserController@ver_usuario')
       ->where('user','[0-9]+')
-      ->name('users.show');
+      ->name('users.ver_usuario');
 
 Route::get('/usuarios/nuevo',[
-  'uses'=> 'UserController@create',
-  'as'=> 'users.create',
+  'uses'=> 'UserController@crear_usuario',
+  'as'=> 'users.crear_usuario',
   'middleware' => 'roles',
   'roles' => ['Admin']
   ]);
 
   Route::get('/usuarios/{user}/editar',[
-    'uses'=> 'UserController@edit',
-    'as'=> 'users.edit',
+    'uses'=> 'UserController@editar_usuario',
+    'as'=> 'users.editar_usuarios',
     'middleware' => 'roles',
     'roles' => ['Admin']
     ]);

@@ -10,25 +10,25 @@ use App\Models\Role;
 
 class UserController extends Controller
 {
-    public function index()
+    public function usuarios()
     {
       // $users = User::all();
       $users = User::paginate(8);
       $title = 'Listado de Usuarios';
-      return view('users.index', compact('title','users'));
+      return view('users.lista_usuarios', compact('title','users'));
     }
 
-    public function show(User $user)
+    public function ver_usuario(User $user)
     {
       // dd($user); // para comprobar resultados. si aparece el usuario
-      return view('users.show', compact('user'));
+      return view('users.ver_usuario', compact('user'));
     }
 
-    public function create()
+    public function crear_usuario()
     {
         // Se agregan los roles para crearlos dinámicamente vista de nuevos usuarios (create)
         $roles = Role::orderBy('id','asc')->get();
-        return view('users.create',['roles'=>$roles]);
+        return view('users.crear_usuario',['roles'=>$roles]);
     }
 
     public function store()
@@ -84,9 +84,9 @@ class UserController extends Controller
 
     }
 
-    function edit(User $user)
+    function editar_usuario(User $user)
     {
-        return view('users.edit',['user'=> $user]);
+        return view('users.editar_usuario',['user'=> $user]);
     }
 
     function update(User $user)
@@ -138,7 +138,7 @@ class UserController extends Controller
         $user->update($data);
 
        // return redirect("usuarios/{$user->id}");
-       return redirect()->route('users.show',['user'=>$user]); // Eloquet toma el Id por lo que se pudo especificar explicitamente $user->id
+       return redirect()->route('users.ver_usuario',['user'=>$user]); // Eloquet toma el Id por lo que se pudo especificar explicitamente $user->id
     }
 
     function destroy(User $user)
