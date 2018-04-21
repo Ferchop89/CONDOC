@@ -196,4 +196,46 @@
     <script type="text/javascript" src="{{ asset('js/navbar.js') }}"></script>
     <!-- /Sección: Scripts -->
 
+    {{-- Para el uso del datepicker --}}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link href="{{asset('css/select2.css')}}" rel="stylesheet" />
+    <script src="{{asset('js/select2.js')}}"></script>
+
+    <script type="text/JavaScript">
+      // $document.ready(function(){
+      //   $('select').select2();
+      // });
+
+      $('select:not(.normal)').each(function () {
+          $(this).select2({
+              dropdownParent: $(this).parent()
+          });
+      });
+
+      // funcion para activar DatePicker
+      $( function() {
+          $( "#datepicker" ).datepicker(
+          );
+          $( "#datepicker" ).datepicker( "option", "dateFormat", 'dd/mm/yy');
+      } );
+
+      if ($('#FacEsc').is(':checked') != true) {
+            $('#xproc').fadeOut('slow');
+          }
+
+      $('#FacEsc').change(function(){
+        if (this.checked) {
+            $('#xproc').fadeIn('slow');
+        }
+        else {
+            $('#xproc').fadeOut('slow');
+        }
+    });
+
+    </script>
+
 <div class="hiddendiv common"></div></body></html>

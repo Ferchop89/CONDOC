@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Procedencia;
 
 class UserController extends Controller
 {
     public function usuarios()
     {
-      // $users = User::all();
       $users = User::paginate(8);
       $title = 'Listado de Usuarios';
       return view('users.lista_usuarios', compact('title','users'));
@@ -38,6 +38,7 @@ class UserController extends Controller
           'username' => ['required','min:6','unique:users,username'],
           'email' => ['required','email','unique:users,email'],
           'password' => ['required','min:6'],
+          'procedencia_id' => '',
           'Admin' => '',
           'FacEsc' => '',
           'AgUnam' => '',
@@ -64,6 +65,8 @@ class UserController extends Controller
         $user->username = $data['username'];
         $user->email = $data['email'];
         $user->password = bcrypt($data['password']);
+        // Si FacEsc tiene check, se coloca el valor de procedencia, sino, nada
+        $user->procedencia_id = isset($_POST['FacEsc']) ? request()->input('procedencia_id') : '';
         $user->save();
 
         // borramos todos los roles asociados en la tabla role_table
@@ -84,9 +87,9 @@ class UserController extends Controller
 
     }
 
-    function editar_usuario(User $user)
+    function editar_usuario(User $user, Procedencia $procede)
     {
-        return view('users.editar_usuario',['user'=> $user]);
+        return view('users.editar_usuario',['user'=> $user, $procede]);
     }
 
     function update(User $user)
@@ -108,6 +111,9 @@ class UserController extends Controller
             'email.unique' => 'Este correo ya ha sido utilizado',
           ]
         );
+
+        // $selectedID = request()->input('procedencia_id');
+        // $data['procedencia_id'] = $selectedID;
 
         if($data['password'] != null){
             $data['password'] = bcrypt($data['password']);
@@ -133,8 +139,7 @@ class UserController extends Controller
         if( isset($_POST['Ofisi'])) { $user->roles()->attach( $_POST['Ofisi'] ); }
         $user->roles()->attach( '9' ); // por omision, el usuario tiene el rol de invitado
 
-        // dd($user);
-
+        $user->procedencia_id = isset($_POST['FacEsc']) ? request()->input('procedencia_id') : null;
         $user->update($data);
 
        // return redirect("usuarios/{$user->id}");

@@ -46,7 +46,6 @@ Route::put('/usuarios/{user}','UserController@update');
 
 Route::post('/usuarios','UserController@store');
 
-
 Route::delete('/usuarios/{user}',[
       'uses' => 'UserController@destroy',
       'as'   => 'users.destroy'
@@ -117,3 +116,15 @@ Route::get('/m9',[
   'middleware' => 'roles',
   'roles' => ['Jud','Ofisi']
   ]);
+
+  // Informes
+  Route::get('/rev',[
+    'uses'=> 'InformesController@Revisiones',
+    'as'=> 'Rev',
+    'middleware' => 'roles',
+    'roles' => ['Admin']
+    ]);
+
+  Route::get('dropdowns',function(){
+    return view('components/dropdowns');
+  });

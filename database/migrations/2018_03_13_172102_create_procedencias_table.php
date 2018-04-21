@@ -17,9 +17,8 @@ class CreateProcedenciasTable extends Migration
 
             $table->charset = 'utf8';
             $table->collation = 'utf8_spanish_ci';
-
             $table->increments('id');
-            $table->string('procedencia');
+            $table->string('procedencia')->unique();
             $table->timestamps();
         });
     }

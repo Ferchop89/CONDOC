@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
           $user->name = 'Administrador';
           $user->username = 'Administrador';
           $user->email = 'Admon@correo.com';
+          $user->procedencia_id = 1;
           $user->password = bcrypt('111111');
           $user->is_active = true;
           $user->save();
@@ -37,8 +38,13 @@ class UserSeeder extends Seeder
               }
             }
           }
-
-          // $user->roles()->attach($role_Invitado);
-          // factory(User::class)->create();
+          // Actualizamos procedencia_id usuarios que no tengan FacEsc
+          $users = User::all();
+          foreach ($users as $user) {
+            if (!$user->hasRole('FacEsc')) {
+              $user->procedencia_id = null;
+              $user->save();
+            }
+          }
     }
 }

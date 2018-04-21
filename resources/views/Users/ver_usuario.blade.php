@@ -37,6 +37,12 @@
             <label class="form-check-label" for="FacEsc">FacEsc</label>
         </div>
 
+        @if($user->procedencia_id != null)
+            <td>{{ App\Models\Procedencia::where('id',$user->procedencia_id)->pluck('procedencia')[0] }}</td>
+        @else
+            <td>Sin procedencia</td>
+        @endif
+
         <div class="form-check form-check-inline">
             <input type="checkbox" {{ $user->roles()->where('nombre','AgUnam')->count()>0 ? 'Checked' : '' }} class="form-check-input" name="AgUnam" id="AgUnam" value="3" OnClick="return false;">
             <label class="form-check-label" for="AgUnam">AgUnam</label>

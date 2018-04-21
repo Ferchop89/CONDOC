@@ -17,11 +17,11 @@ class CreateUsersTable extends Migration
 
             $table->charset = 'utf8';
             $table->collation = 'utf8_spanish_ci';
-
             $table->increments('id');
             $table->string('name');
-            $table->string('username',15)->unique(); 
+            $table->string('username',15)->unique();
             $table->string('email')->unique();
+            $table->string('procedencia_id')->nullable();
             $table->string('password');
             $table->boolean('is_active')->default(true);
             $table->rememberToken();

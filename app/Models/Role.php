@@ -18,9 +18,4 @@ class Role extends Model
           return $this->belongsToMany('Users');
       }
 
-      public function procedencias()
-      {
-          return $this-hasMany('procedencias');
-      }
-
 }

@@ -10,6 +10,7 @@ $factory->define(User::class, function (Faker $faker) {
         'name' => $faker->name,
         'username' => str_random(6),
         'email' => $faker->unique()->safeEmail,
+        'procedencia_id' => rand(2,19),
         'password' => bcrypt('111111'), // secret
         'remember_token' => str_random(10),
         'is_active' => rand(0,1),

@@ -37,6 +37,8 @@
                     <input type="email" class="form-control" name="email" id="email" placeholder="Usuario@net.com" value="{{ old('email')}}"/>
                 </div>
 
+
+
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" class="form-control" name="password" id="password" placeholder="mayor a seis caracteres"/>
@@ -118,6 +120,15 @@
                         </div>
                     </td>
                 </table>
+
+                <div id="xproc">
+                  <div class="form-group">
+                      <label for="procedencia">Procedencia</label>
+                          {{  Form::select('procedencia_id',
+                          App\Models\Procedencia::pluck('procedencia','id'),
+                          null,['class'=>'form-group','placeholder'=>'Elige'])}}
+                    </div>
+                </div>
 
                 <button type="submit" class="btn btn-primary">Crear Usuario</button>
                 <a href="{{ route('users') }}" class="btn btn-link">Regresar al listado de usuarios</a>

@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label for="username">Alias</label>
-                <input type="text" class="form-control" name="username" id="username" placeholder="mayor a seis caracteres" value="{{ old('username',$user->username)}}"/>
+                <input type="text" class="form-control" name="username" id="usernamex" placeholder="mayor a seis caracteres" value="{{ old('username',$user->username)}}"/>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
@@ -60,6 +60,18 @@
             <div class="form-check form-check-inline">
                 <input type="checkbox" {{ $user->roles()->where('nombre','FacEsc')->count()>0 ? 'Checked' : '' }} class="filled-in form-check-input" name="FacEsc" id="FacEsc" value="2">
                 <label class="form-check-label" for="FacEsc">FacEsc</label>
+            </div>
+
+            <div id = "xproc">
+              @if ( $user->roles()->where('nombre','FacEsc')->count()>0 == 'Checked' )
+                  {{  Form::select('procedencia_id',
+                      App\Models\Procedencia::pluck('procedencia','id'),
+                      ['id'=>$user->procedencia_id],['class'=>'form-group','placeholder'=>'Elige Procedencia'])}}
+               @else
+                   {{  Form::select('procedencia_id',
+                       App\Models\Procedencia::pluck('procedencia','id'),
+                       null,['class'=>'form-group','placeholder'=>'Elige Procedencia'])}}
+               @endif
             </div>
 
             <div class="form-check form-check-inline">

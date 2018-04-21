@@ -131,17 +131,17 @@ class MenuSeeder extends Seeder
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'users.create',
+               'name' => 'crear usuario',
                'slug' => 'opcion-3.2.1',
-               'ruta' => 'users.create',
+               'ruta' => 'users.crear_usuario',
                'parent' => $m32->id,
                'order' => 0,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'users.edit',
+               'name' => 'editar usuarios',
                'slug' => 'opcion-3.2.2',
-               'ruta' => 'users.edit',
+               'ruta' => 'users.editar_usuarios',
                'parent' => $m32->id,
                'order' => 1,
                'is_structure' => 0

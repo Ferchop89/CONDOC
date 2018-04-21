@@ -16,6 +16,7 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Alias</th>
                 <th scope="col">Correo</th>
+                <th scope="col">Procede</th>
                 <th scope="col">Activo</th>
                 <th scope="col">Role</th>
                 <th scope="col">Acciones</th>
@@ -28,6 +29,13 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->username }}</td>
                     <td>{{ $user->email }}</td>
+
+                        @if($user->procedencia_id != null)
+                            <td>{{ App\Models\Procedencia::where('id',$user->procedencia_id)->pluck('procedencia')[0] }}</td>
+                        @else
+                            <td>------------</td>
+                        @endif
+
                     <td><input type="checkbox" {{ $user->is_active ? 'checked' : ''   }} name="activo" OnClick="return false;" ></td>
                     <td>
                         @foreach($user->roles()->where('user_id',$user->id)->orderBy('role_id', 'asc')->get() as $roles)

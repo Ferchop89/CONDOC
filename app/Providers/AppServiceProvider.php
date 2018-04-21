@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
           'items_role' => Menu::items()
         ]);
         // $view->with('menus', Menu::menus());
-      });    
+      });
     }
 
     /**
