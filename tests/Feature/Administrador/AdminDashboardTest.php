@@ -22,7 +22,7 @@ class AdminDashboardTest extends TestCase
         $role->save();
         $admin->roles()->attach($role->id);
         $this->actingAs($admin)
-            ->get(route('admin_dashboard'))
+            ->get(route('home'))
             ->assertStatus(200)
             ->assertSee('Admin Panel');
     }
