@@ -32,7 +32,7 @@ class MenuSeeder extends Seeder
                'is_structure' => 1
            ]);
            $m3 = factory(Menu::class)->create([
-               'name' => 'opción 3',
+               'name' => 'Usuarios',
                'slug' => 'opcion3',
                // 'ruta' => 'o3',
                'ruta' => '#',
@@ -133,7 +133,7 @@ class MenuSeeder extends Seeder
            factory(Menu::class)->create([
                'name' => 'crear usuario',
                'slug' => 'opcion-3.2.1',
-               'ruta' => 'users.crear_usuario',
+               'ruta' => 'crear_usuario',
                'parent' => $m32->id,
                'order' => 0,
                'is_structure' => 0
@@ -141,10 +141,19 @@ class MenuSeeder extends Seeder
            factory(Menu::class)->create([
                'name' => 'editar usuarios',
                'slug' => 'opcion-3.2.2',
-               'ruta' => 'users.editar_usuarios',
+               'ruta' => 'admin.users.editar_usuarios',
                'parent' => $m32->id,
                'order' => 1,
                'is_structure' => 0
            ]);
+           factory(Menu::class)->create([
+               'name' => 'Usuarios',
+               'slug' => 'opcion-3.2.3',
+               'ruta' => 'admin/usuarios',
+               'parent' => $m32->id,
+               'order' => 2,
+               'is_structure' => 0
+           ]);
+
        }
 }

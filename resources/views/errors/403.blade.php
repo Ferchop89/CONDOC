@@ -4,6 +4,6 @@
 
 @section('content')
 <div class="container">
-  <h1>Página no encontrada</h1>
+  <h1>No tienes permisos suficientes para realizar esta acción.</h1>
 </di>
 @endsection

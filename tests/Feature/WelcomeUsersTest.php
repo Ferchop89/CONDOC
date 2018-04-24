@@ -8,6 +8,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WelcomeUsersTest extends TestCase
 {
+    public function testBasicTest()
+    {
+        $response = $this->get('/home');
 
-
+        $response->assertStatus(302);
+    }
 }

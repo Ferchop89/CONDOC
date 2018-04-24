@@ -16,6 +16,13 @@ class UserModuleTest extends TestCase
 
     use RefreshDatabase; // Para la migracion y transaccion de las pruebas
 
+    public function testBasicTest()
+    {
+        $response = $this->get('/home');
+
+        $response->assertStatus(302);
+    }
+
     /**  @test */
 //     function if_loads_the_user_list_page()
 //     {

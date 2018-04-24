@@ -131,8 +131,14 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">Crear Usuario</button>
-                <a href="{{ route('users') }}" class="btn btn-link">Regresar al listado de usuarios</a>
+                <a href="{{ route('admin/usuarios') }}" class="btn btn-link">Regresar al listado de usuarios</a>
             </form>
         </div>
     </div>
+@endsection
+@section('animaciones')
+    {{-- Para el uso del datepicker --}}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{{asset('js/datepicker.js')}}"></script>
 @endsection

@@ -4,8 +4,8 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h1 class="pb-1">{{ $title }}</h1>
-        <p>
-            <a href="{{ route('users.crear_usuario') }}" class="btn btn-primary">Nuevo Usuario</a>
+        <p class="button">
+            <a href="{{ route('crear_usuario') }}" class="btn btn-primary">Nuevo Usuario</a>
         </p>
     </div>
     @if($users->isNotEmpty())
@@ -43,11 +43,11 @@
                         @endforeach
                     </td>
                     <td>
-                        <form action="{{ route('users.destroy',[ $user ]) }}" method="POST">
+                        <form action="{{ route('eliminar_usuario',[ $user ]) }}" method="POST">
                             {{ csrf_field() }}
                             {{ method_field('DELETE')}}
-                            <a href="{{ route('users.ver_usuario',[ $user ]) }}"><i class="fa fa-eye" style="font-size:34px;color:#c5911f"></i></a>
-                            <a href="{{ route('users.editar_usuarios',[ $user ]) }}"><i class="fa fa-edit" style="font-size:34px;color:#c5911f"></i></a>
+                            <a href="{{ route('ver_usuario',[ $user ]) }}"><i class="fa fa-eye" style="font-size:34px;color:#c5911f"></i></a>
+                            <a href="{{ route('admin.users.editar_usuarios',[ $user ]) }}"><i class="fa fa-edit" style="font-size:34px;color:#c5911f"></i></a>
                             <button type="submit"><i class="fa fa-trash" style="font-size:34px;color:#c5911f"></i></button>
                         </form>
                     </td>
@@ -56,13 +56,15 @@
         </tbody>
     </table>
 
-    {{ $users->links()}}
 
     @else
         <p>
             No hay usuarios registrados.
         </p>
     @endif
+</div>
+<div class="paginador">
+    {{ $users->links()}}
 </div>
 @endsection
 

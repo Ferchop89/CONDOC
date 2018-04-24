@@ -37,7 +37,8 @@ class Menu extends Model
 
     $data = new Menu();
     $xitems = $data->items();  // rutas y roles autorizadas
-
+    // $xitems[1] = "admin.users.editar_usuarios";
+    // dd($xitems[1]);
     $data_return = $this->where('enabled', 1)
         ->where('is_structure',1)
         ->orwhereIn('ruta',$xitems)
@@ -46,6 +47,8 @@ class Menu extends Model
         ->orderby('name')
         ->get()
         ->toArray();
+
+        // dd($data_return);
     return $data_return;
   }
 
@@ -79,6 +82,7 @@ class Menu extends Model
     foreach ($user->roles as $role) {
       $roles[] = $role->nombre;
     }
+    //dd($roles);
     return $roles;
   }
 
@@ -86,26 +90,29 @@ class Menu extends Model
   {
     // Procedimiento que retorna todas las rutas y sus roles asociados
     $rutas = collect(Route::getRoutes());
+    // dd($rutas);
+    // dd($rutas[32]);
+    //dd($rutas);
     $arreglorutas = $rutas->toArray();
     $rutasyroles = [];
     for ($i=0 ; $i < count($arreglorutas) ; $i++ ) {
       // $ruta = collect($arreglorutas[$i])->toArray();
+
       $ruta = collect($arreglorutas[$i])->toArray();
       $ruta_action = $ruta['action'];
+
+
+      // if (array_key_exists('as',$ruta_action) and array_key_exists('roles',$ruta_action)) {
       if (array_key_exists('as',$ruta_action) and array_key_exists('roles',$ruta_action)) {
+          // dd($rutas[32]->action);
           $rutayrol = array($ruta_action['as'] => $ruta_action['roles']);
           $rutasyroles = array_merge($rutasyroles,$rutayrol);
         }
     }
+    // dd($rutasyroles);
     return $rutasyroles;
   }
 
-  public function loguser()
-  {
-    // Se actualiza manualmente una cuenta para probar el procedimiento.
-    Auth::logout();
-    Auth::attempt(['username' => 'Administrador', 'password' => 'Admon4974'],false);
-  }
 
   public static function items(){
       // Si el usuario no esta logeado, no hay items de menu.
@@ -118,6 +125,7 @@ class Menu extends Model
       $rutas = $datos->ryr();
       // dd($rutas);
       $roles = $datos->uyr();
+      // dd($roles);
       $itemsarr = [];
       // if (isset($value['sub'][$pg]))
       foreach ($rutas as $key => $value) {
@@ -132,8 +140,9 @@ class Menu extends Model
           }
         }
       }
-      // dd($itemsarr);
+       // dd($itemsarr);
       return $itemsarr;
+
   }
 
 }

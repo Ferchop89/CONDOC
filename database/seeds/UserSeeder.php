@@ -27,7 +27,9 @@ class UserSeeder extends Seeder
           $user->roles()->attach($role);
 
           // Agregamos 10 usuarios fake
-          factory(User::class,50)->create();
+          factory(User::class,50)->create([
+              'password' => bcrypt('111111'),
+          ]);
           // Les agregamos roles de forma aleatoria
           for ($i=0; $i < 5 ; $i++) {
             $users = User::all();

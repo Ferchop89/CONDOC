@@ -17,7 +17,7 @@ class SolicitudSeeder extends Seeder
       // Agrega desde el inicio de 2018 hasta el dia actual, de 8 hasta las 19 horas 150 solicitudes cada 1, 2, o tres minutos
         // factory(Solicitud::class,10)->create();
         $ctaUsuarios = user::all()->count();
-        $inicio = Carbon::create(2018, 1, 1, 0, 0, 0, 'America/Mexico_City');
+        $inicio = Carbon::create(2018, 4, 1, 0, 0, 0, 'America/Mexico_City');
         for ($i=0; $i < $inicio->diffIndays(Carbon::now()) ; $i++) {
             if ( !($inicio->isSaturday() or $inicio->isSunday()) ) {
               $laburo = $inicio;

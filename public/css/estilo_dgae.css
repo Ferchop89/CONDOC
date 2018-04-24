@@ -23,6 +23,9 @@ body {
                 sans-serif;
   font-size   : 16px;
 }
+main.container{
+    min-height: 35%;
+}
 
 input.iconcampo {
   font-family : 'FontAwesome',
@@ -67,9 +70,18 @@ h6 {
                 sans-serif;
   font-weight : 700;
 }
+h1.pb-1 {
+    /* float: left; */
+    display: inline-block;
+    width: 83%;
+}
 
 p {
   font-size : 16px;
+}
+p.button{
+    display: inline-block;
+    width: 15%;
 }
 
 .pmenor {
@@ -373,7 +385,7 @@ button.desabilitado:hover {
 
 footer {
   width            : 100%;
-  height           : 100%;
+  /* height           : 100%; */
   clear            : both;
   padding          : 0 10px;
   padding-top      : 20px;
@@ -1543,4 +1555,9 @@ textarea:invalid {
 .hints {
   color: #4285f4;
   font-weight: bold;
+}
+.paginador {
+    width: 100%;
+    margin: auto;
+    text-align: center;
 }
