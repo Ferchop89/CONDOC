@@ -13,7 +13,7 @@ use App\Models\Role;
 
 class Dashboard extends Controller
 {
-    public function index(){
+    public function index(User $user){
         return view('admin/users/HomeAdmin', ['user' => $user]);
     }
 

@@ -16,7 +16,7 @@ Auth::routes();
 Route::get('/', 'UserController@index');
 
 Route::get('/home', [
-  'uses' => 'HomeController@index',
+  'uses' => 'UserController@home',
   'as'   => 'home'
 ]);
 
@@ -30,3 +30,11 @@ Route::get('/rev',[
     'middleware' => 'roles',
     'roles' => ['Admin']
     ]);
+Route::get('trayectoria', 'UserController@showTrayectoria');
+
+Route::put('/WS/trayectorias', 'Admin\WSController@trayectorias')->name('trayectoria');
+
+    // $encrypted = Crypt::encryptString('Hello world.');
+    //
+    // $decrypted = Crypt::decryptString($encrypted);
+// });

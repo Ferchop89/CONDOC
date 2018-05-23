@@ -12,33 +12,14 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index(){
-        /*
-
-        if (Auth::user()->hasRole('admin'))
-            return view('login');
-        else
-
-        */
-        // dd(Auth::check());
-        if (Auth::check()){
-            // dd("No estas logueado");
-            //return view('auth/login');
-            if (Auth::user()->hasRole('admin'))
-            {
-                return view('home');
-
-            }
-            else{
-                return view('admin_dashboard');
-            }
-        }
-        else {
-            return view('auth/login');
-
-        }
-
-
+    public function index(User $user){
+        return view('auth/login');
+    }
+    public function home(User $user){
+        return view('home', ['user' => $user]);
+    }
+    public function showTrayectoria(){
+        return view('consultas.trayectoria');
     }
 
 }

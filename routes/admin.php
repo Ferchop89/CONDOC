@@ -1,5 +1,5 @@
 <?php
-Route::get('/', 'Dashboard@index')
+Route::get('/home', 'Dashboard@index')
         ->name('admin_dashboard');
 
 Route::get('/usuarios',[
