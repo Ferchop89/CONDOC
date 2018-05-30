@@ -25,6 +25,13 @@ class AppServiceProvider extends ServiceProvider
         ]);
         // $view->with('menus', Menu::menus());
       });
+      view()->composer('home', function($view) {
+        $view ->with([
+          'menus' => Menu::menus() ,
+          'items_role' => Menu::items()
+        ]);
+        // $view->with('menus', Menu::menus());
+      });
     }
 
     /**

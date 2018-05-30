@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Session;
 
 class LoginController extends Controller
 {
@@ -57,10 +59,13 @@ class LoginController extends Controller
                 }
             }
             else {
+                // dd(request());
                 Auth::logout();
+                // return Redirect::to('login');
+                Session::flash('message', "Tu cuenta esta bloqueada, ponte en contacto con el administrador");
+                // return Redirect::back();
             }
         }
-        return 'auth/login';
+        return '/';
     }
-
 }

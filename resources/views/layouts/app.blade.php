@@ -9,12 +9,9 @@
         <meta name="theme-color" content="#1C3D6C">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
         <!-- Sección: Title del Sitio -->
         <title>@yield('title')</title>
-        <!-- /Sección: Title del Sitio -->
         <!-- Sección: Links -->
-
         <link href="{{ asset('images/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
         <link href="{{ asset('images/custom_icon.png') }}" rel="apple-touch-icon">
         <link href="{{ asset('images/custom_icon.png') }}" sizes="150x150" rel="icon">
@@ -24,8 +21,12 @@
         <link href="{{ asset('icss/mdb.css') }}" rel="stylesheet">
         <link href="{{ asset('css/estilo_dgae.css') }}" rel="stylesheet">
         <link href="{{ asset('css/login.css') }}" rel="stylesheet">
-
         <link href="{{ asset('css/MenuDinamico.css') }}" rel="stylesheet">
+        <!-- Sección: estilos -->
+        @yield('estilos')
+        <script>
+
+        </script>
 
         <!-- /Sección: Links -->
     </head id="inicio">
@@ -136,33 +137,13 @@
             @yield('content') --}}
             </nav>
         </header>
-        <main role="main" class="container">
-            <div class="menu">
-                <ul class="">
-                    {{-- @if(auth()->user()==null)
-                        No tiene acceso
-                    @elseif (!auth()->user()->hasRole('admin')) --}}
-                    @noadmin
-                        <div class="">
-                              <div class="">
-                                {{-- <ul class="nav navbar-nav"> --}}
-                                  <ul class="">
-                                      @if (count($items_role)>0)
-
-                                          @foreach ($menus as $key => $item)
-                                              @if ($item['parent'] != 0)
-                                                  @break
-                                              @endif
-                                              @include('partials.menu-item', ['item' => $item])
-                                          @endforeach
-                                      @endif
-                                  </ul>
-                              </div>
-                          </div>
-                    @endnoadmin
-                </ul>
+        <main role="main">
+            <div class="ubicacion">
+                @yield('location')
             </div>
-            @yield('content')
+            <div class="container">
+                @yield('content')
+            </div>
 
         </main>
         <!--Principio del Footer -->

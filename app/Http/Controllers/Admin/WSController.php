@@ -8,16 +8,16 @@ use SOAPClient;
 
 class WSController extends Controller
 {
-    public function trayectorias(){
+    public function trayectorias($cta){
         error_reporting(E_ALL);
         ini_set("display_errors", 1);
         ini_set('soap.wsdl_cache_enabled', '0');
         ini_set('soap.wsdl_cache_ttl', '0');
         ini_set("default_socket_timeout", 5);
 
-        $key = SHA1('He seguido la trayectoria en la que he creido y he confiado en mi mismo / Antonio Saura');
+        // $key
         // parametros de entrada para SOAP
-        $cta=request('trayectoria');
+        // $cta=request('trayectoria');
         // $cta = '313335127'; // con causa 72
          // $cta = '410060533'; // con causa 72
          // $cta = '308010769'; //Foto
@@ -38,11 +38,11 @@ class WSController extends Controller
 
         try {
 
-          $wsdl = 'https://www.dgae-siae.unam.mx/ws/soap/ssre_try_srv.php?wsdl';
+          $wsdl = ;
 
           $opts = array(
-            'proxy_host' => "132.248.205.1",
-            'proxy_port' => 8080,
+            'proxy_host' => ,
+            'proxy_port' => ,
             //'proxy_login' => 'el_login',
             //'proxy_password' => 'el_password',
             'connection_timeout' => 10 , // tiempo de espera
@@ -62,10 +62,12 @@ class WSController extends Controller
             echo "<pre>faultstring: '".$exception->getMessage()."'</pre>";
         }
         // return redirect()-route("ruta")->white($response->situaciones);
+        // dd($response);
+        if(empty($response->situaciones))
+        {
+            return $response->mensaje;
+        }
         return $response->situaciones;
-        // dd($response->situaciones[0]->plantel_clave);
-
-
     }
     function formatXmlString($xml){
         $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);

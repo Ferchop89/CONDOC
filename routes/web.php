@@ -20,9 +20,13 @@ Route::get('/home', [
   'as'   => 'home'
 ]);
 
-Route::get('/FacEsc/consulta_re', 'FacEscController@index')->name('consulta_re');
+Route::get('/FacEsc/solicitud_RE', 'FacEscController@showSolicitudRE');
+Route::post('/FacEsc/solicitud_RE', 'FacEscController@postSolicitudRE');
+Route::get('/FacEsc/solicitud_RE/{num_cta}', 'FacEscController@showInfoSolicitudRE')
+    ->where('num_cta','[0-9]+')
+    ->name('solicitud_RE');
 
-Route::post('/FacEsc/consulta_re', 'FacEscController@store');
+
 
 Route::get('/rev',[
     'uses'=> 'InformesController@Revisiones',
@@ -33,6 +37,12 @@ Route::get('/rev',[
 Route::get('trayectoria', 'UserController@showTrayectoria');
 
 Route::put('/WS/trayectorias', 'Admin\WSController@trayectorias')->name('trayectoria');
+
+Route::get('login', function(){
+    return view('Auth/login');
+})->name('login');
+
+Route::get('/recepcion-expedientes', 'UserController@showrecepcionExpedientes')->name('Recepcion.Expedientes');
 
     // $encrypted = Crypt::encryptString('Hello world.');
     //
