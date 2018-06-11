@@ -166,6 +166,9 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         'Collective\Html\HtmlServiceProvider',
 
+        //Sybase
+        Uepg\LaravelSybase\Database\SybaseServiceProvider::class,
+
         /*
          * Package Service Providers...
          */

@@ -1,0 +1,172 @@
+html,body{
+  height: auto;
+}
+
+#navegacion {
+  padding-left: 8%; 
+  font-size: 100%; 
+  border: 1px solid #DCDCDC; 
+  background: #F5F5F5;
+}
+
+/* consulta RE */
+#general{
+  width: 30%; 
+  position:relative; 
+  left: 10%;
+}
+
+#error {
+  width: 70%; 
+  position:relative; 
+  left: 15%;
+  text-align: center;
+}
+/* */
+
+/* Oficinista */
+
+#instrucciones{
+  padding-left: 10%; 
+  padding-bottom: 2%; 
+  padding-top: 1%;
+  font-size: 17px;
+}
+
+.item1 { grid-area: foto; }
+
+.item2 { grid-area: datos; }
+
+.item3 { grid-area: historial;}
+
+.item4 { grid-area: academico; }
+
+.grid-container{
+  display: grid;
+  grid-template-areas:
+    'foto foto datos datos historial historial'
+    'foto foto datos datos historial historial'
+    'academico academico academico academico historial historial'
+    'academico academico academico academico historial historial';
+  margin-left: 8%;
+  margin-right: 8%;
+  margin-bottom: 1%;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 10px 0;
+  border: 1px solid grey;
+  text-align: left;
+  padding-left: 10%;
+}
+
+.item1 .item2 > p {
+  font-size: 55px;
+}
+
+.form1 { grid-area: texto; }
+
+.form2 { grid-area: campo; }
+
+.grid-form {
+  display: grid;
+  grid-template-areas:
+    'texto texto texto campo campo campo'
+    'texto texto texto campo campo campo'
+    'texto texto texto campo campo campo';
+}
+
+#texto {
+  padding-right: 5%;
+  padding-left: 1%;
+  text-align: left;
+  font-size: 17px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+}
+
+#campo {
+  width: 50%;
+  padding-right: 5%;
+}
+
+#genero { padding-left: 8%; }
+
+#firmar {
+  position: absolute;
+  right: 12%;
+  top: 23%;
+}
+
+#volver {
+  position: absolute;
+  right: 1px;
+}
+
+.item3 .col-sm-8 {
+  font-size: 17px;
+}
+
+.item3 .glyphicon-time {
+  color: blue;
+  margin-top: 40%;
+}
+
+.item3 .glyphicon-check {
+  color:  green;
+  margin-top: 30%;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+}
+
+.grid-container .item1, .grid-container .item2, .grid-container .item3,
+.grid-info .personal, .grid-info .nacional, .grid-info .academica {
+  padding-top: 6%;
+}
+
+.personal { grid-area: alumno; }
+
+.nacional { grid-area: nacimiento; }
+
+.academica { grid-area: trayectoria; }
+
+.grid-info {
+  display: grid;
+  grid-template-areas:
+    'alumno alumno alumno trayectoria trayectoria trayectoria'
+    'alumno alumno alumno trayectoria trayectoria trayectoria'
+    'nacimiento nacimiento nacimiento trayectoria trayectoria trayectoria'
+    'nacimiento nacimiento nacimiento trayectoria trayectoria trayectoria';
+  padding-left: 1px;
+  padding-bottom: 2%;
+}
+
+.grid-info > div {
+  text-align: center;
+  padding: 10px 0;
+  border: 1px solid grey;
+  text-align: left;
+  padding-left: 8%;
+}
+
+#re_historial {
+  display: block;
+  width: 95%;
+  margin-left: 1px;
+}
+
+#c_datos {
+  width: 84%;
+  margin: auto;
+}
+
+#esc_proc {
+  margin-left: 14%;
+}
+/* */

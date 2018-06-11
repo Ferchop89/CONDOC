@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->truncateTables([
+          'web_services',
           'procedencias',
           'users',
           'roles',
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
           'solicitudes',
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
+        $this->call(Web_Service_Seeder::class);
         $this->call(RoleSeeder::class);
         $this->call(ProcedenciaSeeder::class);
         $this->call(UserSeeder::class);

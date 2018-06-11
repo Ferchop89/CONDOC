@@ -142,7 +142,7 @@ class Dashboard extends Controller
     {
         // Se agregan los roles para crearlos dinámicamente vista de nuevos usuarios (create)
         $roles = Role::orderBy('id','asc')->get();
-        return view('admin.users.crear_usuario',['roles'=>$roles]);
+        return view('admin/users/crear_usuario',['roles'=>$roles]);
     }
 
     /*Método para eliminar un usuario*/

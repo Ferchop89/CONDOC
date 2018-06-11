@@ -11,7 +11,8 @@
         "laravel/passport": "~4.0",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "~5.0",
-        "nesbot/carbon": "^1.26"
+        "nesbot/carbon": "^1.26",
+        "uepg/laravel-sybase": "^2.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

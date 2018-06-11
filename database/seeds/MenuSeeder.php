@@ -14,8 +14,8 @@ class MenuSeeder extends Seeder
        {
          // seed del menú. genera opciones de ruta falsas de middleware.
            $m1 = factory(Menu::class)->create([
-               'name' => 'opción 1',
-               'slug' => 'opcion1',
+               'name' => 'Licenciatura',
+               'slug' => 'licenciatura',
                // 'ruta' => 'o1',
                'ruta' => '#',
                'parent' => 0,
@@ -23,8 +23,8 @@ class MenuSeeder extends Seeder
                'is_structure' => 1
            ]);
            $m2 = factory(Menu::class)->create([
-               'name' => 'opción 2',
-               'slug' => 'opcion2',
+               'name' => 'Posgrado',
+               'slug' => 'posgrado',
                // 'ruta' => 'o2',
                'ruta' => '#',
                'parent' => 0,
@@ -72,6 +72,14 @@ class MenuSeeder extends Seeder
                'ruta' => 'm5',
                'parent' => $m1->id,
                'order' => 2,
+               'is_structure' => 0
+           ]);
+           factory(Menu::class)->create([
+               'name' => 'Realizar Revisión de Estudios',
+               'slug' => 'realizar-re',
+               'parent' => $m1->id,
+               'ruta' => 'datos_personales',
+               'order' => 3,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([

@@ -21,6 +21,12 @@ Route::get('/usuarios/{user}/editar', [
     'roles' => ['Admin']
     ])->where('user','[0-9]+');
 
+Route::get('/usuarios/nuevo', [
+    'uses' => 'Dashboard@crear_usuario',
+    'as' => 'admin.users.crear_usuario',
+    'roles' => ['Admin']
+    ]);
+
 Route::post('/usuarios','Dashboard@store');
 //Ruta para ver cambios realizados
 Route::put('/usuarios/{user}','Dashboard@update');

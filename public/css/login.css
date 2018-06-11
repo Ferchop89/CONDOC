@@ -50,8 +50,8 @@ html,body{
 .ubicacion {
     border: solid 1px;
 }
-/* #general{
-  width: 30%;
-  position:relative;
-  left: 10%;
-} */
+
+#no_enc {
+  text-align: center;
+  margin: auto;
+}

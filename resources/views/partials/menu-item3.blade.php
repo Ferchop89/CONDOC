@@ -2,7 +2,7 @@
     <div id="{{$item['name']}}" class="tabcontent">
         @foreach ($item['submenu'] as $submenu)
             <li>
-                <a href="#">
+            	<a href="<?=$submenu['ruta']?>">
                     {{$submenu['name']}}
                 </a>
             </li>

@@ -17,7 +17,7 @@ class CheckRole
      */
     public function handle($request, Closure $next)
     {
-        // Si el suaruio no esta loggeado, se trata no tiene permisos
+        // Si el usuario no esta loggeado, se trata no tiene permisos
 
         if($request->user() === null){
           return response("Permisos Insuficientes", 401);
@@ -29,6 +29,8 @@ class CheckRole
         // Se obtienen sus roles
         $actions = $request->route()->getAction();
         $roles = isset($actions['roles']) ? $actions['roles'] : null;
+
+        //dd(!$roles);
 
         if (($request->user()->hasAnyRole($roles) || !$roles) and $activo){
             return $next($request);

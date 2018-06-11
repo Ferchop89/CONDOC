@@ -4,6 +4,6 @@
 
 @section('content')
 <div class="container">
-  <h1>Página no encontrada</h1>
+  <h1 id="no_enc">Página no encontrada</h1>
 </di>
 @endsection

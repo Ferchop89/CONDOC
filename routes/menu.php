@@ -16,7 +16,7 @@ Route::get('/m3',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm3',
   'middleware' => 'roles',
-  'roles' => ['JArea','Ofisi','FacEsc']
+  'roles' => ['Sria','JArea','Ofisi','FacEsc']
   ]);
 Route::get('/m4',[
   'uses'=> 'RutasController@Menu1',
@@ -46,7 +46,7 @@ Route::get('/m8',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm8',
   'middleware' => 'roles',
-  'roles' => ['FacEsc','Ofisi']
+  'roles' => ['FacEsc', 'Ofisi']
   ]);
 Route::get('/m9',[
   'uses'=> 'RutasController@Menu1',
@@ -54,3 +54,27 @@ Route::get('/m9',[
   'middleware' => 'roles',
   'roles' => ['Jud','Ofisi']
   ]);
+Route::get('/datos_personales',[
+  'uses'=> 'RevEstudiosController@showSolicitudNC',
+  'as'=> 'datos_personales',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi']
+  ]);
+Route::post('/datos_personales',[
+  'uses'=> 'RevEstudiosController@postDatosPersonales',
+  'as'=> 'datos_personales',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi']
+  ]);
+Route::get('/datos_personales/{num_cta}',[
+  'uses'=> 'RevEstudiosController@showDatosPersonales',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi']
+  ])->where('num_cta','[0-9]+')
+    ->name('datos_personales');
+Route::post('/datos_personales/{num_cta}',[
+  'uses'=> 'RevEstudiosController@verificaDatosPersonales',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi']
+  ])->where('num_cta','[0-9]+')
+    ->name('datos_personales');

@@ -8,14 +8,15 @@ use SOAPClient;
 
 class WSController extends Controller
 {
-    public function trayectorias($cta){
+    public function ws($nombre, $num_cta, $key)
+    {
         error_reporting(E_ALL);
         ini_set("display_errors", 1);
         ini_set('soap.wsdl_cache_enabled', '0');
         ini_set('soap.wsdl_cache_ttl', '0');
         ini_set("default_socket_timeout", 5);
 
-        // $key
+        //$key = SHA1('He seguido la trayectoria en la que he creido y he confiado en mi mismo / Antonio Saura');
         // parametros de entrada para SOAP
         // $cta=request('trayectoria');
         // $cta = '313335127'; // con causa 72
@@ -31,18 +32,24 @@ class WSController extends Controller
         // $cta = '081360558'; // asignatura en plan nuevo
         // $cta = '300337895'; // cambio de area
 
+        $key = iconv("UTF-8//TRANSLIT", "WINDOWS-1252", $key);
+
+        $key=SHA1($key);
+
         $parametros = array(
           'key' => $key,
-          'cta' => $cta
+          'cta' => $num_cta
         );
 
         try {
-
-          $wsdl = ;
-
+            if($nombre == 'trayectoria')
+                $wsdl = 'https://www.dgae-siae.unam.mx/ws/soap/ssre_try_srv.php?wsdl';
+            elseif ($nombre == 'identidad') {
+                $wsdl = 'https://www.dgae-siae.unam.mx/ws/soap/dgae_idn_srv.php?wsdl';
+          }
           $opts = array(
-            'proxy_host' => ,
-            'proxy_port' => ,
+            'proxy_host' => "132.248.205.1",
+            'proxy_port' => 8080,
             //'proxy_login' => 'el_login',
             //'proxy_password' => 'el_password',
             'connection_timeout' => 10 , // tiempo de espera
@@ -51,9 +58,13 @@ class WSController extends Controller
             'exceptions' => true
           );
           $client = new SOAPClient($wsdl, $opts);
-          // dd($client->__getTypes());
-          $response = $client->return_trayectoria($parametros);
-
+          if($nombre == 'trayectoria')
+          {
+              $response = $client->return_trayectoria($parametros);
+          }
+          elseif ($nombre ==  'identidad') {
+              $response = $client->return_identidad($parametros);
+          }
         }
         catch (SoapFault $exception) {
 
@@ -61,36 +72,10 @@ class WSController extends Controller
             echo "<pre>faultcode: '".$exception->faultcode."'</pre>";
             echo "<pre>faultstring: '".$exception->getMessage()."'</pre>";
         }
-        // return redirect()-route("ruta")->white($response->situaciones);
-        // dd($response);
-        if(empty($response->situaciones))
+        if(empty($response->cuenta))
         {
             return $response->mensaje;
         }
-        return $response->situaciones;
-    }
-    function formatXmlString($xml){
-        $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
-        $token      = strtok($xml, "\n");
-        $result     = '';
-        $pad        = 0;
-        $matches    = array();
-        while ($token !== false) :
-            if (preg_match('/.+<\/\w[^>]*>$/', $token, $matches)) :
-              $indent=0;
-            elseif (preg_match('/^<\/\w/', $token, $matches)) :
-              $pad--;
-              $indent = 0;
-            elseif (preg_match('/^<\w[^>]*[^\/]>.*$/', $token, $matches)) :
-              $indent=1;
-            else :
-              $indent = 0;
-            endif;
-            $line    = str_pad($token, strlen($token)+$pad, ' ', STR_PAD_LEFT);
-            $result .= $line . "\n";
-            $token   = strtok("\n");
-            $pad    += $indent;
-        endwhile;
-        return $result;
+        return $response;
     }
 }

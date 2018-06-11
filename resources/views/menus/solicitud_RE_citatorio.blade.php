@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'CONDOC | Solicitud de RE por Alumno')
 @section('location')
-    >> {{$num_cta}}
+    Citatorios >> {{$num_cta}}
 @endsection
 @section('content')
     <div id="is" class="pta_amplia">
@@ -13,6 +13,9 @@
         @else
             {{-- {{dd($trayectoria)}} --}}
             <div class="contenido">
+                <div class="contenido msj-error">
+                    <span>{{$msj}}</span>
+                </div>
                 <div class="info-personal">
                     <img src="{{ asset('images/sin_imagen.png') }}" alt="">
                     <div class="info-personal">
@@ -59,7 +62,7 @@
                                         @endif
                                     @endif --}}
                                     <a href="">
-                                        {{"boton"}}
+                                        Imprimir Citatorio
                                     </a>
                                 </td>
                             </tr>

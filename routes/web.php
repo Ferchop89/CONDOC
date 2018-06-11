@@ -20,9 +20,9 @@ Route::get('/home', [
   'as'   => 'home'
 ]);
 
-Route::get('/FacEsc/solicitud_RE', 'FacEscController@showSolicitudRE');
-Route::post('/FacEsc/solicitud_RE', 'FacEscController@postSolicitudRE');
-Route::get('/FacEsc/solicitud_RE/{num_cta}', 'FacEscController@showInfoSolicitudRE')
+Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
+Route::post('/FacEsc/solicitud_RE', 'RevEstudiosController@postSolicitudRE');
+Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
     ->where('num_cta','[0-9]+')
     ->name('solicitud_RE');
 
@@ -42,9 +42,25 @@ Route::get('login', function(){
     return view('Auth/login');
 })->name('login');
 
-Route::get('/recepcion-expedientes', 'UserController@showrecepcionExpedientes')->name('Recepcion.Expedientes');
+Route::get('recepcion', 'UserController@showrecepcionExpedientes')->name('recepcion');
+Route::post('/recepcion-expedientes', 'UserController@post_numcta_Validate')->name('postRecepcion');
 
     // $encrypted = Crypt::encryptString('Hello world.');
     //
     // $decrypted = Crypt::decryptString($encrypted);
 // });
+
+//Route::get('/datos_personales', 'RevEstudiosController@showSolicitudNC');
+
+//Route::post('/datos_personales', 'RevEstudiosController@postDatosPersonales');
+Route::get('/c-c', function () {
+
+    $users = DB::connection("mysql")->table("users")->get();
+    dd($users);
+
+});
+
+Route::get('/c-c-2', function () {
+    $sbs = DB::connection("sybase")->table("Catalogotext")->get();
+    dd($sbs);
+});
