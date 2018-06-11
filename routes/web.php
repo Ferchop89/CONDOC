@@ -42,7 +42,13 @@ Route::get('login', function(){
     return view('Auth/login');
 })->name('login');
 
-Route::get('/recepcion-expedientes', 'UserController@showrecepcionExpedientes')->name('Recepcion.Expedientes');
+Route::get('recepcion', 'UserController@showrecepcionExpedientes')->name('recepcion');
+Route::post('/recepcion-expedientes', 'UserController@post_numcta_Validate')->name('postRecepcion');
+// Route::get('/recepcion-expedientes/{num_cta}', 'UserController@recepcionExpedientes')
+//     ->where('num_cta','[0-9]+')
+//     ->name('Recepcion.Expedientes');
+
+
 
     // $encrypted = Crypt::encryptString('Hello world.');
     //

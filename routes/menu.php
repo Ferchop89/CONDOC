@@ -16,7 +16,7 @@ Route::get('/m3',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm3',
   'middleware' => 'roles',
-  'roles' => ['JArea','Ofisi','FacEsc']
+  'roles' => ['Sria','JArea','Ofisi','FacEsc']
   ]);
 Route::get('/m4',[
   'uses'=> 'RutasController@Menu1',

@@ -4,8 +4,8 @@
 @endsection
 @section('content')
 <div id="is" class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+    {{-- <div class="row"> --}}
+        {{-- <div class="col-md-8 col-md-offset-2"> --}}
             <div class="panel panel-default">
                 <div class="tab panel-heading">
                     @noadmin
@@ -35,8 +35,8 @@
                     @endif
                 @endnoadmin
             </div>
-        </div>
-    </div>
+        {{-- </div> --}}
+    {{-- </div> --}}
 </div>
 @endsection
 @section('animaciones')
