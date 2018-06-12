@@ -66,15 +66,14 @@ Route::post('/datos_personales',[
   'middleware' => 'roles',
   'roles' => ['Ofisi']
   ]);
-Route::get('/datos_personales/{num_cta}',[
+/*Route::get('/rev_est',[
   'uses'=> 'RevEstudiosController@showDatosPersonales',
   'middleware' => 'roles',
   'roles' => ['Ofisi']
-  ])->where('num_cta','[0-9]+')
-    ->name('datos_personales');
-Route::post('/datos_personales/{num_cta}',[
+  ]);
+Route::post('/rev_est',[
   'uses'=> 'RevEstudiosController@verificaDatosPersonales',
   'middleware' => 'roles',
   'roles' => ['Ofisi']
-  ])->where('num_cta','[0-9]+')
-    ->name('datos_personales');
+  ]);
+*/

@@ -95,10 +95,10 @@ return [
 
         'sybase' => [
             'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST_SECOND', '132.248.205.170:4101'),
-            'database' => env('DB_DATABASE_SECOND', 'ConDocDB_prb'),
-            'username' => env('DB_USERNAME_SECOND', 'cercondoc'),
-            'password' => env('DB_PASSWORD_SECOND', 'zeR0nd.81-'),
+            'host'     => env('DB_HOST_SECOND', ''),
+            'database' => env('DB_DATABASE_SECOND', ''),
+            'username' => env('DB_USERNAME_SECOND', ''),
+            'password' => env('DB_PASSWORD_SECOND', ''),
             //'charset'  => 'utf8',
             'prefix'   => '',
         ],
