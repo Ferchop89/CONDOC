@@ -78,8 +78,7 @@ html,body{
 }
 
 #texto {
-  padding-right: 5%;
-  padding-left: 1%;
+  padding-left: 5%;
   text-align: left;
   font-size: 17px;
   margin-bottom: 1%;
@@ -89,6 +88,12 @@ html,body{
 #campo {
   width: 50%;
   padding-right: 5%;
+}
+
+#irregularidad {
+  padding-right: 5%;
+  text-align: right;
+  color: black;
 }
 
 #genero { padding-left: 8%; }
@@ -148,6 +153,7 @@ html,body{
 }
 
 .grid-info > div {
+  position: static;
   text-align: center;
   padding: 10px 0;
   border: 1px solid grey;

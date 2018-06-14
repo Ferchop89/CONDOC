@@ -17,11 +17,11 @@ class FacEscController extends Controller
     {
 
     	$request->validate([
-          'num_cuenta' => 'required|numeric|digits:9'
+          'num_cta' => 'required|numeric|digits:9'
           ],[
-           'num_cuenta.required' => 'El campo es obligatorio',
-           'num_cuenta.numeric' => 'El campo debe contener solo números',
-           'num_cuenta.digits'  => 'El campo debe ser de 9 dígitos',
+           'num_cta.required' => 'El campo es obligatorio',
+           'num_cta.numeric' => 'El campo debe contener solo números',
+           'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
       ]);
       // dd($request->num_cuenta);
 

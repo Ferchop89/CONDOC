@@ -15,7 +15,7 @@
 	<div>
 
 
-	<form class="form-group" method="POST" action="{{ url('/datos_personales/'.$num_cta) }}">
+	<form class="form-group" method="POST" action="{{ url('/rev_est/'.$num_cta) }}">
 		{!! csrf_field() !!}
 
 	<h2 id="titulo">Revisión de Estudios</h2>
@@ -40,7 +40,7 @@
 		</div>
 		<div class="item2">
 			<p>{{$num_cta}}</p>
-			<p>Nombre(s) PrimerApellido SegundoApellido</p>
+			<p>{{$identidad->nombres}} {{$identidad->apellido1}} {{$identidad->apellido2}}</p>
 			<p>Exp. Posgrado: </p>
 			<p>Exp. Sistema Incorporado: </p>
 		</div>
@@ -84,16 +84,16 @@
 			</div>
 		</div>
 		<div class="item4">
-			<p>Plan de estudios: {{$trayectoria[1]->plantel_clave}}</p>
-			@if($trayectoria[1]->nivel == "B")
+			<p>Plan de estudios: {{$trayectoria->situaciones[1]->plantel_clave}}</p>
+			@if($trayectoria->situaciones[1]->nivel == "B")
 				<p>Nivel: BACHILLERATO</p>
-			@elseif($trayectoria[1]->nivel == "L")
+			@elseif($trayectoria->situaciones[1]->nivel == "L")
 				<p>Nivel: LICENCIATURA</p>
 			@else
 				<p>Nivel: </p>
 			@endif
 
-			<p>Carrera: {{$trayectoria[1]->carrera_nombre}}</p>
+			<p>Carrera: {{$trayectoria->situaciones[1]->carrera_nombre}}</p>
 			<p>Orientación: Orientación</p>
 		</div>
 	</div>
@@ -117,7 +117,7 @@
 						CURP:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input id="curp" type="text" class="form-control" name="curp" value="" maxlength="18">
+						<input id="curp" type="text" class="form-control" name="curp" value="{{$identidad->curp}}" maxlength="18">
 					</div>
 				</div>
 				<div class="row">
@@ -125,14 +125,17 @@
 						Sexo:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<div class="col-sm-6" id="genero">
-							<input type="radio" id="sexoF" name="sexo" value="femenino">
-							<label for="sexoF">Femenino</label>
-						</div>
-						<div class="col-sm-6" id="genero">
-							<input type="radio" id="sexoM" name="sexo" value="masculino">
-							<label for="sexoM">Masculino</label>
-						</div>
+						@if($identidad->sexo == "FEMENINO")
+							<select>
+								<option value="fem" selected>Femenino</option>
+							    <option value="mas">Masculino</option>
+							</select>
+						@else
+							<select>
+								<option value="mas" selected>Masculino</option>
+							    <option value="fem">Femenino</option>
+							</select>
+						@endif
 					</div>
 				</div>
 				<div class="row">
@@ -153,7 +156,7 @@
 						Fecha de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input class="date form-control" type="text">
+						<input class="date form-control" type="text" value="{{$identidad->nacimiento}}" name="f_nac" maxlength="10">
 					</div>
 				</div>
 				<div class="row">
@@ -203,19 +206,18 @@
 						Número de folio:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input id="num_folio" type="text" class="form-control" name="num_folio" value="" maxlength="18" >
+						<input id="num_folio" type="text" class="form-control" name="num_folio" value="" maxlength="" >
 					</div>
 				</div>
 				<div class="row">
-					<div id="texto" class="col-sm-6">
+					<div id="texto" class="col-sm-3">
 						Irregularidad:
 					</div>
-					<div id="campo" class="col-sm-6">
+					<div id="irregularidad" class="col-sm-9">
 						<select>
-						    <option value="mexa">Mexicana</option>
-						    <option value="can">Canadiense</option>
-						    <option value="ame">Americana</option>
-						    <option value="rus" selected>Rusa</option>
+							@foreach($irr_acta as $i_actanac)
+						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+						    @endforeach
 						</select>
 					</div>
 				</div>
@@ -231,8 +233,8 @@
 				<div id="re_historial">
 
 			      	<ul class="nav nav-tabs">
-			      		@foreach($trayectoria as $tyt)
-			      			@if($tyt == $trayectoria[0])
+			      		@foreach($trayectoria->situaciones as $tyt)
+			      			@if($tyt == $trayectoria->situaciones[0])
 			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
 			        		@else	
 			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
@@ -241,8 +243,8 @@
 			      	</ul>
 
 			      	<div id="folder" class="tab-content">
-			      		@foreach($trayectoria as $tyt)
-				      		@if($tyt == $trayectoria[0])
+			      		@foreach($trayectoria->situaciones as $tyt)
+				      		@if($tyt == $trayectoria->situaciones[0])
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade in active">
 	        				@else
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade">
@@ -250,7 +252,7 @@
 
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			Nivel de escuela de procedencia: {{ $tyt->nivel }}
+						      			Nivel de escuela de procedencia:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
 						      			<select>
@@ -266,15 +268,15 @@
 						      			Escuela de procedencia:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="e_procedencia" type="text" class="form-control" name="e_procedencia" value="" maxlength="18" >
+						      			<input id="e_procedencia" type="text" class="form-control" name="e_procedencia" value="{{ $tyt->plantel_nombre }}">
 						      		</div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			C.C.T.:
+						      			Clave:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="cct" type="text" class="form-control" name="cct" value="" maxlength="18">
+						      			<input id="cct" type="text" class="form-control" name="cct" value="{{ $tyt->plantel_clave }}" maxlength="">
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -308,7 +310,7 @@
 						      			Folio de certificado:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert" value="" maxlength="18" >
+						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert" value="" maxlength="" >
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -334,19 +336,18 @@
 						      			Promedio:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="promedio" type="text" class="form-control" name="promedio" value="" maxlength="18" >
+						      			<input id="promedio" type="text" class="form-control" name="promedio" value="" maxlength="5" >
 						      		</div>
 						      	</div>
 						      	<div class="row">
-						      		<div id="texto" class="col-sm-6">
+						      		<div id="texto" class="col-sm-3">
 						      			Irregularidad:
 						      		</div>
-						      		<div id="campo" class="col-sm-6">
+						      		<div id="irregularidad" class="col-sm-9">
 						      			<select>
-						      			    <option value="mexa">Sin irregularidades</option>
-						      			    <option value="can">Rupturas</option>
-						      			    <option value="ame">Manchas</option>
-						      			    <option value="rus" selected>Rayaduras</option>
+						      				@foreach($irr_cert as $i_certificado)
+						      				   	<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
+						      				@endforeach
 						      			</select>
 						      		</div>
 						      	</div>

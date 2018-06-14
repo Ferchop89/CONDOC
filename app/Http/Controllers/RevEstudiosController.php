@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
-use App\Models\Web_Service;
+use App\Models\{Web_Service, IrregularidadesRE};
 
 class RevEstudiosController extends Controller
 {
@@ -18,15 +18,15 @@ class RevEstudiosController extends Controller
     {
 
       $request->validate([
-          'num_cuenta' => 'required|numeric|digits:9'
+          'num_cta' => 'required|numeric|digits:9'
           ],[
-           'num_cuenta.required' => 'El campo es obligatorio',
-           'num_cuenta.numeric' => 'El campo debe contener solo números',
-           'num_cuenta.digits'  => 'El campo debe ser de 9 dígitos',
+           'num_cta.required' => 'El campo es obligatorio',
+           'num_cta.numeric' => 'El campo debe contener solo números',
+           'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
       ]);
-      // dd($request->num_cuenta);
+      // dd($request->num_cta);
 
-      return redirect()->route('solicitud_RE', ['num_cta'=>$request->num_cuenta]);
+      return redirect()->route('solicitud_RE', ['num_cta'=>$request->num_cta]);
     }
     public function showInfoSolicitudRE($num_cta)
     {
@@ -62,8 +62,6 @@ class RevEstudiosController extends Controller
           return view('/menus/solicitud_RE_citatorio', ['num_cta'=> $num_cta, 'trayectoria' => $trayectorias_75, 'msj' => $msj]);
       }
       else {
-
-          // dd($dto, $trayectorias_75);
           return view('/menus/solicitud_RE_info', ['num_cta'=> $num_cta, 'trayectoria' => $trayectorias_75, 'msj' => $msj]);
       }
     }
@@ -73,10 +71,10 @@ class RevEstudiosController extends Controller
         return view('/menus/datos_personales');
     }
     
-    public function showDatosPersonales()
+    public function showDatosPersonales($num_cta)
     {
         // dd(Controller);
-        $num_cta=request()->input('num_cta');
+        //$num_cta=request()->input('num_cta');
         $ws = Web_Service::find(2);
         $identidad = new WSController();
         $identidad = $identidad->ws($ws->nombre, $num_cta, $ws->key);
@@ -84,37 +82,46 @@ class RevEstudiosController extends Controller
         // dd($ws);
         $trayectoria = new WSController();
         $trayectoria = $trayectoria->ws($ws->nombre, $num_cta, $ws->key);
-        dd($identidad, "hola", $trayectoria);
-        //return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 'identidad' => $identidad]);
+        //dd($identidad, "hola", $trayectoria);
+        $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
+        $irr_cert = IrregularidadesRE::where('cat_cve', 2)->get();
+
+        return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 
+          'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert]);
     }
 
     public function postDatosPersonales(Request $request)
     {
 
       $request->validate([
-          'num_cuenta' => 'required|numeric|digits:9'
+          'num_cta' => 'required|numeric|digits:9'
           ],[
-           'num_cuenta.required' => 'El campo es obligatorio',
-           'num_cuenta.numeric' => 'El campo debe contener solo números',
-           'num_cuenta.digits'  => 'El campo debe ser de 9 dígitos',
+           'num_cta.required' => 'El campo es obligatorio',
+           'num_cta.numeric' => 'El campo debe contener solo números',
+           'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
       ]);
-      // dd($request->num_cuenta);
-      $this->showDatosPersonales();
-      dd("alto");
-      return redirect();
-      //return redirect()->route('datos_personales');
+      // dd($request->num_cta);
+      //$this->showDatosPersonales();
+      //dd("alto");
+      //return redirect();
+      return redirect()->route('rev_est/{num_cta}', ['num_cta' => $request->num_cuenta]);
     }
 
     public function verificaDatosPersonales(Request $request)
     {
     
     $request->validate([
-        'curp' => 'required|min:18|max:18|regex:/^[A-Z]{4}[0-9]{2}[0-1][0-9][0-9]{2}[M,H][A-Z]{5}[0-9]{2}$/'
+        'curp' => 'required|min:18|max:18|regex:/^[A-Z]{4}[0-9]{2}[0-1][0-9][0-9]{2}[M,H][A-Z]{5}[0-9]{2}$/',
+        'f_nac' => 'required|min:10|max:10|regex:/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/'
         ],[
          'curp.required' => 'El CURP es obligatorio',
          'curp.min' => 'El CURP debe ser de 18 caracteres.',
          'curp.max' => 'El CURP debe ser de 18 caracteres.',
          'curp.regex' => 'El formato de CURP es incorrecto',
+         'f_nac.required' => 'La fecha de nacimiento es obligatoria',
+         'f_nac.min' => 'La longitud de la fecha de nacimiento es errónea',
+         'f_nac.max' => 'La longitud de la fecha de nacimiento es errónea',
+         'f_nac.regex' => 'La fecha de nacimiento debe ser DD/MM/AAAA'
     ]);
 
     return redirect()->route('home');

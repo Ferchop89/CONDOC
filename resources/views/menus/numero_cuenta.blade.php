@@ -23,8 +23,8 @@
                 	@yield('ruta')
                 		{!! csrf_field() !!}
 
-                        <label for="num_cuenta"> N° de cuenta: </label>
-                    	<input id="num_cuenta" type="text" name="num_cuenta" value="" maxlength="9" />
+                        <label for="num_cta"> N° de cuenta: </label>
+                    	<input id="num_cta" type="text" name="num_cta" value="" maxlength="9" />
 
                         <div class="btn-derecha">
                             <button type="submit" class="btn btn-primary waves-effect waves-light">
