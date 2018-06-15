@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class IrregularidadesRE extends Model
+class Paises extends Model
 {
     //
+	protected $connection = 'mysql2';
 
     protected $fillable = [
-        'cat_cve', 'cat_subcve', 'cat_nombre',  'cat_nombre1',
+        'pais_cve', 'pais_nombre',
     ];
-
 
 }

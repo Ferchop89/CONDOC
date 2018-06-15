@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
-use App\Models\{Web_Service, IrregularidadesRE};
+use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises};
 
 class RevEstudiosController extends Controller
 {
@@ -86,8 +86,19 @@ class RevEstudiosController extends Controller
         $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
         $irr_cert = IrregularidadesRE::where('cat_cve', 2)->get();
 
+        $esc_proc = array();
+        foreach ($trayectoria->situaciones as $situacion) {
+          $value = Bach::where('nom', $situacion->plantel_nombre)->first();
+          array_push($esc_proc, $value);
+        }
+
+        $paises = Paises::all();
+
+        //$esc_proc = Bach::where('nom', $trayectoria->situaciones[1]->plantel_nombre)->first();
+
         return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 
-          'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert]);
+          'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'esc_proc' => $esc_proc,
+          'paises' => $paises]);
     }
 
     public function postDatosPersonales(Request $request)
@@ -104,7 +115,7 @@ class RevEstudiosController extends Controller
       //$this->showDatosPersonales();
       //dd("alto");
       //return redirect();
-      return redirect()->route('rev_est/{num_cta}', ['num_cta' => $request->num_cuenta]);
+      return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
     public function verificaDatosPersonales(Request $request)

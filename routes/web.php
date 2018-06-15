@@ -54,13 +54,12 @@ Route::post('/recepcion-expedientes', 'UserController@post_numcta_Validate')->na
 
 //Route::post('/datos_personales', 'RevEstudiosController@postDatosPersonales');
 Route::get('/c-c', function () {
-
     $users = DB::connection("mysql")->table("users")->get();
     dd($users);
-
 });
 
 Route::get('/c-c-2', function () {
-    $sbs = DB::connection("sybase")->table("Catalogotext")->get();
+
+    $sbs = DB::connection("mysql2")->table("paises")->where('pais_nombre', '=', 'AGUACALIENTES')->first();
     dd($sbs);
 });

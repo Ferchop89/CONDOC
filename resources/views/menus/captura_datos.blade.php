@@ -94,7 +94,7 @@
 			@endif
 
 			<p>Carrera: {{$trayectoria->situaciones[1]->carrera_nombre}}</p>
-			<p>Orientación: Orientación</p>
+			<p>Orientación: {{$trayectoria->situaciones[1]->plan_nombre}}</p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -161,27 +161,13 @@
 				</div>
 				<div class="row">
 					<div id="texto" class="col-sm-6">
-						País de nacimiento:
+						Lugar de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
 						<select>
-						    <option value="mexa">México</option>
-						    <option value="can">Canadá</option>
-						    <option value="ame">USA</option>
-						    <option value="rus" selected>Rusa</option>
-						</select>
-					</div>
-				</div>
-				<div class="row">
-					<div id="texto" class="col-sm-6">
-						Estado de nacimiento:
-					</div>
-					<div id="campo" class="col-sm-6">
-						<select>
-						    <option value="mexa">México</option>
-						    <option value="can">CDMX</option>
-						    <option value="ame">Guerrero</option>
-						    <option value="rus" selected>Aguascalientes</option>
+							@foreach($paises as $pais)
+						    	<option value="{{ $pais->pais_cve_ch }}">{{ $pais->pais_nombre }}</option>
+						    @endforeach
 						</select>
 					</div>
 				</div>
@@ -226,8 +212,8 @@
 				<p>
 					<b>Escuelas de procedencia: </b>
 					<scan id="esc_proc">
-						<button class="btn btn-basic">Agregar escuela</button>
-						<button class="btn btn-basic">Quitar escuela</button>
+						<a class="btn btn-default" href="{{ url('/home') }}" target="_self" role="">Agregar escuela</a>
+						<a class="btn btn-default" href="{{ url('/home') }}" target="_self" role="">Quitar escuela</a>
 					</scan>
 				</p>
 				<div id="re_historial">
@@ -252,15 +238,10 @@
 
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			Nivel de escuela de procedencia:
+						      			Tipo escuela de procedencia:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<select>
-						      			    <option value="mexa">Preparatoria</option>
-						      			    <option value="can">Licenciatura</option>
-						      			    <option value="ame">Otro1</option>
-						      			    <option value="rus" selected>Otro2</option>
-						      			</select>
+						      			tipo
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -281,27 +262,13 @@
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			País:
+						      			Entidad:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
 						      			<select>
-						      			    <option value="mexa">México</option>
-						      			    <option value="can">Corea</option>
-						      			    <option value="ame">China</option>
-						      			    <option value="rus" selected>Japón</option>
-						      			</select>
-						      		</div>
-						      	</div>
-						      	<div class="row">
-						      		<div id="texto" class="col-sm-6">
-						      			Estado:
-						      		</div>
-						      		<div id="campo" class="col-sm-6">
-						      			<select>
-						      			    <option value="mexa">Uno</option>
-						      			    <option value="can">Dos</option>
-						      			    <option value="ame">Tres</option>
-						      			    <option value="rus" selected>Cuatro</option>
+						      			    @foreach($paises as $pais)
+						    					<option value="{{ $pais->pais_cve_ch }}">{{ $pais->pais_nombre }}</option>
+						    				@endforeach
 						      			</select>
 						      		</div>
 						      	</div>
@@ -326,9 +293,9 @@
 						      			Periodo:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			De <input type="text" class="datepicker" style="width: 43%"/>
+						      			De <input type="text" class="datepicker" style="width: 41%"/>
 						      			 a 
-						      			<input type="text" class="datepicker" style="width: 43%"/>
+						      			<input type="text" class="datepicker" style="width: 41%"/>
 						      		</div>
 						      	</div>
 						      	<div class="row">
