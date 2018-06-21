@@ -13,17 +13,17 @@
 @section('content')
 	
 	<div>
-
-
 	<form class="form-group" method="POST" action="{{ url('/rev_est/'.$num_cta) }}">
 		{!! csrf_field() !!}
+
+		{{dd($identidad)}}
 
 	<h2 id="titulo">Revisión de Estudios</h2>
 	<div id="instrucciones">Ingresa los datos que se solicitan.
 		<div id="firmar">
 			<div>
 				<label>Firma: </label>
-				<input type="text" name="firma" id="firma" class="form-control" name="firma" value="" required>
+				<input type="text" name="firma" id="firma" class="form-control" name="firma" value="">
 			</div>
 			<div>
 				<button id="guardar" type="submit" class="btn btn-primary">
@@ -84,17 +84,17 @@
 			</div>
 		</div>
 		<div class="item4">
-			<p>Plan de estudios: {{$trayectoria->situaciones[1]->plantel_clave}}</p>
-			@if($trayectoria->situaciones[1]->nivel == "B")
+			<p>Plan de estudios: {{$trayectoria->situaciones[$num_situaciones-1]->plantel_clave}}</p>
+			@if($trayectoria->situaciones[$num_situaciones-1]->nivel == "B")
 				<p>Nivel: BACHILLERATO</p>
-			@elseif($trayectoria->situaciones[1]->nivel == "L")
+			@elseif($trayectoria->situaciones[$num_situaciones-1]->nivel == "L")
 				<p>Nivel: LICENCIATURA</p>
 			@else
 				<p>Nivel: </p>
 			@endif
 
-			<p>Carrera: {{$trayectoria->situaciones[1]->carrera_nombre}}</p>
-			<p>Orientación: {{$trayectoria->situaciones[1]->plan_nombre}}</p>
+			<p>Carrera: {{$trayectoria->situaciones[$num_situaciones-1]->carrera_nombre}}</p>
+			<p>Orientación: {{$trayectoria->situaciones[$num_situaciones-1]->plan_nombre}}</p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -143,11 +143,10 @@
 						Nacionalidad:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<select>
-						    <option value="mexa">Mexicana</option>
-						    <option value="can">Canadiense</option>
-						    <option value="ame">Americana</option>
-						    <option value="rus" selected>Rusa</option>
+						<select id="nacionalidad">
+							<option id="mex" selected>Mexicana</option>
+						    <option id="nat">Naturalizado</option>
+						    <option id="ext">Extranjera</option>
 						</select>
 					</div>
 				</div>
@@ -156,7 +155,7 @@
 						Fecha de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input class="date form-control" type="text" value="{{$identidad->nacimiento}}" name="f_nac" maxlength="10">
+						<input class="date form-control fecha" type="text" value="{{$identidad->nacimiento}}" name="f_nac" maxlength="10">
 					</div>
 				</div>
 				<div class="row">
@@ -164,11 +163,18 @@
 						Lugar de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<select>
-							@foreach($paises as $pais)
-						    	<option value="{{ $pais->pais_cve_ch }}">{{ $pais->pais_nombre }}</option>
-						    @endforeach
-						</select>
+						<div id="paises_mexicano">
+							<select>
+								@foreach($paises as $pais)
+							    	<option value="{{ $pais->pais_cve_ch }}">{{ $pais->pais_nombre }}</option>
+							    @endforeach
+							</select>
+						</div>
+						<div id="paises_otro"> 
+							<select disabled>
+							    <option value=""> </option>
+							</select>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -179,12 +185,7 @@
 						Documento de identidad:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<select>
-						    <option value="mexa">Acta de nacimiento</option>
-						    <option value="can">Otro1</option>
-						    <option value="ame">Otro2</option>
-						    <option value="rus" selected>Otro3</option>
-						</select>
+						ACTA DE NACIMIENTO
 					</div>
 				</div>
 				<div class="row">
@@ -212,14 +213,55 @@
 				<p>
 					<b>Escuelas de procedencia: </b>
 					<scan id="esc_proc">
-						<a class="btn btn-default" href="{{ url('/home') }}" target="_self" role="">Agregar escuela</a>
-						<a class="btn btn-default" href="{{ url('/home') }}" target="_self" role="">Quitar escuela</a>
+						<a class="btn btn-default" id="agregar_esc" role="">Agregar escuela</a>
+						<a class="btn btn-default" id="quitar_esc" role="">Quitar escuela</a>
+
+						<!-- The Modal -->
+						<div id="modal_agregar" class="modal">
+
+						  <!-- Modal content -->
+						  <div class="modal-content">
+						    <span class="close">&times;</span>
+						    <div class="row">
+						    	<div class="col-sm-4">
+						    		Número de cuenta:
+						    	</div>
+						    	<div class="col-sm-8">
+						    		<input id="num" type="text" name="num_accion" value="{{$num_cta}}" maxlength="">
+						    	</div>
+						    </div>
+						    <div class="row">
+						    	<div class="col-sm-4">
+						    		Nivel escuela:
+						    	</div>
+						    	<div class="col-sm-8">
+						    		<select>
+						    			<option value="fem" selected>Femenino</option>
+						    		    <option value="mas">Masculino</option>
+						    		</select>
+						    	</div>
+						    </div>
+						    <div class="row">
+						    	<div class="col-sm-4">
+						    		Plan carrera:
+						    	</div>
+						    	<div class="col-sm-8">
+						    		<select>
+						    			<option value="fem" selected>Femenino</option>
+						    		    <option value="mas">Masculino</option>
+						    		</select>
+						    	</div>
+						    </div>
+						  </div>
+
+						</div>
+
 					</scan>
 				</p>
 				<div id="re_historial">
 
 			      	<ul class="nav nav-tabs">
-			      		@foreach($trayectoria->situaciones as $tyt)
+			      		@foreach($escuelas as $tyt)
 			      			@if($tyt == $trayectoria->situaciones[0])
 			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
 			        		@else	
@@ -229,20 +271,23 @@
 			      	</ul>
 
 			      	<div id="folder" class="tab-content">
-			      		@foreach($trayectoria->situaciones as $tyt)
+			      		@foreach($escuelas as $tyt)
+
 				      		@if($tyt == $trayectoria->situaciones[0])
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade in active">
 	        				@else
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade">
 	        				@endif
 
+	        					{{ count($escuelas)}}
+
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			Tipo escuela de procedencia:
 						      		</div>
-						      		<div id="campo" class="col-sm-6">
-						      			tipo
-						      		</div>
+								    <div id="campo" class="col-sm-6">
+										tipo
+								    </div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
@@ -285,17 +330,25 @@
 						      			Fecha expedición:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input class="date form-control" type="text">
+						      			<input class="date form-control fecha" type="text">
 						      		</div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			Periodo:
-						      		</div>
-						      		<div id="campo" class="col-sm-6">
-						      			De <input type="text" class="datepicker" style="width: 41%"/>
-						      			 a 
-						      			<input type="text" class="datepicker" style="width: 41%"/>
+						      			<select id="seleccion_periodo">
+						      				<option id="periodo" selected>Periodo</option>
+						      			    <option id="mes_anio">Mes-Año</option>
+						      			</select>
+								    </div>
+								    <div id="campo" class="col-sm-6">
+								    	<div id="periodo_show">
+								    		De <input type="text" class="yearpicker" style="width: 41%"/>
+								    		 a 
+								    		<input type="text" class="yearpicker" style="width: 41%"/>
+								    	</div>
+								    	<div id="mes_anio_show"> 
+								    		<input class="date form-control fecha" type="text" value="" name="f_esc" maxlength="10">
+								    	</div>
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -331,4 +384,27 @@
 
 </div>
 
+@endsection
+
+@section('animaciones')
+    {{-- Para el uso del datepicker --}}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{{asset('js/datepicker.js')}}"></script>
+
+    {{-- Para bloquear el campo de entidad de nacimiento en caso de no ser mexicano --}}
+    <script src="{{asset('js/nacionalidad.js')}}"></script>
+
+    {{-- Para escuelas de procedencias --}}
+    <script src="{{asset('js/aescuela_procedencia.js')}}"></script>
+    <script src="{{asset('js/qescuela_procedencia.js')}}"></script>
+
+    {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
+    <script src="{{asset('js/aniomes.js')}}"></script>
+
+    {{-- Para elegir año en opcion de periodo |||| No funcional --}}
+    <script src="{{asset('js/yearpicker.js')}}"></script>
+
+    {{-- Para elegir fecha en español --}}
+    <script src="{{asset('js/datepicker_esp.js')}}"></script>
 @endsection

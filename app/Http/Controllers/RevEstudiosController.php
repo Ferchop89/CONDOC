@@ -79,26 +79,39 @@ class RevEstudiosController extends Controller
         $identidad = new WSController();
         $identidad = $identidad->ws($ws->nombre, $num_cta, $ws->key);
         $ws = Web_Service::find(1);
-        // dd($ws);
         $trayectoria = new WSController();
         $trayectoria = $trayectoria->ws($ws->nombre, $num_cta, $ws->key);
-        //dd($identidad, "hola", $trayectoria);
+
+        //Número de trayectorias del alumno (válidad o inválidas)
+        $num_situaciones = count($trayectoria->situaciones);
+
+        //Irregularidades en acta de nacimiento y certificado
         $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
         $irr_cert = IrregularidadesRE::where('cat_cve', 2)->get();
 
+        //Información sobre escuelas según el plantel (catálogo)
         $esc_proc = array();
         foreach ($trayectoria->situaciones as $situacion) {
           $value = Bach::where('nom', $situacion->plantel_nombre)->first();
           array_push($esc_proc, $value);
         }
 
+        //Escuelas de interés (Finalizadas)
+        $escuelas = array();
+        foreach ($trayectoria->situaciones as $situacion) {
+          if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
+            array_push($escuelas, $situacion);
+          }
+        }
+
+        //Catálogo de países
         $paises = Paises::all();
 
         //$esc_proc = Bach::where('nom', $trayectoria->situaciones[1]->plantel_nombre)->first();
 
         return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 
           'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'esc_proc' => $esc_proc,
-          'paises' => $paises]);
+          'paises' => $paises, 'num_situaciones' => $num_situaciones, 'escuelas' => $escuelas]);
     }
 
     public function postDatosPersonales(Request $request)
@@ -136,6 +149,11 @@ class RevEstudiosController extends Controller
     ]);
 
     return redirect()->route('home');
+    }
+
+    public function showAgregarEsc($num_cta)
+    {
+      return view('/menus/agregar_escuela', ['num_cta' => $num_cta]);
     }
 
 }

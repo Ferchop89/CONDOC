@@ -63,3 +63,8 @@ Route::get('/c-c-2', function () {
     $sbs = DB::connection("mysql2")->table("paises")->where('pais_nombre', '=', 'AGUACALIENTES')->first();
     dd($sbs);
 });
+
+Route::get('/c-c-3', function () {
+    $con = DB::connection("mysql2")->table("firmas")->get();
+    dd($con);
+});
