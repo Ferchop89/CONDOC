@@ -16,9 +16,17 @@ class CreateSolicitudesTable extends Migration
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->increments('id');
             $table->text('cuenta');
-            $table->text('user_id');
-            $table->text('status_id');
+            $table->text('nombre');
+            $table->unsignedInteger('escuela_id');
+            $table->unsignedInteger('tipo');
+            $table->boolean('citatorio')->defaul(false);
+            $table->boolean('pasoACorte')->default(false);
+            $table->boolean('cancelada')->default(false);
+            $table->unsignedInteger('user_id');
             $table->timestamps();
+            // Llaves foraneas
+            $table->index(['pasoACorte']);
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +37,11 @@ class CreateSolicitudesTable extends Migration
      */
     public function down()
     {
+        Schema::table('solicitudes', function(Blueprint $table){
+            $table->dropForeign([
+              'user_id',
+            ]);
+        });
         Schema::dropIfExists('solicitudes');
     }
 }

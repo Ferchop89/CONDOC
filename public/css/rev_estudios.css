@@ -33,6 +33,17 @@ html,body{
   font-size: 17px;
 }
 
+#titulo1{
+  padding-top: 2%;
+  text-align: center;
+}
+
+#instrucciones1{
+  text-align: center;
+  font-size: 17px;
+  padding-bottom: 3%;
+}
+
 .item1 { grid-area: foto; }
 
 .item2 { grid-area: datos; }
@@ -90,9 +101,33 @@ html,body{
   padding-right: 5%;
 }
 
+#pocos {
+  min-width: 250px;
+  width: 70%;
+  padding-top: 1%;
+  padding-bottom: 3%;
+  text-align: center;
+  margin: auto;
+}
+
+#texto1 {
+  padding-left: 30%;
+  text-align: left;
+  font-size: 17px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+}
+
+#campo1 {
+  width: 50%;
+  padding-right: 30%;
+  text-align: left;
+}
+
 #irregularidad {
   padding-right: 5%;
   text-align: right;
+  color: black;
 }
 
 #genero { padding-left: 8%; }
@@ -175,41 +210,15 @@ html,body{
   margin-left: 14%;
 }
 
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+.atras {
+  margin-top: 4%;
+  margin-left: 30%;
 }
 
-/* Modal Content */
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
+.botones {
+  display: flex;
+  justify-content: space-between;
 
-/* The Close Button */
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+  width: 100%;
 }
 /* */

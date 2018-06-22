@@ -29,6 +29,69 @@
 
         </script>
 
+        <style media="screen">
+        .event1 a {
+            background-color: #1a3e11!important;
+            background-image :none !important;
+            color: #ffffff !important;
+        }
+        .event2 a {
+            background-color: #235316 !important;
+            background-image :none !important;
+            color: #ffffff !important;
+        }
+        .event3 a {
+            background-color: #2c681c !important;
+            background-image :none !important;
+            color: #ffffff !important;
+        }
+        .event4 a {
+            background-color: #347c22 !important;
+            background-image :none !important;
+            color: #ffffff !important;
+        }
+        .event5 a {
+            background-color: #3d9127 !important;
+            background-image :none !important;
+            color: #ffffff !important;
+        }
+        .event6 a {
+            background-color: #46a62d !important;
+            background-image :none !important;
+            color: #ffffff !important;
+        }
+        .event7 a {
+            background-color: #4fbb33 !important;
+            background-image :none !important;
+            color: #000000 !important;
+        }
+        .event8 a {
+            background-color: #58d039 !important;
+            background-image :none !important;
+            color: #000000 !important;
+        }
+        .event9 a {
+            background-color: #68d44c !important;
+            background-image :none !important;
+            color: #000000 !important;
+        }
+        .event10 a {
+            background-color: #79d960 !important;
+            background-image :none !important;
+            color: #000000 !important;
+        }
+        .event a {
+            background-color: #000000 !important;
+            background-image :none !important;
+            color: #000000 !important;
+        }
+        .highlight
+        {
+          background: yellow;
+          font-weight: bold;
+        }
+        </style>
+
         <!-- /Sección: Links -->
     </head id="inicio">
     <body id="inicio">
@@ -207,9 +270,15 @@
         <!-- barra de navegación-->
         <script type="text/javascript" src="{{ asset('js/navbar.js') }}"></script>
         <!-- /Sección: Scripts -->
+        {{-- Para el uso del datepicker --}}
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
         <link href="{{asset('css/select2.css')}}" rel="stylesheet" />
         <script src="{{asset('js/select2.js')}}"></script>
         @yield('animaciones')
+
     </body>
 </html>

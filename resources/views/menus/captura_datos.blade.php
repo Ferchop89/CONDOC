@@ -13,10 +13,9 @@
 @section('content')
 	
 	<div>
+
 	<form class="form-group" method="POST" action="{{ url('/rev_est/'.$num_cta) }}">
 		{!! csrf_field() !!}
-
-		{{dd($identidad)}}
 
 	<h2 id="titulo">Revisión de Estudios</h2>
 	<div id="instrucciones">Ingresa los datos que se solicitan.
@@ -213,49 +212,8 @@
 				<p>
 					<b>Escuelas de procedencia: </b>
 					<scan id="esc_proc">
-						<a class="btn btn-default" id="agregar_esc" role="">Agregar escuela</a>
-						<a class="btn btn-default" id="quitar_esc" role="">Quitar escuela</a>
-
-						<!-- The Modal -->
-						<div id="modal_agregar" class="modal">
-
-						  <!-- Modal content -->
-						  <div class="modal-content">
-						    <span class="close">&times;</span>
-						    <div class="row">
-						    	<div class="col-sm-4">
-						    		Número de cuenta:
-						    	</div>
-						    	<div class="col-sm-8">
-						    		<input id="num" type="text" name="num_accion" value="{{$num_cta}}" maxlength="">
-						    	</div>
-						    </div>
-						    <div class="row">
-						    	<div class="col-sm-4">
-						    		Nivel escuela:
-						    	</div>
-						    	<div class="col-sm-8">
-						    		<select>
-						    			<option value="fem" selected>Femenino</option>
-						    		    <option value="mas">Masculino</option>
-						    		</select>
-						    	</div>
-						    </div>
-						    <div class="row">
-						    	<div class="col-sm-4">
-						    		Plan carrera:
-						    	</div>
-						    	<div class="col-sm-8">
-						    		<select>
-						    			<option value="fem" selected>Femenino</option>
-						    		    <option value="mas">Masculino</option>
-						    		</select>
-						    	</div>
-						    </div>
-						  </div>
-
-						</div>
-
+						<a class="btn btn-default" id="agregar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
+						<a class="btn btn-default" id="quitar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
 					</scan>
 				</p>
 				<div id="re_historial">
@@ -272,7 +230,6 @@
 
 			      	<div id="folder" class="tab-content">
 			      		@foreach($escuelas as $tyt)
-
 				      		@if($tyt == $trayectoria->situaciones[0])
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade in active">
 	        				@else
@@ -387,10 +344,6 @@
 @endsection
 
 @section('animaciones')
-    {{-- Para el uso del datepicker --}}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="{{asset('js/datepicker.js')}}"></script>
 
     {{-- Para bloquear el campo de entidad de nacimiento en caso de no ser mexicano --}}
     <script src="{{asset('js/nacionalidad.js')}}"></script>

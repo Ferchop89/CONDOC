@@ -12,6 +12,11 @@ class ProcedenciaSeeder extends Seeder
      */
     public function run()
     {
-      factory(Procedencia::class,20)->create();
+      // El primer registro de procedencia es UNAM
+      $procede =    new Procedencia();
+      $procede->procedencia = 'UNAM';
+      $procede->save();
+      // Registros de procedencia Facultad o Escuela
+      factory(Procedencia::class,19)->create();
     }
 }

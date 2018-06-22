@@ -79,6 +79,7 @@ class RevEstudiosController extends Controller
         $identidad = new WSController();
         $identidad = $identidad->ws($ws->nombre, $num_cta, $ws->key);
         $ws = Web_Service::find(1);
+
         $trayectoria = new WSController();
         $trayectoria = $trayectoria->ws($ws->nombre, $num_cta, $ws->key);
 
@@ -128,6 +129,7 @@ class RevEstudiosController extends Controller
       //$this->showDatosPersonales();
       //dd("alto");
       //return redirect();
+
       return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
@@ -153,7 +155,21 @@ class RevEstudiosController extends Controller
 
     public function showAgregarEsc($num_cta)
     {
-      return view('/menus/agregar_escuela', ['num_cta' => $num_cta]);
+      return view('/menus/agregar_esc', ['num_cta' => $num_cta]);
+    }
+
+    public function validarInformacion(Request $request)
+    {
+    
+      $request->validate([
+          'num_cta' => 'required|numeric|digits:9'
+          ],[
+           'num_cta.required' => 'El campo es obligatorio',
+           'num_cta.numeric' => 'El campo debe contener solo números',
+           'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
+      ]);
+
+      return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
 }

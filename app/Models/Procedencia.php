@@ -10,4 +10,20 @@ class Procedencia extends Model
       'procedencia',
     ];
 
+    public function solicitudes(){
+      // recupara las solicitudes para un tipo de procedencia
+      return $this->hasManyThrough(
+        'App\Models\Solicitud',
+        'App\Models\User',
+        'procedencia_id',
+        'user_id',
+        'id',
+        'id'
+      );
+    }
+    public function users(){
+      //  Usuarios que pertenecen a una Procedencia...
+          return $this->hasMany('App\Models\User');
+    }
+
 }

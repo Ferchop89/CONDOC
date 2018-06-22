@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
           'menus',
           'solicitudes',
           'irregularidades_r_es',
+          'cortes',
+          'agunam'
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
         $this->call(Web_Service_Seeder::class);
@@ -29,6 +31,8 @@ class DatabaseSeeder extends Seeder
         $this->call(MenuSeeder::class);
         $this->call(SolicitudSeeder::class);
         $this->call(IrregularidadesRESeeder::class);
+        $this->call(CorteSeeder::class);
+        $this->call(AgunamSeeder::class);
     }
 
     public function truncateTables(array $tables){
@@ -38,5 +42,5 @@ class DatabaseSeeder extends Seeder
       }
       DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     }
-
+    
 }

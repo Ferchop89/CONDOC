@@ -27,9 +27,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class)->withTimestamps();
       }
 
-      public function procedencias()
+      public function procede()
       {
-          return $this-hasMany('Procedencias');
+        return $this->hasOne('App\Models\Procedencia','id','procedencia_id');
       }
 
     public function hasAnyRole($roles)

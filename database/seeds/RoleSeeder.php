@@ -20,5 +20,6 @@ class RoleSeeder extends Seeder
          $JSecc =    new Role();$JSecc->nombre = 'JSecc';$JSecc->descripcion = 'DCerConDoc';$JSecc->save();
          $JArea =    new Role();$JArea->nombre = 'JArea';$JArea->descripcion = 'DCerConDoc';$JArea->save();
          $Ofnista =  new Role();$Ofnista->nombre = 'Ofisi';$Ofnista->descripcion = 'DCerConDoc';$Ofnista->save();
-         $Invitado = new Role();$Invitado->nombre = 'Invit';$Invitado->descripcion = 'Invitado';$Invitado->save();     }
+         $Invitado = new Role();$Invitado->nombre = 'Invit';$Invitado->descripcion = 'Invitado';$Invitado->save();
+       }
 }

@@ -18,33 +18,32 @@ class UserSeeder extends Seeder
           $user->name = 'Administrador';
           $user->username = 'Administrador';
           $user->email = 'Admon@correo.com';
-          $user->procedencia_id = 1;
+          $user->procedencia_id = '1';
           $user->password = bcrypt('111111');
           $user->is_active = true;
           $user->save();
-          // $role=Role::where('nombre',['Admin'])->first();
           $role=Role::where('nombre','Admin')->first();
           $user->roles()->attach($role);
 
-          // Agregamos 10 usuarios fake
-          factory(User::class,50)->create([
-              'password' => bcrypt('111111'),
-          ]);
-          // Les agregamos roles de forma aleatoria
+          // Agregamos 49 usuarios fake
+          factory(User::class,49)->create();
+          // Le damos mas peso al role de FacEsc
+          $roles_w = [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,4,5,6,7,8,9];
+          // Les agregamos hasta cinco roles de forma aleatoria
           for ($i=0; $i < 5 ; $i++) {
             $users = User::all();
             foreach ($users as $user) {
-              $RandRole = rand(1,9);
+              $RandRole = $roles_w[rand(0,count($roles_w)-1)];
               if ($user->roles()->where('role_id',$RandRole)->count()===0 && rand(0,1) ){
                 $user->roles()->attach($RandRole);
               }
             }
           }
-          // Actualizamos procedencia_id usuarios que no tengan FacEsc
+          //Actualizamos procedencia_id usuarios que no tengan FacEsc
           $users = User::all();
           foreach ($users as $user) {
             if (!$user->hasRole('FacEsc')) {
-              $user->procedencia_id = null;
+              $user->procedencia_id = '1'; // UNAM
               $user->save();
             }
           }

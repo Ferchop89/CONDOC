@@ -12,5 +12,4 @@ class IrregularidadesRE extends Model
         'cat_cve', 'cat_subcve', 'cat_nombre',  'cat_nombre1',
     ];
 
-
 }
