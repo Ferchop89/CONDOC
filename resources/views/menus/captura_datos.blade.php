@@ -18,17 +18,17 @@
 		{!! csrf_field() !!}
 
 	<h2 id="titulo">Revisión de Estudios</h2>
-	<div id="instrucciones">Ingresa los datos que se solicitan.
-		<div id="firmar">
+	<div class="row">
+		<div id="instrucciones" class="col-sm-6">Ingresa los datos que se solicitan.</div>
+		<div id="firmar" class="col-sm-6">
 			<div>
 				<label>Firma: </label>
 				<input type="text" name="firma" id="firma" class="form-control" name="firma" value="">
 			</div>
-			<div>
-				<button id="guardar" type="submit" class="btn btn-primary">
-				   	Firmar
-				</button>
-				<a id="volver" class="btn btn-danger" href="{{ url('/home') }}" role="button">Salir</a>
+			<div class="botones">
+				<button class="btn btn-default" type="submit">Guardar</button>
+				<a class="btn btn-primary" href="{{ url('/home') }}" role="">Firmar</a>
+				<a class="btn btn-danger" href="{{ url('/home') }}" role="">Salir</a>
 			</div>
 		</div>
 	</div>
@@ -74,7 +74,25 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-10">
-					Jefe de departamento:
+					Jefe de departamento Rev:
+					<p>NombreD ApellidoD ApellidoDosD</p> 
+				</div>
+				<div class="col-sm-2">
+					<span class="glyphicon glyphicon-time">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-10">
+					Jefe de departamento Tit:
+					<p>NombreD ApellidoD ApellidoDosD</p> 
+				</div>
+				<div class="col-sm-2">
+					<span class="glyphicon glyphicon-time">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-10">
+					Dirección:
 					<p>NombreD ApellidoD ApellidoDosD</p> 
 				</div>
 				<div class="col-sm-2">
@@ -83,7 +101,7 @@
 			</div>
 		</div>
 		<div class="item4">
-			<p>Plan de estudios: {{$trayectoria->situaciones[$num_situaciones-1]->plantel_clave}}</p>
+			<p class="espe">Plan de estudios: {{$trayectoria->situaciones[$num_situaciones-1]->plantel_clave}}</p>
 			@if($trayectoria->situaciones[$num_situaciones-1]->nivel == "B")
 				<p>Nivel: BACHILLERATO</p>
 			@elseif($trayectoria->situaciones[$num_situaciones-1]->nivel == "L")
@@ -236,7 +254,7 @@
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade">
 	        				@endif
 
-	        					{{ count($escuelas)}}
+	        					{{-- {{ count($escuelas)}} --}}
 
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
@@ -294,7 +312,7 @@
 						      		<div id="texto" class="col-sm-6">
 						      			<select id="seleccion_periodo">
 						      				<option id="periodo" selected>Periodo</option>
-						      			    <option id="mes_anio">Mes-Año</option>
+						      			    <option id="mes_anio">Fecha</option>
 						      			</select>
 								    </div>
 								    <div id="campo" class="col-sm-6">
@@ -349,11 +367,25 @@
     <script src="{{asset('js/nacionalidad.js')}}"></script>
 
     {{-- Para escuelas de procedencias --}}
-    <script src="{{asset('js/aescuela_procedencia.js')}}"></script>
     <script src="{{asset('js/qescuela_procedencia.js')}}"></script>
 
     {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
-    <script src="{{asset('js/aniomes.js')}}"></script>
+    {{-- <script src="{{asset('js/aniomes.js')}}"></script> --}}
+
+    <script>
+    	var escuelas = <?php echo json_encode($escuelas); ?>;
+    	escuelas.forEach($(function() {
+    	  $("#seleccion_periodo").change(function() {
+    	    if ($("#periodo").is(":selected")) {
+    	      $("#periodo_show").show();
+    	      $("#mes_anio_show").hide();
+    	    } else {
+    	      $("#periodo_show").hide();
+    	      $("#mes_anio_show").show();
+    	    }
+    	  }).trigger('change');
+    	}));
+    </script>
 
     {{-- Para elegir año en opcion de periodo |||| No funcional --}}
     <script src="{{asset('js/yearpicker.js')}}"></script>

@@ -1,17 +1,11 @@
-var modal = document.getElementById('modal_agregar');
-var btn = document.getElementById("agregar_esc");
-var span = document.getElementsByClassName("close")[0];
-
-btn.onclick = function() {
-    modal.style.display = "block";
-}
-
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
+$(function() {
+  $("#seleccion_nivel").change(function() {
+    if ($("#L").is(":selected")) {
+      $("#nivel_mas").show();
+      $("#niveles_otro").hide();
+    } else {
+      $("#nivel_mas").hide();
+      $("#niveles_otro").show();
     }
-}
+  }).trigger('change');
+});

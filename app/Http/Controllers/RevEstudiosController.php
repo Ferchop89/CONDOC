@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
-use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises};
+use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises, Niveles, User, Trayectoria};
 
 class RevEstudiosController extends Controller
 {
@@ -71,7 +71,7 @@ class RevEstudiosController extends Controller
         return view('/menus/datos_personales');
     }
     
-    public function showDatosPersonales($num_cta)
+    public function showDatosPersonales(User $user, $num_cta)
     {
         // dd(Controller);
         //$num_cta=request()->input('num_cta');
@@ -108,9 +108,11 @@ class RevEstudiosController extends Controller
         //Catálogo de países
         $paises = Paises::all();
 
+        //Roles (Rol) que tiene el usuario actual en el sistema
+
         //$esc_proc = Bach::where('nom', $trayectoria->situaciones[1]->plantel_nombre)->first();
 
-        return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 
+        return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 'user' => $user,
           'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'esc_proc' => $esc_proc,
           'paises' => $paises, 'num_situaciones' => $num_situaciones, 'escuelas' => $escuelas]);
     }
@@ -155,7 +157,36 @@ class RevEstudiosController extends Controller
 
     public function showAgregarEsc($num_cta)
     {
-      return view('/menus/agregar_esc', ['num_cta' => $num_cta]);
+      $ws = Web_Service::find(1);
+      $trayectoria = new WSController();
+      $trayectoria = $trayectoria->ws($ws->nombre, $num_cta, $ws->key);
+
+      //Niveles de interés dado el número de cuenta
+      $niveles = array();
+      foreach ($trayectoria->situaciones as $situacion) {
+        if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
+          $value = $situacion->nivel;
+          array_push($niveles, $value);
+        }
+      }
+
+      //Nombres completos de cada nivel
+      $nombres_nivel = array();
+      foreach($niveles as $nvl){
+        $value = Niveles::where('id_nivel', $nvl)->first();
+        array_push($nombres_nivel, $value);
+      }
+
+      //Información de escuelas de interés (Finalizadas)
+      $escuelas = array();
+      foreach ($trayectoria->situaciones as $situacion) {
+        if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
+          array_push($escuelas, $situacion);
+        }
+      }
+      
+      return view('/menus/agregar_esc', ['num_cta' => $num_cta, 'trayectoria' => $trayectoria, 'nombres_nivel' => $nombres_nivel,
+                  'escuelas' => $escuelas]);
     }
 
     public function validarInformacion(Request $request)
@@ -169,7 +200,32 @@ class RevEstudiosController extends Controller
            'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
       ]);
 
-      return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
+      $cuenta = $request->input('cuenta');
+      $nivel_escuela = $request->input('nivel_escuela');
+      $plan_estudios = $request->input('plan');
+
+      $consulta = Trayectoria::insertGetId(
+        array('num_cta' => $cuenta, 'nivel' => $nivel_escuela, 'nombre_planestudios' => $plan_estudios)
+      );
+
+      dd($consulta);
+
+      return redirect()->route('agregar_esc', ['num_cta' => $request->num_cta]);
     }
+
+    public function prueba($num_cta){
+      $ws = Web_Service::find(2);
+      $identidad = new WSController();
+      $identidad = $identidad->ws($ws->nombre, $num_cta, $ws->key);
+      $ws = Web_Service::find(1);
+
+      $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
+      $irr_cert = IrregularidadesRE::where('cat_cve', 2)->get();
+
+      $paises = Paises::all();
+
+      return view('/menus/prueba', ['num_cta'=> $num_cta, 'identidad' => $identidad, 
+        'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'paises' => $paises]); 
+    } 
 
 }

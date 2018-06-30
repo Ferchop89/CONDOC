@@ -62,6 +62,8 @@ Route::post('/agregar_esc/{num_cta}', 'RevEstudiosController@validarInformacion'
 //Route::get('/datos_personales', 'RevEstudiosController@showSolicitudNC');
 
 //Route::post('/datos_personales', 'RevEstudiosController@postDatosPersonales');
+
+// Rutas de prueba para conexión a segunda BD local
 Route::get('/c-c', function () {
     $users = DB::connection("mysql")->table("users")->get();
     dd($users);
@@ -74,9 +76,13 @@ Route::get('/c-c-2', function () {
 });
 
 Route::get('/c-c-3', function () {
-    $con = DB::connection("mysql2")->table("firmas")->get();
+    $con = DB::connection("mysql2")->table("trayectorias")->get();
     dd($con);
 });
+
+Route::get('/prueba/{num_cta}', 'RevEstudiosController@prueba')
+  ->where('num_cta','[0-9]+')
+  ->name('prueba');
 
 // rutas de listas y cortes.
 

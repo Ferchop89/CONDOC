@@ -10,7 +10,15 @@ class Firmas extends Model
 	protected $connection = 'mysql2';
 
     protected $fillable = [
-		'firm_cve', 'firm_nombre', 'firm_cargo', 'firm_cve_capt', 'firm_nivel', 'firm_ofic', 'firm_obs', 'firm_firma', 'firm_cve1',
+		'firm_cve', 
+		'firm_nombre', 
+		'firm_cargo', 
+		'firm_cve_capt', 
+		'firm_nivel', 
+		'firm_ofic', 
+		'firm_obs', 
+		'firm_firma', 
+		'firm_cve1',
     ];
 
 }

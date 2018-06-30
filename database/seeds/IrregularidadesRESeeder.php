@@ -22,7 +22,7 @@ class IrregularidadesRESeeder extends Seeder
         $table = new IRE();
         $table->cat_cve = 1;
         $table->cat_subcve = 2;
-        $table->cat_nombre = 'FALTA ACTA DE NACIMIENTO';
+        $table->cat_nombre = 'FALTA ACTA DE NACIMIENTO RECIENTE';
         $table->cat_nombre1 = '';
         $table->save();
 
@@ -56,20 +56,6 @@ class IrregularidadesRESeeder extends Seeder
 
         $table = new IRE();
         $table->cat_cve = 1;
-        $table->cat_subcve = 7;
-        $table->cat_nombre = 'FALTAN DATOS DEL PADRE';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 1;
-        $table->cat_subcve = 8;
-        $table->cat_nombre = 'FALTA EL SEGUNDO APELLIDO DEL LA MADRE';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 1;
         $table->cat_subcve = 9;
         $table->cat_nombre = 'FALTA OFICIO DE REGISTRO EXTEMPORANEO';
         $table->cat_nombre1 = '';
@@ -86,13 +72,6 @@ class IrregularidadesRESeeder extends Seeder
         $table->cat_cve = 1;
         $table->cat_subcve = 11;
         $table->cat_nombre = 'FALTA LEGALIZ ACT NAC ANTE EMBAJ DE PAIS';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 1;
-        $table->cat_subcve = 12;
-        $table->cat_nombre = 'REGISTRADO EN EXTRANJERO PADRES MEXICANO';
         $table->cat_nombre1 = '';
         $table->save();
 
@@ -128,20 +107,6 @@ class IrregularidadesRESeeder extends Seeder
         $table->cat_cve = 1;
         $table->cat_subcve = 17;
         $table->cat_nombre = 'ENMENDADURA EN FECHA DE NACIMIENTO';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 1;
-        $table->cat_subcve = 18;
-        $table->cat_nombre = 'ENMENDADURA EN APELLIDO DEL PADRE';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 1;
-        $table->cat_subcve = 19;
-        $table->cat_nombre = 'ENMENDADURA EN APELLIDO DE LA MADRE';
         $table->cat_nombre1 = '';
         $table->save();
 
@@ -184,13 +149,6 @@ class IrregularidadesRESeeder extends Seeder
         $table->cat_cve = 1;
         $table->cat_subcve = 26;
         $table->cat_nombre = 'FALTA COPIA DIRECTA DEL LIBRO';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 1;
-        $table->cat_subcve = 27;
-        $table->cat_nombre = 'ORIGINAL Y 2 COPIAS DEL ACTA NACIMIENTO';
         $table->cat_nombre1 = '';
         $table->save();
 
@@ -240,20 +198,6 @@ class IrregularidadesRESeeder extends Seeder
         $table->cat_cve = 2;
         $table->cat_subcve = 4;
         $table->cat_nombre = 'CLAVE ESCUELA INCOMPLETA';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 2;
-        $table->cat_subcve = 5;
-        $table->cat_nombre = 'CLAVE EDUCACION TECNOLOGICA INCOMPLETA';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 2;
-        $table->cat_subcve = 6;
-        $table->cat_nombre = 'INCOMPLETA Y SIN CLAVE DE LENGUA EXTRANG';
         $table->cat_nombre1 = '';
         $table->save();
 
@@ -329,29 +273,8 @@ class IrregularidadesRESeeder extends Seeder
 
         $table = new IRE();
         $table->cat_cve = 2;
-        $table->cat_subcve = 17;
-        $table->cat_nombre = 'GRADOS CON EQUIVALENCIA O REVALIDADOS';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 2;
-        $table->cat_subcve = 18;
-        $table->cat_nombre = 'DE ESCUELAS INCORPORADAS A LA UNAM';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 2;
         $table->cat_subcve = 19;
         $table->cat_nombre = 'CERTIFICADO ENMICADO';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 2;
-        $table->cat_subcve = 20;
-        $table->cat_nombre = 'NO VALIDADO POR DICTAMENES';
         $table->cat_nombre1 = '';
         $table->save();
 
@@ -400,56 +323,7 @@ class IrregularidadesRESeeder extends Seeder
         $table = new IRE();
         $table->cat_cve = 3;
         $table->cat_subcve = 2;
-        $table->cat_nombre = 'SIN 100% CREDITOS';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 3;
-        $table->cat_nombre = 'ASIG POSTERIOR';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 4;
-        $table->cat_nombre = 'ART. 19';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 5;
-        $table->cat_nombre = 'SIN REV O CON';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 6;
-        $table->cat_nombre = 'NO ESTA CERRADA';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 7;
-        $table->cat_nombre = 'ERROR EN NOMBRE';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 8;
-        $table->cat_nombre = 'ERROR EN NO. EXPEDIENTE';
-        $table->cat_nombre1 = '';
-        $table->save();
-
-        $table = new IRE();
-        $table->cat_cve = 3;
-        $table->cat_subcve = 9;
-        $table->cat_nombre = 'ERROR EN CLAVES';
+        $table->cat_nombre = 'FALTA COPIA CARTA NATURALIZ ANTE NOTARIO';
         $table->cat_nombre1 = '';
         $table->save();
     }

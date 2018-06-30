@@ -1,9 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<<<<<<< HEAD
-<t1>Informe de Solicitudes de Revisión</t1>
-  <p>Fecha: <input type="text" id="datepicker"></p>
-=======
 
 @if ($solW_cta>0)
   <div class="container">
@@ -63,5 +59,5 @@
 
 @section('animaciones')
     <script type="text/JavaScript" src="{{ asset('js/block.js') }}" ></script>
->>>>>>> origin/REX
+
 @endsection
