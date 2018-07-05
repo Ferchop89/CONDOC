@@ -112,7 +112,7 @@ class Dashboard extends Controller
         if($data['password'] != null){
             $data['password'] = bcrypt($data['password']);
         } else {
-              unset($data['password']);
+            unset($data['password']);
         }
 
         // dd($data);

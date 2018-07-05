@@ -9,10 +9,12 @@ class Registro_RE extends Model
     //
 	protected $connection = 'mysql2';
 
+	//protected $dates = ['expired_at'];
+
     protected $fillable = [
 		'id_registro_re', 
-		'ofici_nombre', 
-		'ofici_fecha', 
+		'actualizacion_nombre', 
+		'actualizacion_fecha', 
 		'jsec_nombre', 
 		'jsec_fecha', 
 		'jarea_nombre', 

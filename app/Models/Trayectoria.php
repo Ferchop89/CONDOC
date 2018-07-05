@@ -15,7 +15,9 @@ class Trayectoria extends Model
 		'generacion', 
 		'num_planestudios', 
 		'nombre_planestudios', 
-		'num_cta'
+		'num_cta',
+		'avance_creditos',
+		'cumple_requisitos',
     ];
 
 }

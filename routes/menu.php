@@ -58,23 +58,23 @@ Route::get('/datos_personales',[
   'uses'=> 'RevEstudiosController@showSolicitudNC',
   'as'=> 'datos_personales',
   'middleware' => 'roles',
-  'roles' => ['Ofisi']
+  'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud']
   ]);
 Route::post('/datos_personales',[
   'uses'=> 'RevEstudiosController@postDatosPersonales',
   'as'=> 'datos_personales',
   'middleware' => 'roles',
-  'roles' => ['Ofisi']
+  'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud']
   ]);
 Route::get('/rev_est/{num_cta}',[
   'uses'=> 'RevEstudiosController@showDatosPersonales',
   'middleware' => 'roles',
-  'roles' => ['Ofisi']
+  'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud']
   ])->where('num_cta','[0-9]+')
     ->name('rev_est');
 Route::post('/rev_est/{num_cta}',[
   'uses'=> 'RevEstudiosController@verificaDatosPersonales',
   'middleware' => 'roles',
-  'roles' => ['Ofisi']
+  'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud']
   ])->where('num_cta','[0-9]+')
     ->name('rev_est');

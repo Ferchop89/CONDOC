@@ -1,6 +1,6 @@
 $(function() {
   $("#nacionalidad").change(function() {
-    if ($("#mex").is(":selected")) {
+    if ($("#1").is(":selected")) {
       $("#paises_mexicano").show();
       $("#paises_otro").hide();
     } else {

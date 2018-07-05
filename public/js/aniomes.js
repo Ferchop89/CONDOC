@@ -1,4 +1,5 @@
-$(function() {
+var escuelas = <?php echo json_encode($escuelas); ?>;
+escuelas.forEach($(function() {
   $("#seleccion_periodo").change(function() {
     if ($("#periodo").is(":selected")) {
       $("#periodo_show").show();
@@ -8,4 +9,4 @@ $(function() {
       $("#mes_anio_show").show();
     }
   }).trigger('change');
-});
+}));

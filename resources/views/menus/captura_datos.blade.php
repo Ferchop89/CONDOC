@@ -4,7 +4,7 @@
 @section('location')
 <div style="padding-top: 1%">
 	<p id="navegacion">
-		<a href="{{ url('/home') }}"><span class="glyphicon glyphicon-home"></span>
+		<a href="{{ url('/home') }}"><span class="fa fa-home"></span>
 		<span> </span> Licenciatura </a> >> 
 		<a href="{{ url('/datos_personales') }}"> Revisión de Estudios </a> </p>
 </div>
@@ -21,13 +21,9 @@
 	<div class="row">
 		<div id="instrucciones" class="col-sm-6">Ingresa los datos que se solicitan.</div>
 		<div id="firmar" class="col-sm-6">
-			<div>
-				<label>Firma: </label>
-				<input type="text" name="firma" id="firma" class="form-control" name="firma" value="">
-			</div>
 			<div class="botones">
-				<button class="btn btn-default" type="submit">Guardar</button>
-				<a class="btn btn-primary" href="{{ url('/home') }}" role="">Firmar</a>
+				<a class="btn btn-default" href="{{ url('/datos_personales') }}" role="">Atrás</a>
+				<button type="submit" class="btn btn-primary">Guardar</button>
 				<a class="btn btn-danger" href="{{ url('/home') }}" role="">Salir</a>
 			</div>
 		</div>
@@ -38,80 +34,138 @@
 			<img src="{{ asset('images/foto.png') }}" class="center">
 		</div>
 		<div class="item2">
-			<p>{{$num_cta}}</p>
-			<p>{{$identidad->nombres}} {{$identidad->apellido1}} {{$identidad->apellido2}}</p>
-			<p>Exp. Posgrado: </p>
-			<p>Exp. Sistema Incorporado: </p>
+			<p name="num_cta">{{$num_cta}}</p>
+			<p><span name="nombre">{{$identidad->nombres}}</span> <span name="apellido1">{{$identidad->apellido1}}</span> <span name="apellido2">{{$identidad->apellido2}}</span></p>
+			<p>Exp. Posgrado: <span name="exp_pos"></span></p>
+			<p>Exp. Sistema Incorporado: <span name="exp_inc"></span></p>
 		</div>
 		<div class="item3">
 			<div class="row">
-				<p><b>Autorizaciones: </b></p>
-				<div class="col-sm-10">
-					Oficinista:
-					<p>NombreA ApellidoA ApellidoDosA <span>dd-mm-aaaa</span></p>
+				<div class="col-sm-9">
+					<b>Autorizaciones: </b>
 				</div>
-				<div class="col-sm-2">
-					<span class="glyphicon glyphicon-check">
+				<div class="col-sm-3">
+					<b>Firmas: </b>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-10">
-					Jefe de sección: 
-					<p>NombreB ApellidoB ApellidoDosB <span>dd-mm-aaaa</span></p>
+				<div class="col-sm-9">
+					Jefe de sección:
+					@if($firmas == null || $firmas->jsec_nombre == null)
+						<p><i>En espera...</i></p>
+					@else
+						<p><i><span name="jsec_nombre">{{ $firmas->jsec_nombre }}</span> <span name="jsec_fecha">{{ date('d-m-Y', strtotime($firmas->jsec_fecha)) }}</span></i></p>
+					@endif
 				</div>
-				<div class="col-sm-2">
-					<span class="glyphicon glyphicon-check">
+				<div class="col-sm-3">
+					@if($firmas == null || $firmas->jsec_nombre == null)
+						@if(in_array("JSecc", $roles_us))
+							<input type="password" name="jsec_firma" style="width: 70%">
+						@else
+							<input type="password" name="jsec_firma" style="width: 70%" disabled>
+						@endif
+					@else
+						<span class="fa fa-check-square-o"/>
+					@endif
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-9">
 					Jefe de área:
-					<p>NombreC ApellidoC ApellidoDosC <span>dd-mm-aaaa</span></p> 
+					@if($firmas == null || $firmas->jarea_nombre == null)
+						<p><i>En espera...</i></p>
+					@else
+						<p><i><span name="jarea_nombre">{{ $firmas->jarea_nombre }}</span> <span name="jarea_fecha">{{ date('d-m-Y', strtotime($firmas->jarea_fecha)) }}</span></i></p>
+					@endif
 				</div>
-				<div class="col-sm-2">
-					<span class="glyphicon glyphicon-check">
+				<div class="col-sm-3">
+					@if($firmas == null || $firmas->jarea_nombre == null)
+						@if(in_array("JArea", $roles_us))
+							<input type="password" name="jarea_firma" style="width: 70%">
+						@else
+							<input type="password" name="jarea_firma" style="width: 70%" disabled>
+						@endif
+					@else
+						<span class="fa fa-check-square-o"/>
+					@endif
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-9">
 					Jefe de departamento Rev:
-					<p>NombreD ApellidoD ApellidoDosD</p> 
+					@if($firmas == null || $firmas->jdepre_nombre == null)
+						<p><i>En espera...</i></p>
+					@else
+						<p><i><span name="jdepre_nombre">{{ $firmas->jdepre_nombre }}</span> <span name="jdepre_fecha">{{ date('d-m-Y', strtotime($firmas->jdepre_fecha)) }}</span></i></p>
+					@endif 
 				</div>
-				<div class="col-sm-2">
-					<span class="glyphicon glyphicon-time">
+				<div class="col-sm-3">
+					@if($firmas == null || $firmas->jdepre_nombre == null)
+						@if(in_array("Jud", $roles_us))
+							<input type="password" name="jdepre_firma" style="width: 70%">
+						@else
+							<input type="password" name="jdepre_firma" style="width: 70%" disabled>
+						@endif
+					@else
+						<span class="fa fa-check-square-o"/>
+					@endif
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-9">
 					Jefe de departamento Tit:
-					<p>NombreD ApellidoD ApellidoDosD</p> 
+					@if($firmas == null || $firmas->jdeptit_nombre == null)
+						<p><i>En espera...</i></p>
+					@else
+						<p><i><span name="jdeptit_nombre">{{ $firmas->jdeptit_nombre }}</span> <span name="jdeptit_fecha">{{ date('d-m-Y', strtotime($firmas->jdeptit_fecha)) }}</span></i></p>
+					@endif 
 				</div>
-				<div class="col-sm-2">
-					<span class="glyphicon glyphicon-time">
+				<div class="col-sm-3">
+					@if($firmas == null || $firmas->jdeptit_nombre == null)
+						@if(in_array("JTit", $roles_us))
+							<input type="password" name="jdeptit_firma" style="width: 70%">
+						@else
+							<input type="password" name="jdeptit_firma" style="width: 70%" disabled>
+						@endif
+					@else
+						<span class="fa fa-check-square-o"/>
+					@endif
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-sm-9">
 					Dirección:
-					<p>NombreD ApellidoD ApellidoDosD</p> 
+					@if($firmas == null || $firmas->direccion_nombre == null)
+						<p><i>En espera...</i></p>
+					@else
+						<p><i><span name="direccion_nombre">{{ $firmas->direccion_nombre }}</span> <span name="direccion_fecha">{{ date('d-m-Y', strtotime($firmas->direccion_fecha)) }}</span></i></p>
+					@endif
 				</div>
-				<div class="col-sm-2">
-					<span class="glyphicon glyphicon-time">
+				<div class="col-sm-3">
+					@if($firmas == null || $firmas->direccion_nombre == null)
+						@if(in_array("Direccion", $roles_us))
+							<input type="password" name="jdeptit_firma" style="width: 70%">
+						@else
+							<input type="password" name="jdeptit_firma" style="width: 70%" disabled>
+						@endif
+					@else
+						<span class="fa fa-check-square-o"/>
+					@endif
 				</div>
 			</div>
 		</div>
 		<div class="item4">
-			<p class="espe">Plan de estudios: {{$trayectoria->situaciones[$num_situaciones-1]->plantel_clave}}</p>
+			<p class="espe">Plan de estudios: <span name="plan_est">{{$trayectoria->situaciones[$num_situaciones-1]->plantel_clave}}</span></p>
 			@if($trayectoria->situaciones[$num_situaciones-1]->nivel == "B")
-				<p>Nivel: BACHILLERATO</p>
+				<p>Nivel: <span name="nivel">BACHILLERATO</span></p>
 			@elseif($trayectoria->situaciones[$num_situaciones-1]->nivel == "L")
-				<p>Nivel: LICENCIATURA</p>
+				<p>Nivel: <span name="nivel">LICENCIATURA</span></p>
 			@else
-				<p>Nivel: </p>
+				<p>Nivel: <span name="nivel"> </span></p>
 			@endif
 
-			<p>Carrera: {{$trayectoria->situaciones[$num_situaciones-1]->carrera_nombre}}</p>
-			<p>Orientación: {{$trayectoria->situaciones[$num_situaciones-1]->plan_nombre}}</p>
+			<p>Carrera: <span name="carrera_nombre">{{$trayectoria->situaciones[$num_situaciones-1]->carrera_nombre}}</span></p>
+			<p>Orientación: <span name="orientacion">{{$trayectoria->situaciones[$num_situaciones-1]->plan_nombre}}</span></p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -142,17 +196,15 @@
 						Sexo:
 					</div>
 					<div id="campo" class="col-sm-6">
-						@if($identidad->sexo == "FEMENINO")
-							<select>
-								<option value="fem" selected>Femenino</option>
-							    <option value="mas">Masculino</option>
-							</select>
-						@else
-							<select>
-								<option value="mas" selected>Masculino</option>
-							    <option value="fem">Femenino</option>
-							</select>
-						@endif
+						<select name="sexo">
+							@if($identidad->sexo == "FEMENINO")
+								<option id="FEMENINO" value="FEMENINO" selected>FEMENINO</option>
+							    <option id="MASCULINO" value="MASCULINO">MASCULINO</option>
+							@else
+								<option id="MASCULINO" value="MASCULINO" selected>MASCULINO</option>
+							    <option id="FEMENINO" value="FEMENINO">FEMENINO</option>
+							@endif
+						</select>
 					</div>
 				</div>
 				<div class="row">
@@ -160,10 +212,10 @@
 						Nacionalidad:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<select id="nacionalidad">
-							<option id="mex" selected>Mexicana</option>
-						    <option id="nat">Naturalizado</option>
-						    <option id="ext">Extranjera</option>
+						<select id="nacionalidad" name="nacionalidad">
+							@foreach($nacionalidades as $nacion)
+								<option id="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+							@endforeach
 						</select>
 					</div>
 				</div>
@@ -172,7 +224,7 @@
 						Fecha de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input class="date form-control fecha" type="text" value="{{$identidad->nacimiento}}" name="f_nac" maxlength="10">
+						<input class="date form-control fecha" type="text" value="{{$identidad->nacimiento}}" name="fecha_nac" maxlength="10">
 					</div>
 				</div>
 				<div class="row">
@@ -181,15 +233,15 @@
 					</div>
 					<div id="campo" class="col-sm-6">
 						<div id="paises_mexicano">
-							<select>
+							<select name="lugar_nac">
 								@foreach($paises as $pais)
-							    	<option value="{{ $pais->pais_cve_ch }}">{{ $pais->pais_nombre }}</option>
+							    	<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
 							    @endforeach
 							</select>
 						</div>
 						<div id="paises_otro"> 
-							<select disabled>
-							    <option value=""> </option>
+							<select name="lugar_nac" disabled>
+							    <option> </option>
 							</select>
 						</div>
 					</div>
@@ -202,7 +254,7 @@
 						Documento de identidad:
 					</div>
 					<div id="campo" class="col-sm-6">
-						ACTA DE NACIMIENTO
+						<span name="documento_identidad">ACTA DE NACIMIENTO</span>
 					</div>
 				</div>
 				<div class="row">
@@ -210,7 +262,7 @@
 						Número de folio:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input id="num_folio" type="text" class="form-control" name="num_folio" value="" maxlength="" >
+						<input id="folio_doc" type="text" class="form-control" name="folio_doc">
 					</div>
 				</div>
 				<div class="row">
@@ -218,7 +270,7 @@
 						Irregularidad:
 					</div>
 					<div id="irregularidad" class="col-sm-9">
-						<select>
+						<select name="irregularidad_doc">
 							@foreach($irr_acta as $i_actanac)
 						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
 						    @endforeach
@@ -260,7 +312,7 @@
 						      		<div id="texto" class="col-sm-6">
 						      			Tipo escuela de procedencia:
 						      		</div>
-								    <div id="campo" class="col-sm-6">
+								    <div id="campo" class="col-sm-6" name="tipo_esc">
 										tipo
 								    </div>
 						      	</div>
@@ -269,7 +321,7 @@
 						      			Escuela de procedencia:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="e_procedencia" type="text" class="form-control" name="e_procedencia" value="{{ $tyt->plantel_nombre }}">
+						      			<input id="e_procedencia" type="text" class="form-control" name="escuela_proc" value="{{ $tyt->plantel_nombre }}">
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -277,7 +329,7 @@
 						      			Clave:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="cct" type="text" class="form-control" name="cct" value="{{ $tyt->plantel_clave }}" maxlength="">
+						      			<input id="cct" type="text" class="form-control" name="cct" value="{{ $tyt->plantel_clave }}">
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -285,9 +337,9 @@
 						      			Entidad:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<select>
+						      			<select name="entidad_nac">
 						      			    @foreach($paises as $pais)
-						    					<option value="{{ $pais->pais_cve_ch }}">{{ $pais->pais_nombre }}</option>
+						    					<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
 						    				@endforeach
 						      			</select>
 						      		</div>
@@ -297,7 +349,7 @@
 						      			Folio de certificado:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert" value="" maxlength="" >
+						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert">
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -305,24 +357,24 @@
 						      			Fecha expedición:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input class="date form-control fecha" type="text">
+						      			<input class="date form-control fecha" type="text" name="fecha_exp">
 						      		</div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			<select id="seleccion_periodo">
+						      			<select id="seleccion_periodo" name="seleccion_fecha">
 						      				<option id="periodo" selected>Periodo</option>
 						      			    <option id="mes_anio">Fecha</option>
 						      			</select>
 								    </div>
 								    <div id="campo" class="col-sm-6">
 								    	<div id="periodo_show">
-								    		De <input type="text" class="yearpicker" style="width: 41%"/>
+								    		De <input name="inicio_periodo" type="text" class="yearpicker" style="width: 41%"/>
 								    		 a 
-								    		<input type="text" class="yearpicker" style="width: 41%"/>
+								    		<input name="fin_periodo" type="text" class="yearpicker" style="width: 41%"/>
 								    	</div>
 								    	<div id="mes_anio_show"> 
-								    		<input class="date form-control fecha" type="text" value="" name="f_esc" maxlength="10">
+								    		<input class="date form-control fecha" type="text" name="mes_anio" maxlength="10">
 								    	</div>
 						      		</div>
 						      	</div>
@@ -339,7 +391,7 @@
 						      			Irregularidad:
 						      		</div>
 						      		<div id="irregularidad" class="col-sm-9">
-						      			<select>
+						      			<select name="irregularidad_esc">
 						      				@foreach($irr_cert as $i_certificado)
 						      				   	<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
 						      				@endforeach
@@ -371,8 +423,7 @@
 
     {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
     {{-- <script src="{{asset('js/aniomes.js')}}"></script> --}}
-
-    <script>
+    <script type="text/javascript">
     	var escuelas = <?php echo json_encode($escuelas); ?>;
     	escuelas.forEach($(function() {
     	  $("#seleccion_periodo").change(function() {
@@ -392,4 +443,10 @@
 
     {{-- Para elegir fecha en español --}}
     <script src="{{asset('js/datepicker_esp.js')}}"></script>
+
+    {{-- Para obtener ciertos valores --}}
+    <script>
+    	
+    </script>
+
 @endsection

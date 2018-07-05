@@ -17,9 +17,7 @@ class Alumno extends Model
 		'primer_apellido', 
 		'segundo_apellido', 
 		'sexo', 
-		'avance_creditos', 
-		'fecha_nacimiento', 
-		'cumple_requisitos', 
+		'fecha_nacimiento',  
 		'id_nacionalidad', 
 		'pais_cve'
     ];
