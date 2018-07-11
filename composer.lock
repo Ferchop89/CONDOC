@@ -4,8 +4,59 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+
     "content-hash": "4d506b6b8d7959ae00e24a0f2bd4a897",
     "packages": [
+        {
+            "name": "asistenteweb/nusoap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/AsistenteWeb/NuSOAP.git",
+                "reference": "d1d89098f22a51f4c205f26600caf6e2794ee60d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/AsistenteWeb/NuSOAP/zipball/d1d89098f22a51f4c205f26600caf6e2794ee60d",
+                "reference": "d1d89098f22a51f4c205f26600caf6e2794ee60d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Aw\\Nusoap": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GNU"
+            ],
+            "authors": [
+                {
+                    "name": "Asistente Web",
+                    "homepage": "http://www.asistenteweb.com"
+                },
+                {
+                    "name": "Yamir Ramirez",
+                    "homepage": "https://github.com/ysramirez"
+                },
+                {
+                    "name": "NewSphere",
+                    "homepage": "http://www.nusphere.com/php_script/nusoap.htm"
+                }
+            ],
+            "description": "PHP5 library for SOAP.",
+            "homepage": "https://github.com/AsistenteWeb/nuSOAP",
+            "keywords": [
+                "asistenteweb",
+                "nusoap",
+                "soap"
+            ],
+            "time": "2015-05-20T09:30:39+00:00"
+        },
         {
             "name": "barryvdh/laravel-dompdf",
             "version": "v0.8.2",
@@ -1148,6 +1199,50 @@
             "description": "HTML and Form Builders for the Laravel Framework",
             "homepage": "https://laravelcollective.com",
             "time": "2018-03-24T00:39:21+00:00"
+        },
+        {
+            "name": "lawiet/nusoap",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Lawiet/nusoap.git",
+                "reference": "4777ad5ee24a7694ba5358995e24253d9193c847"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Lawiet/nusoap/zipball/4777ad5ee24a7694ba5358995e24253d9193c847",
+                "reference": "4777ad5ee24a7694ba5358995e24253d9193c847",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "lawiet\\": "",
+                    "lawiet\\src\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Jorge Gonzalez"
+                }
+            ],
+            "description": "NuSOAP PHP library",
+            "keywords": [
+                "nusoap",
+                "soap",
+                "web services",
+                "webservices",
+                "ws",
+                "wsdl"
+            ],
+            "time": "2017-09-06T19:36:18+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -3628,6 +3723,56 @@
             "time": "2016-01-20T08:20:44+00:00"
         },
         {
+<<<<<<< HEAD
+=======
+            "name": "jakub-onderka/php-parallel-lint",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JakubOnderka/PHP-Parallel-Lint.git",
+                "reference": "04fbd3f5fb1c83f08724aa58a23db90bd9086ee8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JakubOnderka/PHP-Parallel-Lint/zipball/04fbd3f5fb1c83f08724aa58a23db90bd9086ee8",
+                "reference": "04fbd3f5fb1c83f08724aa58a23db90bd9086ee8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "jakub-onderka/php-console-highlighter": "~0.3",
+                "nette/tester": "~1.3",
+                "squizlabs/php_codesniffer": "~2.7"
+            },
+            "suggest": {
+                "jakub-onderka/php-console-highlighter": "Highlight syntax in code snippet"
+            },
+            "bin": [
+                "parallel-lint"
+            ],
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "./"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jakub Onderka",
+                    "email": "ahoj@jakubonderka.cz"
+                }
+            ],
+            "description": "This tool check syntax of PHP files about 20x faster than serial check.",
+            "homepage": "https://github.com/JakubOnderka/PHP-Parallel-Lint",
+            "time": "2018-02-24T15:31:20+00:00"
+        },
+        {
             "name": "mockery/mockery",
             "version": "1.1.0",
             "source": {
@@ -5145,7 +5290,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "asistenteweb/nusoap": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

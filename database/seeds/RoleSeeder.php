@@ -10,8 +10,8 @@ class RoleSeeder extends Seeder
      *
      * @return void
      */
-     public function run()
-     {
+      public function run()
+      {
          $Admin =    new Role();$Admin->nombre = 'Admin';$Admin->descripcion = 'Administrador';$Admin->save();
          $FacEsc =   new Role();$FacEsc->nombre = 'FacEsc';$FacEsc->descripcion = 'Facultad o Escuela';$FacEsc->save();
          $AgUnam =   new Role();$AgUnam->nombre = 'AgUnam';$AgUnam->descripcion = 'Archivo Gral. UNAM';$AgUnam->save();

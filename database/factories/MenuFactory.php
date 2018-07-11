@@ -2,7 +2,6 @@
 
 use Faker\Generator as Faker;
 use App\Models\Menu;
-
 $factory->define(Menu::class, function (Faker $faker) {
   $name = $faker->name;
   $menus = Menu::all();

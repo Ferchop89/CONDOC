@@ -1,26 +1,111 @@
-@extends('layouts.app')
+@extends('menus.numero_cuenta')
+{{-- @section('title', 'CONDOC | ) --}}
+@section('esp', $title)
+@section('sub-estilos')
+    <link href="{{ asset('css/recepcion.css') }}" rel="stylesheet">
+@endsection
+@section('ruta')
+    <form class="form-group solicitud" method="POST" action="{{ route("postRecepcion") }}">
+@endsection
+
+@section('info-alumno')
+{{-- {{dd($datos)}} --}}
+    @if(isset($datos['sistema']))
+        <div class="info-alumno">
+            <div class="control">
+                <div class="panel-control">
+                </div>
+                <div class="fila">
+                    <div class="dato num_cta">
+                        <span>No. Cuenta: <p>{{$datos['num_cta']}}</p></span>
+                    </div>
+                    @if ($datos['sistema'] == 'DGIRE')
+                        <div class="dato expediente">
+                            <span>Expediente SI: <p>000000000</p></span>
+                        </div>
+                    @endif
+                    <div class="dato tramite">
+                        <span>Tipo Tramite: <p>DESCENTRALIZACIÓN</p></span>
+                    </div>
+                </div>
+                <div class="fila">
+                    <div class="dato nombre">
+                        <span>Nombre: <p>{{$datos['app']."*".$datos['apm']."*".$datos['nombres']}}</p></span>
+                    </div>
+                </div>
+                <div class="fila">
+                    <div class="dato carrera">
+                        <span>Carrera: <p>{{$datos['carr_clv_plt_carr']." ".$datos['carr_nombre_plan']}}</p></span>
+                    </div>
+                </div>
+                <div class="fila">
+                    @if ($datos['sistema'] == 'SIAE')
+                        <div class="dato nivel">
+                            <span>Título a obtener: <p> {{$datos['titulo']}}</p></span>
+                        </div>
+                    @endif
+                </div>
+                <div class="fila">
+                    @if ($datos['nivel_SIAE'] == 'L')
+                        <div class="dato nivel">
+                            <span>Nivel: <p>LICENCIATURA</p></span>
+                        </div>
+                    @endif
+                    <div class="dato fecha_nac">
+                        <span>Fecha de Nacimineto: <p>{{$datos['fecha_nac']}}</p></span>
+                    </div>
+                    <div class="dato tipo">
+                        @if ($datos['sistema'] == 'DGIRE')
+                            <div class="dato expediente">
+                                <span>Tipo: <p></p></span>
+                            </div>
+                        @endif
+
+                    </div>
+
+                </div>
+                <div class="fila">
+                    <div class="dato sistema">
+                        <span>Información proporcionada por: {{$datos['sistema']}}</span>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="recibido">
+                <div class="fila">
+                    <span>Exp Ncta:</span>
+                </div>
+                <div class="fila">
+
+                </div>
+                <div class="fila">
+
+                </div>
+                <div class="fila">
+
+                </div>
+            </div> --}}
+        </div>
+    {{-- @elseif (isset($datos['sistema']) && $datos['sistema'] == 'DGIRE')
+        {{dd("DGIRE")}} --}}
+    @else
+        <div class="info-alumno">
+            {{-- {{dd($msj)}} --}}
+        </div>
+
+    @endif
+@endsection
+{{-- @extends('layouts.app')
 @section('title', 'CONDOC | Recepción de Expedientes')
 @section('estilos')
-    {{-- <link href="{{ asset('css/recepcion.css') }}" rel="stylesheet"> --}}
 @section('content')
     <div id="is" class="container recepcion-expedientes">
         <div class="encabezado">
                 <h1>Recepción de Expedientes</h1> <span>{{date("d/m/y")}}</span>
         </div>
-        {{-- <div class="form-group{{ $errors->has('fecha_nac') ? ' has-error' : '' }}">
-              <label for="fecha_nac" class="col-md-4">Fecha de Nacimiento:<p class="obligatorio">*</p></label></label>
-              <input type="date" name="fecha_nac" id="fecha_nac" class="form-control" value="{{ old('fecha_nac', $alumno->datos_personales_alumnos->fecha_nac->format('Y-m-d')) }}" autocomplete="off" @if ($errors->has('fecha_nac')) autofocus @endif>
-              @if ($errors->has('fecha_nac'))
-                <span class="help-block">
-                  <strong>{{ $errors->first('fecha_nac') }}</strong>
-                </span>
-              @endif
-        </div> --}}
 
         <div class="datos">
 
             <form action="{{ route("postRecepcion") }}" method="POST">
-                {{-- {{ method_field('PUT')}} --}}
                 {{ csrf_field() }}
                 <div class="form-datos">
                     <div class="dato-in form-group{{ $errors->has('num_cta') ? ' has-error' : '' }}">
@@ -37,16 +122,11 @@
                 </div>
             </form>
         </div>
-        {{-- {{dd(isset($identidad))}}
-        @if(isset($identidad))
-            {{dd($identidad)}}
-        @else
-            {{-- {{dd($identidad)}} --}}
-            {{-- {{"entre"}} --}}
-        {{-- @endif --}}
     </div>
+@endsection --}}
 
-@endsection
+
+
 {{-- @extends('layouts.app')
 @section('title', 'CONDOC | Solicitud de RE por Alumno')
 @section('content')

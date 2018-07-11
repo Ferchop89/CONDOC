@@ -13,17 +13,28 @@ $(window).scroll(function() {
     var smallPadding = navbarHeight - ySmall;
     if (smallPadding > navbarHeight) {
         smallPadding = navbarHeight;
+
     }
     if (smallPadding < smallLogoEndPos) {
         smallPadding = smallLogoEndPos;
     }
     if (smallPadding < 0) {
         smallPadding = 0;
-    }
+        console.log("hola");
 
-    $('.small-logo-container ').css({
-        "padding-top": smallPadding + 10
-    });
+    }
+    if (smallPadding == 0) {
+        $('.small-logo-container ').css({
+               "padding-top": smallPadding,
+               "height": "50px",
+               "display": "block"
+        });
+    }
+    if (smallPadding > 35) {
+        $('.small-logo-container ').css({
+                "height": "0px",
+        });
+    }
     var navOpacity = ySmall / smallLogoHeight;
     if (navOpacity > 1) {
         navOpacity = 1;
@@ -52,10 +63,11 @@ $(window).scroll(function() {
     if (scroll >= bigLogoHeight) {
         topnav = 0;
     } else {
-        topnav = bigLogoHeight - scroll - 40;
+        topnav = bigLogoHeight - scroll - 36;
     }
     $('.navbar').css({
-        "top": topnav
+        "top": topnav,
+        "height" : topnav/3
     });
     ////////////
 });

@@ -14,8 +14,8 @@
     transition: 0.3s;
     font-size: 17px;
     border: solid 2px;
-    /* border-radius: 20px 20px 0px 0px; */
     border-bottom: none;
+    color: black;
 }
 
 /* Change background color of buttons on hover */

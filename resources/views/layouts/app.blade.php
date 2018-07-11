@@ -170,7 +170,6 @@
             </div>
             <div class=" big-logo-row">
                 <div class="container">
-
                     <div class="col-lg-12 col-md-12 big-logo-container">
                         <div class="big-logo">
                             <div class="pull-left logo_grande logo_der">
@@ -179,10 +178,23 @@
                                 </a>
                             </div>
                             <div class="pull-left logo_chico logo_der">
-                                <a href="https://www.unam.mx/" title="UNAM" tabindex="-1">
+                                <a href="https://www.unam.mx/" title="CONDOC" tabindex="-1">
                                     <img src="{{ asset('images/escudo_unam_solow.svg') }}">
                                 </a>
                             </div>
+                            {{-- <div class="pull-center logo_grande logo_centro">
+                                <a href="#" title="CONDOC" tabindex="-1">
+                                    CONDOC
+                                    <img src="#">
+
+                                </a>
+                            </div>
+                            <div class="pull-center logo_chico logo_centro">
+                                <a href="#" title="UNAM" tabindex="-1">
+                                    <img src="#">
+                                    CONDOC
+                                </a>
+                            </div> --}}
                             <div class="pull-right logo_grande logo_izq">
                                 <a href="https://www.dgae.unam.mx" title="DGAE" tabindex="-1">
                                     <img src="{{ asset('images/escudo_dgae_completow.svg') }}">
@@ -224,14 +236,9 @@
                     <div class="col-sm-6">
                         <p class="pmenor" tabindex="0">Se brinda información de:
                             </p><ul tabindex="0">
-                                <li>Convocatoria para los concursos de selección</li>
-                                <li>Examen COMIPEMS</li>
-                                <li>Ingreso a Iniciación Universitaria</li>
-                                <li>Ingreso a Licenciatura por Pase Reglamentado</li>
-                                <li>Resultados de los concursos de selección</li>
-                                <li>Trámites y Servicios Escolares en general</li>
-                                <li>Ubicación de dependencias de la UNAM</li>
-                                <li>Venta de Guías y Planes de Estudio</li>
+                                <li>Revisiones de Estudio</li>
+                                <li>Estatus de Revisiones de Estudio</li>
+                                <li></li>
                             </ul>
                         <p></p>
                     </div>
@@ -264,12 +271,13 @@
         <!-- Bootstrap Core JavaScript -->
         <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
         <!-- Material Design Bootstrap -->
-        <script type="text/javascript" src="{{ asset('js/mdb.js') }}"></script>
+        {{-- <script type="text/javascript" src="{{ asset('js/mdb.js') }}"></script> --}}
         <!-- Analytics -->
-        <script type="text/javascript" src="{{ asset('js/analytics.js') }}"></script>
+        {{-- <script type="text/javascript" src="{{ asset('js/analytics.js') }}"></script> --}}
         <!-- barra de navegación-->
         <script type="text/javascript" src="{{ asset('js/navbar.js') }}"></script>
         <!-- /Sección: Scripts -->
+
         {{-- Para el uso del datepicker --}}
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="/resources/demos/style.css">
@@ -279,6 +287,5 @@
         <link href="{{asset('css/select2.css')}}" rel="stylesheet" />
         <script src="{{asset('js/select2.js')}}"></script>
         @yield('animaciones')
-
     </body>
 </html>

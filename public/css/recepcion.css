@@ -32,6 +32,7 @@
     background-color: gainsboro;
     color: black;
     min-height: 198px;
+    margin-bottom: 4%;
 }
 
 .fila{
@@ -49,4 +50,15 @@
     display: inline-block;
     margin: 0;
     padding: 0;
+}
+main .container {
+    min-height: 180px;
+}
+#is{
+    padding-top: 3%;
+    padding-bottom: 0;
+}
+.btn-derecha {
+    margin-left: 0;
+    float: right;
 }

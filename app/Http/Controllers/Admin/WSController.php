@@ -8,7 +8,7 @@ use SOAPClient;
 
 class WSController extends Controller
 {
-    public function ws($nombre, $num_cta, $key)
+    public function ws_SIAE($nombre, $num_cta, $key)
     {
         error_reporting(E_ALL);
         ini_set("display_errors", 1);
@@ -20,10 +20,10 @@ class WSController extends Controller
         // parametros de entrada para SOAP
         // $cta=request('trayectoria');
         // $cta = '313335127'; // con causa 72
-         // $cta = '410060533'; // con causa 72
-         // $cta = '308010769'; //Foto
-         // $cta = '305016614'; //Fenando
-         // $cta = '079332938'; //Guillermo
+        // $cta = '410060533'; // con causa 72
+        // $cta = '308010769'; //Foto
+        // $cta = '305016614'; //Fenando
+        // $cta = '079332938'; //Guillermo
         // $cta = '081581988'; // defuncion
         // $cta = '414045101'; // expulsion
         // $cta = 317241309; // suspension temporal
@@ -58,8 +58,11 @@ class WSController extends Controller
             'exceptions' => true
           );
           $client = new SOAPClient($wsdl, $opts);
+          // dd($client->__getFunctions());
           if($nombre == 'trayectoria')
           {
+              // dd($client);
+              // dd($parametros, SHA1("He seguido la trayectoria en la que he creido y he confiado en mi mismo / Antonio Saura"));
               $response = $client->return_trayectoria($parametros);
           }
           elseif ($nombre ==  'identidad') {
@@ -75,6 +78,31 @@ class WSController extends Controller
         if(empty($response->cuenta))
         {
             return $response->mensaje;
+        }
+        return $response;
+    }
+
+    public function ws_DGIRE($num_cta)
+    {
+        try {
+            $wsdl = 'http://webser.dgae.unam.mx:8280/services/ConsultaDgire?wsdl';
+            $opts = array(
+                'proxy_host' => "132.248.205.1",
+                'proxy_port' => 8080,
+                'location'=> 'http://webser.dgae.unam.mx:8280/services/ConsultaDgire.ConsultaDgireHttpSoap12Endpoint',
+                'connection_timeout' => 10 ,
+                'encoding' => 'ISO-8859-1',
+                'trace' => true,
+                'exceptions' => true
+             );
+            $client = new SOAPClient($wsdl, $opts);
+            $response = $client->consultaDatosAlumno(['numeroCuenta' => $num_cta]);
+        }
+        catch (SoapFault $exception) {
+
+            echo "<pre>SoapFault: ".print_r($exception, true)."</pre>\n";
+            echo "<pre>faultcode: '".$exception->faultcode."'</pre>";
+            echo "<pre>faultstring: '".$exception->getMessage()."'</pre>";
         }
         return $response;
     }

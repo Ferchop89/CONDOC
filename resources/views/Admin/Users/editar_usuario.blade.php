@@ -1,12 +1,18 @@
 @extends('layouts.app')
-
-@section('title',"Editar usuario.")
-
+@section('title', 'CONDOC | '.$title)
+@section('location')
+    <div>
+        <p id="navegacion">
+            <a href="{{ route('admin_dashboard') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
+            <a href="#"><span class="glyphicon glyphicon-home"> >> </span>
+            <span> </span> Administración </a> >>
+            <a href="{{ route('admin/usuarios') }}"> Listado de Usuarios </a> >>
+            <a href="#"> {{$title}} </a> </p>
+    </div>
+@endsection
 @section('content')
 <div class="container">
-    <h1 class="pb-1">
-        Editar Usuario
-    </h1>
+    <h2 id="titulo">{{$title}}</h2>
     <div class="card-body">
         @if ($errors->any())
             <div class="alert alert-danger">

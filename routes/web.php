@@ -22,14 +22,6 @@ Route::get('/home', [
   'as'   => 'home'
 ]);
 
-Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
-Route::post('/FacEsc/solicitud_RE', 'RevEstudiosController@postSolicitudRE');
-Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
-    ->where('num_cta','[0-9]+')
-    ->name('solicitud_RE');
-
-
-
 Route::get('/rev',[
     'uses'=> 'InformesController@Revisiones',
     'as'=> 'Rev',
@@ -93,19 +85,32 @@ Route::get('/cortes',[
   'roles' => ['Admin']
 ]);
 
+Route::get('/c-c', function () {
+
+    $users = DB::connection("mysql")->table("users")->get();
+    dd($users);
+
+});
+
+Route::get('/c-c-2', function () {
+    $sbs = DB::connection("sybase")->table("Catalogotext")->get();
+    dd($sbs);
+});
+
+
 Route::put('/creaListas',[
   'uses'=> 'InformesController@creaListas',
   'as'=> 'creaListas',
   'middleware' => 'roles',
-  'roles' => ['Admin']
+  'roles' => ['Sria']
 ]);
 
-Route::get('/listas',[
-  'uses'=> 'ListadosController@listas',
-  'as'=> 'listas',
-  'middleware' => 'roles',
-  'roles' => ['Admin']
-]);
+// Route::get('/listas',[
+//   'uses'=> 'ListadosController@listas',
+//   'as'=> 'listas',
+//   'middleware' => 'roles',
+//   'roles' => ['Sria']
+// ]);
 
 Route::get('solicitudes', function(){
   $data = DB::table('solicitudes')
@@ -138,7 +143,7 @@ Route::get('imprimePDF',[
   'uses'=> 'ListadosController@Pdfs',
   'as'=> 'imprimePDF',
   'middleware' => 'roles',
-  'roles' => ['Admin']
+  'roles' => ['Sria']
 ]);
 
 Route::get('pdf', 'PdfController@invoice');

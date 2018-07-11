@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use App\Models\Corte;
 use App\Models\Solicitud;
@@ -16,6 +15,7 @@ class InformesController extends Controller
 {
   public function cortes()
   {
+    $title = "Bandeja de Solicitudes de Revisión de Estudios";
     // $this->liberaSolicitudes();
     // escuelas de las que provienen las solicitudes sin listado
     $escuelas = $this->escuelaDeProcedencia();
@@ -27,6 +27,7 @@ class InformesController extends Controller
     $sol_Html = $this->solicitudesHtml($solicitudesW);
 
     return view('consultas.solicitud_rs',[
+            'title' => $title,
             'solW_cta'=>count($solicitudesW),
             'sol_Html'=>$sol_Html,
             'esc_Html'=>$escuelasHtml
@@ -150,10 +151,10 @@ class InformesController extends Controller
      $table = "<table class='table table-bordered table-hover'>";
      $table = $table."<thead class='thead-dark'>";
      $table = $table."<tr>";
-     $table = $table."<th width='15%'><strong>Fecha</strong></th>";
+     $table = $table."<th width='10%'><strong>Fecha</strong></th>";
      // Se agregan dos columnas, una solicitudes y otra citatorios.
      $table = $table."<th><strong>Solicitudes: ".$revs."</strong></th>";
-     $table = $table."<th><strong>Citatorios: ".$citas."</strong></th>";
+     $table = $table."<th width='10%'><strong>Citatorios: ".$citas."</strong></th>";
      $table = $table."</tr>";
      $table = $table."</thead>";
      $salida = $table.$trs."</table>";

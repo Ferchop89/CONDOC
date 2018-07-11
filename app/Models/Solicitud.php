@@ -8,7 +8,6 @@ class Solicitud extends Model
 {
     protected $table = 'solicitudes';
     protected $primary_key = 'solicitud_id';
-
     protected $casts = [
       'pasoACorte' => 'boolean',
       'citatorio' => 'boolean',

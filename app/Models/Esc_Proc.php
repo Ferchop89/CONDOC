@@ -15,7 +15,6 @@ class Esc_Proc extends Model
 		'nivel',
 		'clave',
 		'folio_certificado',
-		'fecha_expedicion',
 		'seleccion_fecha',
 		'mes_anio',
 		'inicio_periodo',

@@ -2,23 +2,23 @@ html,body{
   height: auto;
 }
 
-#navegacion {
+/*#navegacion {
   padding-left: 8%; 
   font-size: 100%; 
   border: 1px solid #DCDCDC; 
   background: #F5F5F5;
-}
+}*/
 
 /* consulta RE */
 #general{
-  width: 30%; 
-  position:relative; 
+  width: 30%;
+  position:relative;
   left: 10%;
 }
 
 #error {
-  width: 70%; 
-  position:relative; 
+  width: 70%;
+  position:relative;
   left: 15%;
   text-align: center;
 }
@@ -44,7 +44,11 @@ html,body{
   padding-bottom: 3%;
 }
 
-.item1 { grid-area: foto; }
+.item1 {
+    grid-area: foto;
+    padding: 0 !important;
+    margin: 0 !important;
+}
 
 .item2 { grid-area: datos; }
 
@@ -161,6 +165,12 @@ html,body{
   margin-top: 15%;
 }
 
+/*.center {
+    width: 50%;
+    margin: auto;
+    height: 154px;
+}*/
+
 .center {
     display: block;
     margin-left: auto;
@@ -170,10 +180,10 @@ html,body{
     width: 45%;
 }
 
-.grid-container .item1, .grid-container .item2, .grid-container .item3,
+/*.grid-container .item1, .grid-container .item2, .grid-container .item3,
 .grid-info .personal, .grid-info .nacional, .grid-info .academica {
   padding-top: 6%;
-}
+}*/
 
 .personal { grid-area: alumno; }
 

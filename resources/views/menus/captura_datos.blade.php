@@ -1,33 +1,36 @@
 @extends('layouts.app')
-@section('title', 'CONDOC | Revisión de Estudios')
-
+@section('title', 'CONDOC | '.$title)
 @section('location')
-<div style="padding-top: 1%">
+<div>
 	<p id="navegacion">
-		<a href="{{ url('/home') }}"><span class="fa fa-home"></span>
-		<span> </span> Licenciatura </a> >> 
-		<a href="{{ url('/datos_personales') }}"> Revisión de Estudios </a> </p>
+		<a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>  >>
+		{{-- <a href="#"><span class="glyphicon glyphicon-home"> </span> --}}
+		<a href="{{ url('/datos-personales') }}"> Realizar Revisión de Estudios </a> >> 
+		<a href="{{ url('/rev_est/'.$num_cta) }}"> {{$title}} </a> </p>
 </div>
 @endsection
+@section('estilos')
+	<link href="{{ asset('css/rev_estudios.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('css/rev_estudios2.css') }}" rel="stylesheet"> --}}
 
+    {{-- Para elegir solo año en opcion de periodo --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" rel="stylesheet"/>
+@endsection
 @section('content')
-	
-	<div>
-
-	<form class="form-group" method="POST" action="{{ url('/rev_est/'.$num_cta) }}">
-		{!! csrf_field() !!}
-
-	<h2 id="titulo">Revisión de Estudios</h2>
-	<div class="row">
-		<div id="instrucciones" class="col-sm-6">Ingresa los datos que se solicitan.</div>
-		<div id="firmar" class="col-sm-6">
-			<div class="botones">
-				<a class="btn btn-default" href="{{ url('/datos_personales') }}" role="">Atrás</a>
-				<button type="submit" class="btn btn-primary">Guardar</button>
-				<a class="btn btn-danger" href="{{ url('/home') }}" role="">Salir</a>
+		<div>
+		<h2 id="titulo">Revisión de Estudios</h2>
+		<form class="form-group" method="POST" action="{{ url('/rev_est/'.$num_cta) }}">
+			{!! csrf_field() !!}
+		<div class="row">
+			<div id="instrucciones" class="col-sm-6">Ingresa los datos que se solicitan.</div>
+			<div id="firmar" class="col-sm-6">
+				<div class="botones">
+					<a class="btn btn-default" href="{{ url('/datos-personales') }}" role="">Atrás</a>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+					<a class="btn btn-danger" href="{{ url('/home') }}" role="">Salir</a>
+				</div>
 			</div>
 		</div>
-	</div>
 
 	<div class="grid-container">
 		<div class="item1">
@@ -35,7 +38,7 @@
 		</div>
 		<div class="item2">
 			<p name="num_cta">{{$num_cta}}</p>
-			<p><span name="nombre">{{$identidad->nombres}}</span> <span name="apellido1">{{$identidad->apellido1}}</span> <span name="apellido2">{{$identidad->apellido2}}</span></p>
+			<p>{{$identidad->nombres}} {{$identidad->apellido1}} {{$identidad->apellido2}}</p>
 			<p>Exp. Posgrado: <span name="exp_pos"></span></p>
 			<p>Exp. Sistema Incorporado: <span name="exp_inc"></span></p>
 		</div>
@@ -54,7 +57,7 @@
 					@if($firmas == null || $firmas->jsec_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i><span name="jsec_nombre">{{ $firmas->jsec_nombre }}</span> <span name="jsec_fecha">{{ date('d-m-Y', strtotime($firmas->jsec_fecha)) }}</span></i></p>
+						<p><i>{{ $firmas->jsec_nombre }} | {{ date('d-m-Y', strtotime($firmas->jsec_fecha)) }}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -75,7 +78,7 @@
 					@if($firmas == null || $firmas->jarea_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i><span name="jarea_nombre">{{ $firmas->jarea_nombre }}</span> <span name="jarea_fecha">{{ date('d-m-Y', strtotime($firmas->jarea_fecha)) }}</span></i></p>
+						<p><i>{{ $firmas->jarea_nombre }} | {{ date('d-m-Y', strtotime($firmas->jarea_fecha)) }}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -96,7 +99,7 @@
 					@if($firmas == null || $firmas->jdepre_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i><span name="jdepre_nombre">{{ $firmas->jdepre_nombre }}</span> <span name="jdepre_fecha">{{ date('d-m-Y', strtotime($firmas->jdepre_fecha)) }}</span></i></p>
+						<p><i>{{ $firmas->jdepre_nombre }} | {{ date('d-m-Y', strtotime($firmas->jdepre_fecha)) }}</i></p>
 					@endif 
 				</div>
 				<div class="col-sm-3">
@@ -117,7 +120,7 @@
 					@if($firmas == null || $firmas->jdeptit_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i><span name="jdeptit_nombre">{{ $firmas->jdeptit_nombre }}</span> <span name="jdeptit_fecha">{{ date('d-m-Y', strtotime($firmas->jdeptit_fecha)) }}</span></i></p>
+						<p><i>{{ $firmas->jdeptit_nombre }} | {{ date('d-m-Y', strtotime($firmas->jdeptit_fecha)) }}</i></p>
 					@endif 
 				</div>
 				<div class="col-sm-3">
@@ -138,7 +141,7 @@
 					@if($firmas == null || $firmas->direccion_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i><span name="direccion_nombre">{{ $firmas->direccion_nombre }}</span> <span name="direccion_fecha">{{ date('d-m-Y', strtotime($firmas->direccion_fecha)) }}</span></i></p>
+						<p><i>{{ $firmas->direccion_nombre }} | {{ date('d-m-Y', strtotime($firmas->direccion_fecha)) }}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -155,17 +158,17 @@
 			</div>
 		</div>
 		<div class="item4">
-			<p class="espe">Plan de estudios: <span name="plan_est">{{$trayectoria->situaciones[$num_situaciones-1]->plantel_clave}}</span></p>
-			@if($trayectoria->situaciones[$num_situaciones-1]->nivel == "B")
-				<p>Nivel: <span name="nivel">BACHILLERATO</span></p>
-			@elseif($trayectoria->situaciones[$num_situaciones-1]->nivel == "L")
-				<p>Nivel: <span name="nivel">LICENCIATURA</span></p>
+			<p class="espe">Plan de estudios: {{$trayectoria->situaciones[$num_situaciones]->plantel_clave}}</p>
+			@if($trayectoria->situaciones[$num_situaciones]->nivel == "B")
+				<p>Nivel: BACHILLERATO</p>
+			@elseif($trayectoria->situaciones[$num_situaciones]->nivel == "L")
+				<p>Nivel: LICENCIATURA</p>
 			@else
-				<p>Nivel: <span name="nivel"> </span></p>
+				<p>Nivel: </p>
 			@endif
 
-			<p>Carrera: <span name="carrera_nombre">{{$trayectoria->situaciones[$num_situaciones-1]->carrera_nombre}}</span></p>
-			<p>Orientación: <span name="orientacion">{{$trayectoria->situaciones[$num_situaciones-1]->plan_nombre}}</span></p>
+			<p>Carrera: {{$trayectoria->situaciones[$num_situaciones]->carrera_nombre}}</p>
+			<p>Orientación: {{$trayectoria->situaciones[$num_situaciones]->plan_nombre}}</p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -214,7 +217,7 @@
 					<div id="campo" class="col-sm-6">
 						<select id="nacionalidad" name="nacionalidad">
 							@foreach($nacionalidades as $nacion)
-								<option id="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+								<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
 							@endforeach
 						</select>
 					</div>
@@ -224,7 +227,7 @@
 						Fecha de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input class="date form-control fecha" type="text" value="{{$identidad->nacimiento}}" name="fecha_nac" maxlength="10">
+						<input class="date form-control fecha datepicker_esp" type="text" value="{{$identidad->nacimiento}}" name="fecha_nac" maxlength="10">
 					</div>
 				</div>
 				<div class="row">
@@ -292,7 +295,7 @@
 			      		@foreach($escuelas as $tyt)
 			      			@if($tyt == $trayectoria->situaciones[0])
 			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
-			        		@else	
+			        		@else
 			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
 			        		@endif
 			        	@endforeach
@@ -307,7 +310,6 @@
 	        				@endif
 
 	        					{{-- {{ count($escuelas)}} --}}
-
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			Tipo escuela de procedencia:
@@ -321,7 +323,7 @@
 						      			Escuela de procedencia:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="e_procedencia" type="text" class="form-control" name="escuela_proc" value="{{ $tyt->plantel_nombre }}">
+						      			<input id="e_procedencia" type="text" class="form-control" name="escuela_proc[]" value="{{ $tyt->plantel_nombre }}">
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -329,7 +331,7 @@
 						      			Clave:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="cct" type="text" class="form-control" name="cct" value="{{ $tyt->plantel_clave }}">
+						      			<input id="cct" type="text" class="form-control" name="cct[]" value="{{ $tyt->plantel_clave }}">
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -337,7 +339,7 @@
 						      			Entidad:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<select name="entidad_nac">
+						      			<select name="entidad_esc[]">
 						      			    @foreach($paises as $pais)
 						    					<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
 						    				@endforeach
@@ -349,32 +351,24 @@
 						      			Folio de certificado:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert">
+						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert[]">
 						      		</div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
-						      			Fecha expedición:
-						      		</div>
-						      		<div id="campo" class="col-sm-6">
-						      			<input class="date form-control fecha" type="text" name="fecha_exp">
-						      		</div>
-						      	</div>
-						      	<div class="row">
-						      		<div id="texto" class="col-sm-6">
-						      			<select id="seleccion_periodo" name="seleccion_fecha">
-						      				<option id="periodo" selected>Periodo</option>
-						      			    <option id="mes_anio">Fecha</option>
+						      			<select id="seleccion_periodo" name="seleccion_fecha[]">
+						      				<option id="periodo" name="periodo" selected>Periodo de expedición</option>
+						      			    <option id="mes_anio" name="mes_anio">Fecha de expedición</option>
 						      			</select>
 								    </div>
 								    <div id="campo" class="col-sm-6">
 								    	<div id="periodo_show">
-								    		De <input name="inicio_periodo" type="text" class="yearpicker" style="width: 41%"/>
+								    		De <input name="inicio_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
 								    		 a 
-								    		<input name="fin_periodo" type="text" class="yearpicker" style="width: 41%"/>
+								    		<input name="fin_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
 								    	</div>
 								    	<div id="mes_anio_show"> 
-								    		<input class="date form-control fecha" type="text" name="mes_anio" maxlength="10">
+								    		<input class="date form-control fecha" type="text" name="mes_anio[]" maxlength="10">
 								    	</div>
 						      		</div>
 						      	</div>
@@ -383,7 +377,7 @@
 						      			Promedio:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="promedio" type="text" class="form-control" name="promedio" value="" maxlength="5" >
+						      			<input id="promedio" type="text" class="form-control" name="promedio[]" value="" maxlength="5" >
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -391,7 +385,7 @@
 						      			Irregularidad:
 						      		</div>
 						      		<div id="irregularidad" class="col-sm-9">
-						      			<select name="irregularidad_esc">
+						      			<select name="irregularidad_esc[]">
 						      				@foreach($irr_cert as $i_certificado)
 						      				   	<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
 						      				@endforeach
@@ -421,32 +415,41 @@
     {{-- Para escuelas de procedencias --}}
     <script src="{{asset('js/qescuela_procedencia.js')}}"></script>
 
-    {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
-    {{-- <script src="{{asset('js/aniomes.js')}}"></script> --}}
-    <script type="text/javascript">
-    	var escuelas = <?php echo json_encode($escuelas); ?>;
-    	escuelas.forEach($(function() {
-    	  $("#seleccion_periodo").change(function() {
-    	    if ($("#periodo").is(":selected")) {
-    	      $("#periodo_show").show();
-    	      $("#mes_anio_show").hide();
-    	    } else {
-    	      $("#periodo_show").hide();
-    	      $("#mes_anio_show").show();
-    	    }
-    	  }).trigger('change');
-    	}));
-    </script>
-
-    {{-- Para elegir año en opcion de periodo |||| No funcional --}}
-    <script src="{{asset('js/yearpicker.js')}}"></script>
-
     {{-- Para elegir fecha en español --}}
     <script src="{{asset('js/datepicker_esp.js')}}"></script>
 
-    {{-- Para obtener ciertos valores --}}
+    {{-- Para elegir solo año en opcion de periodo --}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{{asset('js/yearpicker.js')}}"></script>
+
+    {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
+    {{-- <script src="{{asset('js/aniomes.js')}}"></script> --}}
     <script>
-    	
+    	var value = $("[id='seleccion_periodo']");
+    	value.forEach($(function() {
+    		$("#seleccion_periodo").change(function() {
+    	    	if ($("#periodo").is(":selected")) {
+    	      	$("#periodo_show").show();
+    	      	$("#mes_anio_show").hide();
+    	    } else {
+    	    	$("#periodo_show").hide();
+    	    	$("#mes_anio_show").show();
+    	    }
+    	}).trigger('change');
+    	}));
+    	/*value.forEach($(function() {
+    		$("#seleccion_periodo").change(function() {
+    	    	if ($("#periodo").is(":selected")) {
+    	      	$("[id=periodo_show]").show();
+    	      	$("[id=mes_anio_show]").hide();
+    	    } else {
+    	    	$("#periodo_show").hide();
+    	    	$("#mes_anio_show").show();
+    	    }
+    	}).trigger('change');
+    	}));*/
     </script>
 
 @endsection

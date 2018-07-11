@@ -51,25 +51,25 @@ class MenuSeeder extends Seeder
            ]);
            // Opciones de Submenú...
            factory(Menu::class)->create([
-               'name' => 'm1',
+               'name' => 'Bandeja de Solicitudes de Revisión de Estudios',
                'slug' => 'opcion-1.1',
                'parent' => $m1->id,
-               'ruta' => 'm1',
+               'ruta' => 'cortes',
                'order' => 0,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'm3',
+               'name' => 'Impresión de Listados',
                'slug' => 'opcion-1.2',
-               'ruta' => 'm3',
+               'ruta' => 'listas',
                'parent' => $m1->id,
                'order' => 1,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'm5',
+               'name' => 'Revisión de Estudios',
                'slug' => 'opcion-1.3',
-               'ruta' => 'm5',
+               'ruta' => 'datos-personales',
                'parent' => $m1->id,
                'order' => 2,
                'is_structure' => 0
@@ -80,6 +80,14 @@ class MenuSeeder extends Seeder
                'parent' => $m1->id,
                'ruta' => 'datos_personales',
                'order' => 3,
+               'is_structure' => 0
+           ]);
+           factory(Menu::class)->create([
+               'name' => 'Recepción de Expedientes por Alumno',
+               'slug' => 'opcion-1.4',
+               'parent' => $m1->id,
+               'ruta' => 'recepcion',
+               'order' => 4,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
@@ -139,29 +147,28 @@ class MenuSeeder extends Seeder
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'crear usuario',
-               'slug' => 'opcion-3.2.1',
-               'ruta' => 'crear_usuario',
+               'name' => 'Ver usuarios',
+               'slug' => 'opcion-3.2.3',
+               'ruta' => 'admin/usuarios',
                'parent' => $m32->id,
                'order' => 0,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'editar usuarios',
-               'slug' => 'opcion-3.2.2',
-               'ruta' => 'admin.users.editar_usuarios',
+               'name' => 'Crear usuario',
+               'slug' => 'opcion-3.2.1',
+               'ruta' => 'admin/usuarios/nuevo',
                'parent' => $m32->id,
                'order' => 1,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'Usuarios',
-               'slug' => 'opcion-3.2.3',
-               'ruta' => 'admin/usuarios',
+               'name' => 'Editar usuarios',
+               'slug' => 'opcion-3.2.2',
+               'ruta' => 'admin/otra',
                'parent' => $m32->id,
                'order' => 2,
                'is_structure' => 0
            ]);
-
        }
 }

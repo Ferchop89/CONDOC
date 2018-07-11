@@ -27,14 +27,17 @@ class Dashboard extends Controller
     /*Método para ver información de un usuario*/
     public function ver_usuario(User $user)
     {
+        $title = "Perfil del Usuario";
         $roles = Role::orderBy('id','asc')->get();
-        return view('admin/users/ver_usuario', /*[compact('user'),*/['user' => $user, 'roles'=>$roles]);
+        return view('admin/users/ver_usuario', /*[compact('user'),*/["title" => $title, 'user' => $user, 'roles'=>$roles]);
     }
 
     /*Método para editar información de un usuario*/
     public function editar_usuario(User $user)
-    {   $roles = Role::orderBy('id','asc')->get();
-        return view('admin/users/editar_usuario',['user'=> $user, 'roles' => $roles]);
+    {
+        $title = "Edición de Usuario";
+        $roles = Role::orderBy('id','asc')->get();
+        return view('admin/users/editar_usuario',['title'=>$title, 'user'=> $user, 'roles' => $roles]);
     }
 
     //Método para actualizar usuarios
@@ -141,8 +144,9 @@ class Dashboard extends Controller
     public function crear_usuario()
     {
         // Se agregan los roles para crearlos dinámicamente vista de nuevos usuarios (create)
+        $title = "Creación de usuario";
         $roles = Role::orderBy('id','asc')->get();
-        return view('admin/users/crear_usuario',['roles'=>$roles]);
+        return view('admin/users/crear_usuario',['title'=>$title,'roles'=>$roles]);
     }
 
     /*Método para eliminar un usuario*/

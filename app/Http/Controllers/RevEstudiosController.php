@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
 use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises, 
                 Niveles, User, Trayectoria, Nacionalidades,
-                Registro_RE};
+                Registro_RE, Alumno, Esc_Proc};
 use Illuminate\Support\Facades\Auth;
 use Session;
 
@@ -69,25 +68,35 @@ class RevEstudiosController extends Controller
           return view('/menus/solicitud_RE_info', ['num_cta'=> $num_cta, 'trayectoria' => $trayectorias_75, 'msj' => $msj]);
       }
     }
-    
+
+
+    /*Revisiones de Estudio*/
+
     public function showSolicitudNC()
     {
-        return view('/menus/datos_personales');
+        $title = "Realizar Revisión de Estudios";
+
+        return view('/menus/datos_personales', ['title' => $title]);
     }
     
     public function showDatosPersonales(User $user, $num_cta)
     {
+        $title = "Revisión de Estudios";
         //$num_cta=request()->input('num_cta');
-        $ws = Web_Service::find(2);
+        $ws_SIAE = Web_Service::find(2);
         $identidad = new WSController();
-        $identidad = $identidad->ws($ws->nombre, $num_cta, $ws->key);
+        $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
         
-        $ws = Web_Service::find(1);
+        $ws_SIAE = Web_Service::find(1);
         $trayectoria = new WSController();
-        $trayectoria = $trayectoria->ws($ws->nombre, $num_cta, $ws->key);
+        $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
-        //Número de trayectorias del alumno
-        $num_situaciones = count($trayectoria->situaciones);
+        $dgire = new WSController();
+        $dgire = $dgire->ws_DGIRE($num_cta);
+        //dd($dgire);
+
+        //Número de trayectorias del alumno (-1 para indices de arreglo)
+        $num_situaciones = count($trayectoria->situaciones)-1;
 
         //Irregularidades en acta de nacimiento, certificado y documento migratorio
         $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
@@ -131,10 +140,10 @@ class RevEstudiosController extends Controller
 
         //dd($firmas->actualizacion_fecha->date_format(d.m.Y));
 
-        return view('/menus/captura_datos', ['num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 'user' => $user,
-          'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'irr_migr' => $irr_migr, 
-          'esc_proc' => $esc_proc, 'paises' => $paises, 'num_situaciones' => $num_situaciones, 'escuelas' => $escuelas,
-          'nacionalidades' => $nacionalidades, 'roles_us' => $roles_us, 'firmas' => $firmas]);
+        return view('/menus/captura_datos', ['title' => $title, 'num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 
+          'user' => $user, 'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 
+          'irr_migr' => $irr_migr, 'esc_proc' => $esc_proc, 'paises' => $paises, 'num_situaciones' => $num_situaciones, 
+          'escuelas' => $escuelas, 'nacionalidades' => $nacionalidades, 'roles_us' => $roles_us, 'firmas' => $firmas]);
     }
 
     public function postDatosPersonales(Request $request)
@@ -169,62 +178,133 @@ class RevEstudiosController extends Controller
            'fecha_nac.required' => 'La fecha de nacimiento es obligatoria',
            'fecha_nac.min' => 'La longitud de la fecha de nacimiento es errónea',
            'fecha_nac.max' => 'La longitud de la fecha de nacimiento es errónea',
-           'fecha_nac.regex' => 'La fecha de nacimiento debe ser DD/MM/AAAA'
+           'fecha_nac.regex' => 'La fecha de nacimiento debe ser DD/MM/AAAA',
       ]);
 
       $num_cta = $request->num_cta; //
-      $nombre = $request->nombre;
-      $apellido1 = $request->apellido1;
-      $apellido2 = $request->apellido2;
-      //$ofici_nombre = $request->ofici_nombre;
-      //$ofici_fecha = $request->ofici_fecha;
-      //$jsec_nombre = $request->jsec_nombre;
-      //$jsec_fecha = $request->jsec_fecha;
-      //$jarea_nombre = $request->jarea_nombre;
-      //$jarea_fecha = $request->jarea_fecha;
-      //$jdepre_nombre = $request->jdepre_nombre;
-      //$jdeptit_nombre = $request->jdeptit_nombre;
-      //$direccion_nombre = $request->direccion_nombre;
-      $plan_est = $request->plan_est;
-      $nivel = $request->nivel;
-      $carrera_nombre = $request->carrera_nombre;
-      $orientacion = $request->orientacion;
-      $curp = $request->input('curp'); //
-      $sexo = $request->input('sexo'); //
-      $nacionalidad = $request->input('nacionalidad'); //
-      $fecha_nac = $request->input('fecha_nac'); //
-      $lugar_nac = $request->input('lugar_nac'); //
-      $documento_identidad = $request->input('documento_identidad');
-      $folio_doc = $request->input('folio_doc'); //
-      $irregularidad_doc = $request->input('irregularidad_doc'); //
-      $tipo_esc = $request->tipo_esc;
-      $escuela_proc = $request->input('escuela_proc'); // *A todas*
-      $cct = $request->input('cct'); // * A todas *
-      $entidad_nac = $request->input('entidad_nac'); // * A todas *
-      $folio_cert = $request->input('folio_cert'); // * A todas *
-      $fecha_exp = $request->input('fecha_exp'); // * A todas *
-      $seleccion_fecha = $request->input('seleccion_fecha'); // * A todos *
-      $inicio_periodo = $request->input('inicio_periodo'); // * A todos *
-      $fin_periodo = $request->input('fin_periodo'); // * A todos *
-      $mes_anio = $request->input('mes_anio'); // * A todos *
-      $promedio = $request->input('promedio'); // * A todos *
-      $irregularidad_esc = $request->input('irregularidad_esc'); // * A todos *
-      $jsec_firma = $request->input('jsec_firma'); //
-      $jarea_firma = $request->input('jarea_firma'); //
-      $jdepre_firma = $request->input('jdepre_firma'); //
-      $jdeptit_firma = $request->input('jdeptit_firma'); //
-      $jdeptit_firma = $request->input('jdeptit_firma'); //
 
-      dd($jdepre_firma);
+      $ws_SIAE = Web_Service::find(2);
+      $identidad = new WSController();
+      $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+      
+      $ws_SIAE = Web_Service::find(1);
+      $trayectoria = new WSController();
+      $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+
+      //Información de escuelas de interés (Finalizadas)
+      $nivel_esc = array();
+      foreach ($trayectoria->situaciones as $situacion) {
+        if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
+          array_push($nivel_esc, $situacion->nivel);
+        }
+      }
+
+      //Número de trayectorias del alumno
+      $num_situaciones = count($trayectoria->situaciones)-1;
+
+      $nombres = $identidad->nombres;
+      $apellido1 = $identidad->apellido1;
+      $apellido2 = $identidad->apellido2;
+      $plan_est = $trayectoria->situaciones[$num_situaciones]->plantel_clave;
+      $nivel = $trayectoria->situaciones[$num_situaciones]->nivel;
+      $carrera_nombre = $trayectoria->situaciones[$num_situaciones]->carrera_nombre;
+      $orientacion = $trayectoria->situaciones[$num_situaciones]->plan_nombre;
+      $curp = $_POST['curp']; 
+      $sexo = $_POST['sexo'];
+      $nacionalidad = $_POST['nacionalidad'];
+      $fecha_nac = $_POST['fecha_nac'];
+      $lugar_nac = $_POST['lugar_nac'];
+      //$documento_identidad = $_POST['documento_identidad']; // ¿Cuáles se pondrán?
+      $folio_doc = $_POST['folio_doc'];
+      $irregularidad_doc = $_POST['irregularidad_doc'];
+      //$tipo_esc = $request->tipo_esc; PENDIENTE X CATÁLOGO [ENTIDAD TAMBIÉN]
+      $escuela_proc = $_POST['escuela_proc']; 
+      $cct = $_POST['cct']; 
+      $entidad_esc = $_POST['entidad_esc']; 
+      $folio_cert = $_POST['folio_cert'];
+      $seleccion_fecha = $_POST['seleccion_fecha'];
+      $inicio_periodo = $_POST['inicio_periodo'];
+      $fin_periodo = $_POST['fin_periodo'];
+      $mes_anio = $_POST['mes_anio'];
+      $promedio = $_POST['promedio'];
+      $irregularidad_esc = $_POST['irregularidad_esc'];
+      $jsec_firma = $request->input('jsec_firma');
+      $jarea_firma = $request->input('jarea_firma');
+      $jdepre_firma = $request->input('jdepre_firma');
+      $jdeptit_firma = $request->input('jdeptit_firma');
+      $jdeptit_firma = $request->input('jdeptit_firma');
+      
+      /*$sql = Alumno::insert(
+        array('num_cta' => $num_cta,
+              'curp' => $curp,
+              'foto' => null, 
+              'nombre_alumno' => $nombres, 
+              'primer_apellido' => $apellido1, 
+              'segundo_apellido' => $apellido2, 
+              'sexo' => $sexo, 
+              'fecha_nacimiento' => date('Y-m-d', strtotime($fecha_nac)),  
+              'id_nacionalidad' => (int)$nacionalidad, 
+              'pais_cve' => (int)$lugar_nac
+      ));
+
+      
+      if($situacion->porcentaje_totales >= 70.00){
+        $porcentaje = 1;
+      }
+      else{
+        $porcentaje = 0;
+      }
+
+      $sql1 = Trayectoria::insertGetId(
+        array('generacion' => (int)$situacion->generacion, 
+              'num_planestudios' => (int)$situacion->plan_clave, 
+              'nombre_planestudios' => $orientacion, //¿Son lo mismo?
+              'num_cta'=> $num_cta,
+              'avance_creditos' => (float)$situacion->porcentaje_totales,
+              'cumple_requisitos' => $porcentaje,
+              'id_nivel' => $nivel
+      ));
+
+      $sql2 = Registro_RE::insertGetId(
+        array('actualizacion_nombre' => Auth::user()->nombre, 
+              'actualizacion_fecha' => null, 
+              'jsec_nombre' => null, 
+              'jsec_fecha' => null, 
+              'jarea_nombre' => null, 
+              'jarea_fecha' => null, 
+              'jdepre_nombre' => null, 
+              'jdepre_fecha' => null, 
+              'jdeptit_nombre' => null, 
+              'jdeptit_fecha' => null, 
+              'direccion_nombre' => null, 
+              'direccion_fecha' => null, 
+              'num_cta' => $num_cta
+      ));
+
+      for($i = $num_situaciones; $i == 0; $i--){
+        $sql3 = Esc_Proc::insertGetId(
+          array('nombre_escproc' => $escuela_proc[$i],
+                'nivel' => $nivel_esc[$i],
+                'clave' => $cct[$i],
+                'folio_certificado' => (int)$folio_cert[$i],
+                'seleccion_fecha' => $seleccion_fecha[$i],
+                'mes_anio' => date('Y-m-d', strtotime($mes_anio[$i])), 
+                'inicio_periodo' => (int)$inicio_periodo[$i],
+                'fin_periodo' => (int)$fin_periodo[$i],
+                'promedio' => (float)$promedio[$i],
+                'pais_cve' => (int)$entidad_esc[$i], 
+                'num_cta' => $num_cta
+        ));
+      }*/
 
       return redirect()->route('home');
     }
 
     public function showAgregarEsc($num_cta)
     {
-      $ws = Web_Service::find(1);
+      $ws_SIAE = Web_Service::find(1);
       $trayectoria = new WSController();
-      $trayectoria = $trayectoria->ws($ws->nombre, $num_cta, $ws->key);
+      $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
       //Niveles de interés dado el número de cuenta
       $niveles = array();
@@ -279,10 +359,10 @@ class RevEstudiosController extends Controller
     }
 
     public function prueba($num_cta){
-      $ws = Web_Service::find(2);
+      $ws_SIAE = Web_Service::find(2);
       $identidad = new WSController();
-      $identidad = $identidad->ws($ws->nombre, $num_cta, $ws->key);
-      $ws = Web_Service::find(1);
+      $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+      $ws_SIAE = Web_Service::find(1);
 
       $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
       $irr_cert = IrregularidadesRE::where('cat_cve', 2)->get();

@@ -1,9 +1,20 @@
 @extends('layouts.app')
-@section('title',"Usuario {$user->id}")
+@section('title', 'CONDOC | '.$title." ".$user->id)
+@section('location')
+    <div>
+    	<p id="navegacion">
+            <a href="{{ route('admin_dashboard') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
+    		<a href="#"><span class="glyphicon glyphicon-home"> >> </span>
+    		<span> </span> Administración </a> >>
+            <a href="{{ route('admin/usuarios') }}"> Listado de Usuarios </a> >>
+    		<a href="#"> {{$title}} </a> </p>
+    </div>
+@endsection
 @section('content')
 <div class="container">
     {{-- <div class="card"> --}}
-    <h1 class="pb-1">Perfil del usuario "{{ $user->username }}"</h1>
+    <h2 id="titulo">{{$title." '".$user->username."'"}}</h2>
+    {{-- <h1 class="pb-1">Perfil del usuario "{{ $user->username }}"</h1> --}}
     <div class="card-body">
         <div class="form-group">
             <label for="name">Nombre del Usuario</label>

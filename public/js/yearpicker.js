@@ -1,6 +1,5 @@
-$(".yearpicker").datepicker( {
-    dateFormat: " yyyy", 
+$(".yearpicker").datepicker({
+    format: "yyyy",
     viewMode: "years", 
-    minViewMode: "years",
-    autoclose: true
+    minViewMode: "years"
 });

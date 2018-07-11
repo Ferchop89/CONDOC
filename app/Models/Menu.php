@@ -33,6 +33,7 @@ class Menu extends Model
     // devuelve los 12 registros de la tabla  menu
     // el usuario ya se encuentra logueado, por lo que ya podemos
     // obtener rutas y roles.
+
     $data = new Menu();
     $xitems = $data->items();  // rutas y roles autorizadas
     $data_return = $this->where('enabled', 1)
@@ -53,7 +54,9 @@ class Menu extends Model
         return [];
       }
       $menus = new Menu();
+
       $data = $menus->optionsMenu();
+
       $menuAll = [];
       foreach ($data as $line) {
           $item = [ array_merge($line, ['submenu' => $menus->getChildren($data, $line) ]) ];
@@ -126,5 +129,4 @@ class Menu extends Model
       }
       return $itemsarr;
   }
-  
 }

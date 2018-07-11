@@ -70,7 +70,7 @@ h6 {
                 sans-serif;
   font-weight : 700;
 }
-h1.pb-1 {
+h2#titulo {
     /* float: left; */
     display: inline-block;
     width: 83%;
@@ -94,6 +94,7 @@ p.button{
 
 a:link {
   color : #1c3d6c;
+  text-decoration: none;
 }
 
 a.link-barra,
@@ -734,7 +735,7 @@ textarea.materialize-textarea+label:after {
 
 .btn {
   display        : inline-block;
-  padding        : 6px 12px;
+  padding        : 4px 12px;
   text-transform : none;
 }
 
@@ -963,6 +964,7 @@ select {
   border-bottom : 1px rgba(0, 0, 0, .26) solid;
   font-size     : 16px;
   font-weight   : bold;
+  width: 100%;
 }
 
 select:required:invalid {
@@ -1035,8 +1037,12 @@ input[type=date] {
   zoom : 1;
 }
 
-.btn {
+/* .btn {
   margin : 15px;
+} */
+.capsule .btn {
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 .btn-link {
@@ -1560,4 +1566,37 @@ textarea:invalid {
     width: 100%;
     margin: auto;
     text-align: center;
+}
+<<<<<<< HEAD
+=======
+/**/
+main .container{
+    min-height: 330px;
+}
+#navegacion {
+    padding-left: 8%;
+    font-size: 100%;
+    border: 1px solid #DCDCDC;
+    background: #F5F5F5;
+    padding-bottom: 0;
+    margin: 0;
+}
+#titulo{
+    color: black;
+}
+.capsule {
+    padding-top: 14px;
+    padding-bottom: 30px;
+}
+#gestionL{
+    margin: 0;
+    margin-left: 18px;
+}
+.big-logo img{
+    height: 70px;
+}
+button {
+    color: white;
+    background-color: white;
+    border: none;
 }

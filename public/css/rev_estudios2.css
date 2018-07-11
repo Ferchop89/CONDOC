@@ -1,0 +1,10 @@
+.block1{
+    display: flex;
+}
+.item1, .item2 , .item3{
+    display: inline-flex;
+    vertical-align: top;
+}
+.item2, .item3 {
+    width: 30%;
+}

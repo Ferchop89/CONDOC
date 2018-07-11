@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Firmas extends Model
 {
-    //
+    //Para bd local
 	protected $connection = 'mysql2';
 
     protected $fillable = [

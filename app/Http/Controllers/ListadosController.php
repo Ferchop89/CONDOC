@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
@@ -16,10 +15,10 @@ class ListadosController extends Controller
         $corte = $_GET['corte']; // fecha de corte
         $lista = $_GET['lista']; // numero de lista a imprimir del corte
         $data = $this->lista_Corte($corte,$lista); // solicitudes de la lista y corte
-
-        $rpp = 9; // registros por pagina del archivo PDF
+        $rpp = 40; // registros por pagina del archivo PDF
         $limitesPDF = $this->paginas(count($data),$rpp); // limites de iteracion para registros del PDF
         $vista = $this->listaHTML($data,$corte,$lista,$limitesPDF); // generacion del content del PDF
+        // return view("consultas.listasPDF", compact('vista'));
         $view = \View::make('consultas.listasPDF', compact('vista'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view);
@@ -52,30 +51,31 @@ class ListadosController extends Controller
         $paginas = count($limitesPDF);
         for ($i=0; $i < $paginas ; $i++)
         {
-            $composite .= "<div id='details' class='clearfix'>";
-            $composite .= "<table>";
+            $composite .= "<header id='details' class='clearfix'>";
+            $composite .= "<table class='table-header'>";
             $composite .= "<tr>";
-            $composite .= "<td><img src='images/escudo_unam_solow.svg' alt=''></td>";
+            $composite .= "<td class='logo'><img src='images/escudo_unam_solowblack.svg' alt=''></td>";
             $composite .= "<td>";
-            $composite .= "<h3>UNIVERSIDAD NACIONAL AUTONOMA DE MÉXICO</h3>";
-            $composite .= "<h3>Dirección General de Administración Escolar</h3>";
-            $composite .= "<h3>Departamente de Revisión de Estudios Profesionales</h3>";
-            $composite .= "<h3>Listado de Solicitud de Expedientes. Corte:".str_replace('.','/',$corte)."-".$lista."</h3>";
+            $composite .= "<h1>UNIVERSIDAD NACIONAL AUTONOMA DE MÉXICO</h1>";
+            $composite .= "<h2>DIRECCIÓN GENERAL DE ADMINISTRACIÓN ESCOLAR</h2>";
+            $composite .= "<h3>DEPARTAMENTO DE REVISIÓN DE ESTUDIOS PROFESIONALES</h3>";
+            $composite .= "<h3>Listado de Solicitud de Expedientes       Corte:".str_replace('.','/',$corte)."-".$lista."</h3>";
             $composite .= "</td>";
             $composite .= "</tr>";
             $composite .= "</table>";
-            $composite .= "<div id='invoice'>";
-            // $composite .=     "<h1>CORTE: ".$corte."</h1>";
-            $composite .= "</div>";
-            $composite .= "</div>";
-            $composite .= "<table border='0' cellspacing='0' cellpadding='0'>";
+            // $composite .= "<div id='invoice'>";
+            // // $composite .=     "<h1>CORTE: ".$corte."</h1>";
+            // $composite .= "</div>";
+            $composite .= "</header>";
+            $composite .= "<main>";
+            $composite .= "<table class='lista'>";
             $composite .= "<thead>";
             $composite .= "<tr>";
-            $composite .= "<th scope='col'><strong>#</strong></th>";
-            $composite .= "<th scope='col'><strong>NO. CTA.</strong></th>";
-            $composite .= "<th scope='col'><strong>NOMBRE</strong></th>";
-            $composite .= "<th scope='col'><strong>ESCUELA O FACULTAD</strong></th>";
-            $composite .= "<th scope='col'><strong>FECHA; HORA</strong></th>";
+            $composite .= "<th class='num' scope='col'><strong>#</strong></th>";
+            $composite .= "<th class='num_cta'scope='col'><strong>NO. CTA.</strong></th>";
+            $composite .= "<th class='nombre' scope='col'><strong>NOMBRE</strong></th>";
+            $composite .= "<th class='fac' scope='col'><strong>ESCUELA O FACULTAD</strong></th>";
+            $composite .= "<th class='fecha' scope='col'><strong>FECHA; HORA</strong></th>";
             $composite .= "</tr>";
             $composite .= "</thead>";
             $composite .= "<tbody>";
@@ -83,22 +83,23 @@ class ListadosController extends Controller
             {
                 $composite .= "<tr>";
                 $composite .= "<th scope='row'>".($x+1)."</th>";
-                $composite .= "<td>".$data[$x]->cuenta."</td>";
-                $composite .= "<td>".$data[$x]->nombre."</td>";
-                $composite .= "<td>".$data[$x]->procedencia."</td>";
-                $composite .= "<td>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
+                $composite .= "<td class='columna_1'>".$data[$x]->cuenta."</td>";
+                $composite .= "<td class='columna_2'>".strtoupper($data[$x]->nombre)."</td>";
+                $composite .= "<td class='columna_3'>".strtoupper($data[$x]->procedencia)."</td>";
+                $composite .= "<td class='columna_4'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
                                .explode('-',explode(' ',$data[$x]->created_at)[0])[1].'-'
                                .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
-                               .explode(' ',$data[$x]->created_at)[1]."</td>";
+                               .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</td>";
                 $composite .= "</tr>";
             }
             $composite .= "</tbody>";
             $composite .= "</table>";
-            $composite .= "<footer><strong>";
+            $composite .= "</main>";
+            $composite .= "<footer>";
             $composite .= "Hoja ".($i+1)." de ".$paginas;
             $composite .= "   --   ";
             $composite .= "fecha ".date('d/m/Y');
-            $composite .= "<strong></footer>";
+            $composite .= "</footer>";
             $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
         }
         return $composite;
@@ -106,27 +107,29 @@ class ListadosController extends Controller
 
     public function listas()
     {
-      $reqFecha = request()->input('datepicker');
+        $title = "Impresión de Listados";
+        $reqFecha = request()->input('datepicker');
 
-      if ($reqFecha==null) {
-        $corte = $this->ultimoCorte();
-      } else {
-        $vfecha = explode("/",$reqFecha);
-        $xfecha = $vfecha[0].".".$vfecha[1].".".$vfecha[2];
-        $corte = $xfecha;
-      }
+        if ($reqFecha==null) {
+            $corte = $this->ultimoCorte();
+        } else {
+            $vfecha = explode("/",$reqFecha);
+            $xfecha = $vfecha[0].".".$vfecha[1].".".$vfecha[2];
+            $corte = $xfecha;
+        }
 
-      if (isset($_GET['btnLista'])) {
-        $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
-        $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
-        $lista = $_GET['btnLista'];
+        if (isset($_GET['btnLista'])) {
+            $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
+            $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
+            $lista = $_GET['btnLista'];
         return redirect()->route('imprimePDF',compact('corte','lista'));
-      } else {
-        $data = $this->listasxCorte($corte);
-        $nListas = count($data);
-        $xListas = $this->acordionHtml($data,$corte);
-        $xProcede  = $this->procedencias($data);
-        return view('consultas.listasRev',[
+        } else {
+            $data = $this->listasxCorte($corte);
+            $nListas = count($data);
+            $xListas = $this->acordionHtml($data,$corte);
+            $xProcede  = $this->procedencias($data);
+            return view('consultas.listasRev',[
+                'title'=>$title,
                 'data'=>$data,
                 'listas'=>$xListas,
                 'corte' =>$corte,

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class IrregularidadesRE extends Model
 {
     //
-
     protected $fillable = [
         'cat_cve', 
         'cat_subcve', 

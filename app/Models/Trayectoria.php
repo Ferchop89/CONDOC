@@ -11,13 +11,13 @@ class Trayectoria extends Model
 
     protected $fillable = [
 		'id_trayectoria', 
-		'nivel', 
 		'generacion', 
 		'num_planestudios', 
 		'nombre_planestudios', 
 		'num_cta',
 		'avance_creditos',
 		'cumple_requisitos',
+		'id_nivel',
     ];
 
 }

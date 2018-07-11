@@ -39,14 +39,28 @@ return [
             'prefix' => '',
         ],
 
-        'mysql' => [
+        /*'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-
             'database' => env('DB_DATABASE', 'condoc'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_spanish_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],*/
+
+        'condoc_old' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_SECOND', 'localhost'),
+            'port' => env('DB_PORT_SECOND', '3306'),
+            'database' => env('DB_DATABASE_SECOND', 'condoc_old'),
+            'username' => env('DB_USERNAME_SECOND', 'root'),
+            'password' => env('DB_PASSWORD_SECOND', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_spanish_ci',
@@ -118,6 +132,7 @@ return [
             'strict' => true,
             'engine' => null,
         ],
+
     ],
 
     /*
