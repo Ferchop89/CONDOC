@@ -8,14 +8,12 @@ Route::get('/m4',[
   'middleware' => 'roles',
   'roles' => ['Ofisi','AgUnam']
   ]);
-
 Route::get('/m6',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm6',
   'middleware' => 'roles',
   'roles' => ['JArea']
   ]);
-
 Route::get('/m8',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm8',
@@ -29,6 +27,7 @@ Route::get('/m9',[
   'roles' => ['Jud','Ofisi']
   ]);
 
+/**/
 Route::get('/cortes',[
     'uses'=> 'InformesController@cortes',
     'as'=> 'cortes',
@@ -48,25 +47,24 @@ Route::get('/datos-personales',[
     'uses'=> 'RevEstudiosController@showSolicitudNC',
     'as'=> 'datos-personales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria'] //Jefe depto. títulos y dirección
+    'roles' => ['Ofisi', 'Sria']
 ]);
 Route::post('/datos-personales',[
     'uses'=> 'RevEstudiosController@postDatosPersonales',
     'as'=> 'datos-personales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
+    'roles' => ['Ofisi', 'Sria']
 ]);
 Route::get('/rev_est/{num_cta}',[
     'uses'=> 'RevEstudiosController@showDatosPersonales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
+    'roles' => ['Ofisi', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est');
-
 Route::post('/rev_est/{num_cta}',[
     'uses'=> 'RevEstudiosController@verificaDatosPersonales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
+    'roles' => ['Ofisi', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
 
@@ -76,7 +74,6 @@ Route::post('/rev_est/{num_cta}',[
     Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
         ->where('num_cta','[0-9]+')
         ->name('solicitud_RE');
-
 /*Recepción de Expedientes por Alumno*/
 Route::get('recepcion', [
   'uses' => 'UserController@showrecepcionExpedientes',
@@ -89,4 +86,20 @@ Route::post('/recepcion-expedientes', [
     'as' => 'postRecepcion',
     'middleware' => 'roles',
     'roles' => ['Sria']
+]);
+/*Impresión de Vales*/
+
+Route::get('imprimeVale',[
+  'uses'=> 'ListadosController@Vales',
+  'as'=> 'imprimeVale',
+  'middleware' => 'roles',
+  'roles' => ['Sria']
+]);
+
+/*Impresión de Etiquetas*/
+Route::get('imprimeEtiqueta',[
+  'uses'=> 'ListadosController@Etiquetas',
+  'as'=> 'imprimeEtiqueta',
+  'middleware' => 'roles',
+  'roles' => ['Sria']
 ]);

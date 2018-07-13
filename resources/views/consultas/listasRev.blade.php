@@ -42,6 +42,8 @@
                     <div id="collapse{{$i+1}}" class="panel-collapse collapse {{$in = (count($data)==1)? "in": ''}}">
                       <div class="panel-body">
                           <button name="btnLista" type="submit" value="{{$i+1}}" class="btn btn-danger btn-xs">PDF</button>
+                          <button name="btnVale" type="submit" value="{{$i+1}}" class="btn btn-success btn-xs">Vales</button>
+                          <button name="btnEtiqueta" type="submit" value="{{$i+1}}" class="btn btn-info btn-xs">Etiquetas</button>
                     <div class="table-responsive">
                         <table class="table table-striped">
                         <thead>

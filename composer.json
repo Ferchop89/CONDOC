@@ -17,6 +17,7 @@
         "milon/barcode": "^5.3",
         "nesbot/carbon": "^1.26",
         "uepg/laravel-sybase": "^2.0"
+        
     },
     "require-dev": {
         "filp/whoops": "~2.0",

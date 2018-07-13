@@ -7,6 +7,7 @@ use App\Models\Procedencia;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
+use \Milon\Barcode\DNS1D;
 
 class ListadosController extends Controller
 {
@@ -24,7 +25,35 @@ class ListadosController extends Controller
         $pdf->loadHTML($view);
         return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
     }
-
+    public function Vales()
+    {
+        $corte = $_GET['corte']; // fecha de corte
+        $lista = $_GET['lista']; // numero de lista a imprimir del corte
+        $data = $this->lista_Corte($corte,$lista); // solicitudes de la lista y corte
+        $rpp = 9; // registros por pagina del archivo PDF
+        $limitesPDF = $this->paginas(count($data),$rpp); // limites de iteracion para registros del PDF
+        $vista = $this->listaValesHTML($data,$corte,$lista,$limitesPDF); // generacion del content del PDF
+        return view("consultas.vales", compact('vista'));
+        // $view = \View::make('consultas.vales', compact('vista'))->render();
+        // $pdf = \App::make('dompdf.wrapper');
+        // $pdf->loadHTML($view)->setPaper('legal','portrait');
+        // return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
+    }
+    public function Etiquetas()
+    {
+        $corte = $_GET['corte']; // fecha de corte
+        $lista = $_GET['lista']; // numero de lista a imprimir del corte
+        $data = $this->lista_Corte($corte,$lista); // solicitudes de la lista y corte
+        $rpp = 14; // registros por pagina del archivo PDF
+        $limitesPDF = $this->paginas(count($data),$rpp); // limites de iteracion para registros del PDF
+        // dd($limitesPDF);
+        $vista = $this->listaEtiquetasHTML($data,$corte,$lista,$limitesPDF); // generacion del content del PDF
+        return view("consultas.etiquetas", compact('vista'));
+        // $view = \View::make('consultas.etiquetas', compact('vista'))->render();
+        // $pdf = \App::make('dompdf.wrapper');
+        // $pdf->loadHTML($view);
+        // return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
+    }
     public function paginas($total_rpp,$rpp)
     {
         // Arreglo de registros por Pagina
@@ -34,7 +63,6 @@ class ListadosController extends Controller
         $a_limites = array();
         // Si existe un residuo se aumenta un ciclo para cubrir los registros residuales
         $cuenta = ($residuo>0)? $entero+1: $entero;
-        // dd($total_rpp,$rpp,$cuenta,$residuo);
         for ($i=0; $i < $cuenta ; $i++) {
           $inferior = $i * $rpp;
           $superior  = (($total_rpp-$inferior)<$rpp)? $inferior+$residuo: $inferior+$rpp;
@@ -63,9 +91,6 @@ class ListadosController extends Controller
             $composite .= "</td>";
             $composite .= "</tr>";
             $composite .= "</table>";
-            // $composite .= "<div id='invoice'>";
-            // // $composite .=     "<h1>CORTE: ".$corte."</h1>";
-            // $composite .= "</div>";
             $composite .= "</header>";
             $composite .= "<main>";
             $composite .= "<table class='lista'>";
@@ -104,12 +129,138 @@ class ListadosController extends Controller
         }
         return $composite;
     }
-
+    public function listaValesHTML($data,$corte,$lista,$limitesPDF)
+    {
+        // numero de hojas
+        $composite = "";
+        $paginas = count($limitesPDF);
+        for ($i=0; $i < $paginas ; $i++)
+        {
+            $composite .= "<main>";
+            $y=0;
+            for ($x=$limitesPDF[$i][0]; $x < $limitesPDF[$i][1] ; $x=$x+3)
+            {
+                $composite .= "<table class='lista'>";
+                $composite .= "<tbody>";
+                $composite .= "<thead>";
+                $composite .= "<tr>";
+                $composite .= "<th class='columna_1' scope='col'></th>";
+                $composite .= "<th class='columna_2' scope='col'></th>";
+                $composite .= "<th class='columna_3' scope='col'></th>";
+                $composite .= "</tr>";
+                $composite .= "</thead>";
+                $composite .= "<tr>";
+                $composite .= "<td class='col_1'>";
+                $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+                $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
+                $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x]->nombre)."</p>";
+                $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+                $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
+                               .explode('-',explode(' ',$data[$x]->created_at)[0])[1].'-'
+                               .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
+                               .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</p>";
+                $composite .= "</td>";
+                if(isset($data[$x+1])){
+                    $y++;
+                    $composite .= "<td class='col_2'>";
+                    $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+                    $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x+1]->cuenta,0,1)."-".substr($data[$x+1]->cuenta,1,7)."-".substr($data[$x+1]->cuenta,8,1)."</p>";
+                    $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x+1]->nombre)."</p>";
+                    $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+                    $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x+1]->created_at)[0])[2].'-'
+                                   .explode('-',explode(' ',$data[$x+1]->created_at)[0])[1].'-'
+                                   .explode('-',explode(' ',$data[$x+1]->created_at)[0])[0].'; '
+                                   .substr(explode(' ',$data[$x+1]->created_at)[1],0,5)."</p>";
+                    $composite .= "</td>";
+                }
+                if (isset($data[$x+2])) {
+                    $y++;
+                    $composite .= "<td class='col_3'>";
+                    $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+                    $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x+2]->cuenta,0,1)."-".substr($data[$x+2]->cuenta,1,7)."-".substr($data[$x+2]->cuenta,8,1)."</p>";
+                    $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x+2]->nombre)."</p>";
+                    $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+                    $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x+2]->created_at)[0])[2].'-'
+                                   .explode('-',explode(' ',$data[$x+2]->created_at)[0])[1].'-'
+                                   .explode('-',explode(' ',$data[$x+2]->created_at)[0])[0].'; '
+                                   .substr(explode(' ',$data[$x+2]->created_at)[1],0,5)."</p>";
+                    $composite .= "</td>";
+                    $composite .= "</tr>";
+                    $composite .= "</tbody>";
+                    $composite .= "</table>";
+                    $y++;
+                    if($y==9)
+                    {
+                        $y=0;
+                    }
+                }
+            }
+            $composite .= "</main>";
+            $composite .= "<footer>";
+            $composite .= "</footer>";
+            $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
+        }
+        return $composite;
+    }
+    public function listaEtiquetasHTML($data,$corte,$lista,$limitesPDF)
+    {
+        // numero de hojas
+        $composite = "";
+        $paginas = count($limitesPDF);
+        for ($i=0; $i < $paginas ; $i++)
+        {
+            $composite .= "<header>";
+            $composite .= "</header>";
+            $composite .= "<main>";
+            $composite .= "<div class='content'>";
+            $y=0;
+            for ($x=$limitesPDF[$i][0]; $x < $limitesPDF[$i][1] ; $x++)
+            {
+                if($x%2==0)
+                {
+                    $composite .= "<div class='etiqueta left'>";
+                }
+                else {
+                    $composite .= "<div class='etiqueta right'>";
+                }
+                $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+                $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
+                $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x]->nombre)."</p>";
+                $composite .= "<p class='num_cta_big elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
+                $d = new DNS1D();
+                $d->setStorPath(__DIR__."/cache/");
+                $composite.= "<div class='barcode'>".$d->getBarcodeHTML($data[$x]->cuenta, "C39", 1.6, 37)."</div>";
+                $composite .= "</td>";
+                $composite .= "</div>";
+                if ($y%2!=0){
+                    $composite .= "<div class='linea'>";
+                    $composite .= "</div>";
+                }
+                elseif ($y%2==0 && $x == $limitesPDF[$i][1]-1 ) {
+                    $composite .= "<div class='linea'>";
+                    $composite .= "</div>";
+                }
+                $y++;
+                if($y==14)
+                {
+                    $y=0;
+                }
+            }
+            $composite .= "</main>";
+            $composite .= "<footer>";
+            $composite .= "</footer>";
+            if($i < $paginas-1)
+            {
+                $composite .= "<div class='page-break'>";
+                $composite .= "</div>";
+            }
+        }
+        return $composite;
+    }
     public function listas()
     {
         $title = "Impresión de Listados";
         $reqFecha = request()->input('datepicker');
-
         if ($reqFecha==null) {
             $corte = $this->ultimoCorte();
         } else {
@@ -117,21 +268,31 @@ class ListadosController extends Controller
             $xfecha = $vfecha[0].".".$vfecha[1].".".$vfecha[2];
             $corte = $xfecha;
         }
-
         if (isset($_GET['btnLista'])) {
             $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
             $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
             $lista = $_GET['btnLista'];
         return redirect()->route('imprimePDF',compact('corte','lista'));
-        } else {
+        }
+        elseif (isset($_GET['btnVale'])) {
+            $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
+            $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
+            $lista = $_GET['btnVale'];
+        return redirect()->route('imprimeVale',compact('corte','lista'));
+        }
+        elseif (isset($_GET['btnEtiqueta'])) {
+            $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
+            $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
+            $lista = $_GET['btnEtiqueta'];
+        return redirect()->route('imprimeEtiqueta',compact('corte','lista'));
+        }
+        else {
             $data = $this->listasxCorte($corte);
             $nListas = count($data);
-            $xListas = $this->acordionHtml($data,$corte);
             $xProcede  = $this->procedencias($data);
             return view('consultas.listasRev',[
                 'title'=>$title,
                 'data'=>$data,
-                'listas'=>$xListas,
                 'corte' =>$corte,
                 'nListas' => $nListas, // la consulta no arrojo listas
                 'procede' => $xProcede
@@ -150,64 +311,6 @@ class ListadosController extends Controller
         $procede[$i] = ($cuenta==count($data[$i]))? 'Escuela: '.$escuela : "";
       }
       return $procede;
-    }
-
-    public function acordionHtml($data,$corte)
-    {
-      // Elaboracion del acordion con listas.
-      $composite = "<div class='panel-group' id='accordion'>";
-      for ($i=0; $i < count($data) ; $i++) {
-        $x_list = $i + 1;
-
-        $composite .=    "<div class='panel panel-default'>";
-        $composite .=         "<div class='panel-heading'>";
-        $composite .=            "<h4 class='panel-title'>";
-        $composite .=              "<a data-toggle='collapse' data-parent='#accordion' href='#collapse".$x_list."'>";
-        $composite .=              "Corte".$corte."; Lista ".$x_list.":    ".count($data[$i])." solicitudes.";
-        $composite .=              "</a>";
-        $composite .=            "</h4>";
-        $composite .=         "</div>";
-        // solo el primer listado se despliega, los demas se colapsan.
-        $collapse   =       (count($data)==1)? 'in': '';
-        $composite .=       "<div id='collapse".$x_list."' class='panel-collapse collapse ".$collapse."'>";
-        $composite .=       "<div class='panel-body'>";
-        // formularios para la impresion de listas
-        $composite .=       "{{ Form::open(['action' => 'ListadosController@pdf', 'method' => 'PUT']) }} ";
-        $composite .=           "<button name='btnLista_".$x_list."' type='submit' value='".$x_list."' class='btn btn-danger btn-xs'>PDF</button>";
-        $composite .=       "{{ Form::close() }}";
-        // Tabla con la lista de solicitudes
-        $composite .=        "<div class='table-responsive'>";
-        $composite .=         "<table class='table table-striped'>";
-        $composite .=           "<thead>";
-        $composite .=             "<tr>";
-        $composite .=               "<th scope='col'>#</th>";
-        $composite .=               "<th scope='col'><strong>No. Cta</strong></th>";
-        $composite .=               "<th scope='col'><strong>Nombre</strong></th>";
-        $composite .=               "<th scope='col'><strong>Escuela o Facultad</strong></th>";
-        $composite .=               "<th scope='col'><strong>Fecha; Hora</strong></th>";
-        $composite .=             "</tr>";
-        $composite .=           "</thead>";
-        $composite .=           "<tbody>";
-        for ($x=0; $x < count($data[$i]) ; $x++) {
-            $dateTime = new Carbon($data[$i][$x]->created_at);
-            $composite .=           "<tr>";
-            $composite .=             "<th scope='row'>".($x+1)."</th>";
-            $composite .=               "<td>".$data[$i][$x]->cuenta."</td>";
-            $composite .=               "<td>".$data[$i][$x]->nombre."</td>";
-            $composite .=               "<td>".$data[$i][$x]->procedencia."</td>";
-            $composite .=               "<td>".$dateTime->format("d/m/Y")."; ".$dateTime->toTimeString()."</td>";
-            $composite .=           "</tr>";
-        }
-        $composite .=            "</tbody>";
-        $composite .=         "</table>";
-        $composite .=        "</div>"; // cierra el table responsive
-        $composite .=       "</div>"; // cierra el panel-body
-        $composite .=      "</div>"; // cierra el collapse
-        $composite .=     "</div>"; // cierra el panel-default
-      }
-      $composite .= "<div>"; // cierra el acordeon
-
-      return $composite;
     }
     public function ultimoCorte()
     {

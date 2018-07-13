@@ -1,0 +1,278 @@
+html {
+    margin: 0;
+}
+body {
+    width: 21.9cm !important;
+    height: 27.94cm;
+    margin: 0 auto;
+    color: #001028;
+    background: #FFFFFF;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+header{
+    width: 100%;
+    display: block;
+    clear: both;
+    border: solid 1px red;
+    display: none;
+}
+main {
+    width: 21.9cm;
+    border: solid 1px;
+    display: block;
+}
+.content{
+    display: table;
+}
+table{
+    margin: 0;
+    padding: 0;
+    border-collapse: separate;
+    border-spacing: 0px 0px;
+}
+th{
+    width: 7.1cm;
+    padding: 0;
+    margin: 0;
+}
+td{
+    height: 11.5cm;
+    border: solid 1px;
+    padding: 0;
+    margin: 0;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+.test {
+    width: 7.3cm;
+    transform: rotate(-60deg);
+    position: absolute;
+    color: silver;
+    font-size: 3.2em;
+    opacity: 0.5;
+}
+.num_cta {
+    width: 7.3cm;
+    transform: rotate(-90deg);
+    position: absolute;
+}
+.nombre {
+   width: 7.3cm;
+   transform: rotate(-90deg);
+   position: absolute;
+}
+.oficina {
+    width: 7.3cm;
+    transform: rotate(-90deg);
+    position: absolute;
+}
+.fecha {
+    width: 7.3cm;
+    transform: rotate(-90deg);
+    position: absolute;
+}
+/*Fila 1*/
+/*Columna 1*/
+.col_1 .test.elem_0 {
+    top: 5.5cm;
+    left: 0cm;
+}
+.col_1 .num_cta.elem_0 {
+    top: 6.5cm;
+    left: -3cm;
+}
+.col_1 .nombre.elem_0 {
+    top: 6.5cm;
+    left: -2cm;
+}
+.col_1 .oficina.elem_0 {
+    top: 6.5cm;
+    left: 0cm;
+}
+.col_1 .fecha.elem_0 {
+    top: 6.5cm;
+    left: 2.5cm;
+}
+/*Columna 2*/
+.col_2 .test.elem_1 {
+    top: 5.5cm;
+    left: 7.3cm;
+}
+.col_2 .num_cta.elem_1 {
+    top: 6.5cm;
+    left: 4.3cm;
+}
+.col_2 .nombre.elem_1 {
+    top: 6.5cm;
+    left: 5.3cm;
+}
+.col_2 .oficina.elem_1 {
+    top: 6.5cm;
+    left: 7.3cm;
+}
+.col_2 .fecha.elem_1 {
+    top: 6.5cm;
+    left: 9.8cm;
+}
+/*Columna 3*/
+.col_3 .test.elem_2 {
+    top: 5.5cm;
+    left: 14.6cm;
+}
+.col_3 .num_cta.elem_2 {
+    top: 6.5cm;
+    left: 11.7cm;
+}
+.col_3 .nombre.elem_2 {
+    top: 6.5cm;
+    left: 12.7cm;
+}
+.col_3 .oficina.elem_2 {
+    top: 6.5cm;
+    left: 14.7cm;
+}
+.col_3 .fecha.elem_2 {
+    top: 6.5cm;
+    left: 17.2cm;
+}
+/*Fila 2*/
+/*Columna 1*/
+.col_1 .test.elem_3 {
+    top: 17cm;
+    left: 0cm;
+}
+.col_1 .num_cta.elem_3 {
+    top: 18cm;
+    left: -3cm;
+}
+.col_1 .nombre.elem_3 {
+    top: 18cm;
+    left: -2cm;
+}
+.col_1 .oficina.elem_3 {
+    top: 18cm;
+    left: 0cm;
+}
+.col_1 .fecha.elem_3 {
+    top: 18cm;
+    left: 2.5cm;
+}
+
+/*Columna 2*/
+.col_2 .test.elem_4 {
+    top: 17cm;
+    left: 7.3cm;
+}
+.col_2 .num_cta.elem_4 {
+    top: 18cm;
+    left: 4.3cm;
+}
+.col_2 .nombre.elem_4 {
+    top: 18cm;
+    left: 5.3cm;
+}
+.col_2 .oficina.elem_4 {
+    top: 18cm;
+    left: 7.3cm;
+}
+.col_2 .fecha.elem_4 {
+    top: 18cm;
+    left: 9.8cm;
+}
+/*Columna 3*/
+.col_3 .test.elem_5 {
+    top: 17cm;
+    left: 14.6cm;
+}
+.col_3 .num_cta.elem_5 {
+    top: 18cm;
+    left: 11.7cm;
+}
+.col_3 .nombre.elem_5 {
+    top: 18cm;
+    left: 12.7cm;
+}
+.col_3 .oficina.elem_5 {
+    top: 18cm;
+    left: 14.7cm;
+}
+.col_3 .fecha.elem_5 {
+    top: 18cm;
+    left: 17.2cm;
+}
+/*Fila 3*/
+/*Columna 1*/
+.col_1 .test.elem_6 {
+    top: 28.5cm;
+    left: 0cm;
+}
+.col_1 .num_cta.elem_6 {
+    top: 29.5cm;
+    left: -3cm;
+}
+.col_1 .nombre.elem_6 {
+    top: 29.5cm;
+    left: -2cm;
+}
+.col_1 .oficina.elem_6 {
+    top: 29.5cm;
+    left: 0cm;
+}
+.col_1 .fecha.elem_6 {
+    top: 29.5cm;
+    left: 2.5cm;
+}
+/*Columna 2*/
+.col_2 .test.elem_7 {
+    top: 28.5cm;
+    left: 7.3cm;
+}
+.col_2 .num_cta.elem_7 {
+    top: 29.5cm;
+    left: 4.3cm;
+}
+.col_2 .nombre.elem_7 {
+    top: 29.5cm;
+    left: 5.3cm;
+}
+.col_2 .oficina.elem_7 {
+    top: 29.5cm;
+    left: 7.3cm;
+}
+.col_2 .fecha.elem_7 {
+    top: 29.5cm;
+    left: 9.8cm;
+}
+/*Columna 3*/
+.col_3 .test.elem_8 {
+    top: 28.5cm;
+    left: 14.6cm;
+}
+.col_3 .num_cta.elem_8 {
+    top: 29.5cm;
+    left: 11.7cm;
+}
+.col_3 .nombre.elem_8 {
+    top: 29.5cm;
+    left: 12.7cm;
+}
+.col_3 .oficina.elem_8 {
+    top: 29.5cm;
+    left: 14.7cm;
+}
+.col_3 .fecha.elem_8 {
+    top: 29.5cm;
+    left: 17.2cm;
+}
+footer{
+    width: 100%;
+    display: block;
+    height: 100px;
+}

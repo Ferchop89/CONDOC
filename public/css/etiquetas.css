@@ -1,0 +1,94 @@
+html {
+    margin: 0;
+    padding: 0;
+}
+body {
+  position: relative;
+  width: 21.6cm !important;
+  height: 27.8cm !important;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-family: Arial;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+header {
+  position: relative;
+  width: 100%;
+  display: block;
+  clear: both;
+}
+main{
+    display: block;
+    width: 100%;
+    position: relative;
+    margin: auto;
+    margin: 0;
+    padding: 0;
+    clear: both;
+}
+.content {
+    display: block;
+    clear: both;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+.etiqueta {
+    height: 3.2cm;
+    padding: 0.3cm 0.5cm;
+    display: block;
+    border: solid 1px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.linea
+{
+    clear: both;
+    height: 0.1px;
+}
+.left{
+    float: left;
+    width : 43%;
+    border: solid 2px black;
+    display : inline-block;
+}
+.right{
+    float: right;
+    width : 43%;
+    border: solid 2px black;
+}
+.num_cta{
+    text-align:right;
+}
+.num_cta_big {
+    text-align: center;
+    font-size: 3.2em;
+}
+.barcode div {
+    margin: auto;
+}
+.test {
+    margin: 0;
+    padding: 0;
+    height: 0;
+    width: 6.5cm;
+    position: relative;
+    top: -0.3cm;
+    font-size: 1.8em;
+    color: silver;
+    opacity: 1;
+    font-weight: bold;
+    z-index: 100;
+}
+footer {
+    position: relative;
+    width: 100%;
+    display: block;
+    clear: both;
+}
