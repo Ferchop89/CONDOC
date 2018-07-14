@@ -18,6 +18,7 @@ class Trayectoria extends Model
 		'avance_creditos',
 		'cumple_requisitos',
 		'id_nivel',
+		'nombre_carrera'
     ];
 
 }

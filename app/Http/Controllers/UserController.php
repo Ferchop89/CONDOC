@@ -77,7 +77,7 @@ class UserController extends Controller
                     $id['plan_clave_SIAE'] = $value->plan_clave;
                 }
             }
-            $plantel = DB::connection('condoc_old')->select('select car_cve_plt_car, car_nom_plan from carreras WHERE car_car_siae = '.$id['carrera_clave_SIAE'].' AND car_plan_siae = '.$id['plan_clave_SIAE']);
+            $plantel = DB::connection('mysql2')->select('select car_cve_plt_car, car_nom_plan from carreras WHERE car_car_siae = '.$id['carrera_clave_SIAE'].' AND car_plan_siae = '.$id['plan_clave_SIAE']);
             if($plantel == NULL)
             {
                 // $plantel = DB::connection('condoc_old')->select('select * WHERE mapeocarreracincotres = '.$id['carrera_clave_SIAE']);
@@ -92,15 +92,15 @@ class UserController extends Controller
              }
              if($id['genero'] == 'FEMENINO')
              {
-                 $titulo = DB::connection('condoc_old')->select('select ori_grado_titulo_fem from orientaciones WHERE ori_plan = '.$id['plantel_clave_SIAE'].' AND ori_carr = '.$id['carr_clv_plt_carr']);
+                 $titulo = DB::connection('mysql2')->select('select ori_grado_titulo_fem from orientaciones WHERE ori_plan = '.$id['plantel_clave_SIAE'].' AND ori_carr = '.$id['carr_clv_plt_carr']);
                  $id['titulo'] = $titulo[0]->ori_grado_titulo_fem;
              }
              else {
-                 $titulo = DB::connection('condoc_old')->select('select ori_grado_titulo_masc from orientaciones WHERE ori_plan = '.$id['plantel_clave_SIAE']);
+                 $titulo = DB::connection('mysql2')->select('select ori_grado_titulo_masc from orientaciones WHERE ori_plan = '.$id['plantel_clave_SIAE']);
                  $id['titulo'] = $titulo[0]->ori_grado_titulo_masc;
              }
              // dd($titulo, $id);
-            DB::disconnect('condoc_old');
+            DB::disconnect('mysql2');
             $datos = $id;
         }
         else {

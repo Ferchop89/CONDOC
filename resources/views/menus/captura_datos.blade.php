@@ -158,17 +158,13 @@
 			</div>
 		</div>
 		<div class="item4">
-			<p class="espe">Plan de estudios: {{$trayectoria->situaciones[$num_situaciones]->plantel_clave}}</p>
-			@if($trayectoria->situaciones[$num_situaciones]->nivel == "B")
-				<p>Nivel: BACHILLERATO</p>
-			@elseif($trayectoria->situaciones[$num_situaciones]->nivel == "L")
+			@if($lic->nivel == "L")
+				<p class="espe">Plan de estudios: {{$lic->plan_clave}}</p>
 				<p>Nivel: LICENCIATURA</p>
-			@else
-				<p>Nivel: </p>
 			@endif
 
-			<p>Carrera: {{$trayectoria->situaciones[$num_situaciones]->carrera_nombre}}</p>
-			<p>Orientación: {{$trayectoria->situaciones[$num_situaciones]->plan_nombre}}</p>
+			<p>Carrera: {{$lic->carrera_nombre}}</p>
+			<p>Orientación: {{$lic->plan_nombre}}</p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -227,7 +223,7 @@
 						Fecha de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input class="date form-control fecha datepicker_esp" type="text" value="{{$identidad->nacimiento}}" name="fecha_nac" maxlength="10">
+						<input class="date form-control fecha datepicker_esp" type="text" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $identidad->nacimiento))) }}" name="fecha_nac" maxlength="10">
 					</div>
 				</div>
 				<div class="row">
@@ -249,6 +245,10 @@
 						</div>
 					</div>
 				</div>
+				<hr/>
+				<div class="row" id="detalles">
+					Información proveniente de: <b>{{$sistema}}</b>
+				</div>
 			</div>
 			<div class="nacional">
 				<div class="row">
@@ -265,7 +265,7 @@
 						Número de folio:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input id="folio_doc" type="text" class="form-control" name="folio_doc">
+						<input id="folio_doc" type="text" class="form-control" name="folio_doc" value="">
 					</div>
 				</div>
 				<div class="row">
@@ -351,24 +351,41 @@
 						      			Folio de certificado:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert[]">
+						      			@if(isset($tyt->folio_certificado))
+						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]" value="{{ $tyt->folio_certificado }}">
+						      			@else
+						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]">
+						      			@endif
 						      		</div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			<select id="seleccion_periodo" name="seleccion_fecha[]">
-						      				<option id="periodo" name="periodo" selected>Periodo de expedición</option>
-						      			    <option id="mes_anio" name="mes_anio">Fecha de expedición</option>
+						      				<option id="periodo" name="periodo" value="0" selected>Periodo de expedición</option>
+						      			    <option id="mes_anio" name="mes_anio" value="1">Fecha de expedición</option>
 						      			</select>
 								    </div>
 								    <div id="campo" class="col-sm-6">
 								    	<div id="periodo_show">
-								    		De <input name="inicio_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+								    		De 
+								    		@if(isset($tyt->inicio_periodo))
+								    			<input name="inicio_periodo[]" type="text" class="yearpicker" value="{{$tyt->inicio_periodo}}" style="width: 41%"/>
+						      				@else
+						      					<input name="inicio_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+						      				@endif
 								    		 a 
-								    		<input name="fin_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+								    		@if(isset($tyt->fin_periodo))
+								    			<input name="fin_periodo[]" type="text" class="yearpicker" value="{{$tyt->fin_periodo}}" style="width: 41%"/>
+						      				@else
+						      					<input name="fin_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+						      				@endif
 								    	</div>
 								    	<div id="mes_anio_show"> 
-								    		<input class="date form-control fecha" type="text" name="mes_anio[]" maxlength="10">
+								    		@if(isset($tyt->mes_anio))
+								    			<input class="date form-control fecha" type="text" name="mes_anio[]" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $tyt->mes_anio))) }}" maxlength="10">
+								    		@else
+								    			<input class="date form-control fecha" type="text" name="mes_anio[]" maxlength="10">
+								    		@endif
 								    	</div>
 						      		</div>
 						      	</div>
@@ -377,7 +394,11 @@
 						      			Promedio:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="promedio" type="text" class="form-control" name="promedio[]" value="" maxlength="5" >
+						      			@if(isset($tyt->promedio))
+						      				<input id="promedio" type="text" class="form-control" name="promedio[]" value="{{$tyt->promedio}}" maxlength="5" >
+						      			@else
+						      				<input id="promedio" type="text" class="form-control" name="promedio[]" maxlength="5" >
+						      			@endif
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -391,6 +412,10 @@
 						      				@endforeach
 						      			</select>
 						      		</div>
+						      	</div>
+						      	<hr/>
+						      	<div class="row" id="detalles" name="sistema">
+						      		Información proveniente de: <b>{{$sistema}}</b>
 						      	</div>
 						    </div>
 					    @endforeach

@@ -21,7 +21,8 @@ class Esc_Proc extends Model
 		'fin_periodo',
 		'promedio',
 		'pais_cve', 
-		'num_cta'
+		'num_cta',
+		'irre_cert'
     ];
 
 }
