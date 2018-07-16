@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Bach extends Model
 {
     //
-	protected $connection = 'mysql2';
+	protected $connection = 'condoc_old';
 
     protected $fillable = [
-        'ncta', 
-        'per', 
-        'prom', 
-        'cve', 
-        'nom', 
-        'ubic', 
-        'tipo',  
+        'ncta',
+        'per',
+        'prom',
+        'cve',
+        'nom',
+        'ubic',
+        'tipo',
         'marca',
     ];
 

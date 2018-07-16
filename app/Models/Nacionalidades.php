@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Nacionalidades extends Model
 {
     //
-	protected $connection = 'mysql2';
+	protected $connection = 'condoc_old';
 
     protected $fillable = [
-		'id_nacionalidad', 
+		'id_nacionalidad',
 		'nacionalidad'
     ];
 

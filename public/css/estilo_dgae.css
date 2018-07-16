@@ -254,7 +254,7 @@ h2.eventos {
 }
 
 .logo_der {
-  margin-top : 5px;
+  margin-top : 20px;
 }
 
 a.info {
@@ -1574,7 +1574,7 @@ main .container{
     min-height: 330px;
 }
 #navegacion {
-    padding-left: 8%;
+    padding-left: 2%;
     font-size: 100%;
     border: 1px solid #DCDCDC;
     background: #F5F5F5;

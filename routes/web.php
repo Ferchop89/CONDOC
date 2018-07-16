@@ -2,7 +2,7 @@
 
 use App\Models\Corte;
 use App\Models\Solicitud;
-
+use App\Models\AgunamNo;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,7 +60,6 @@ Route::get('/c-c', function () {
     $users = DB::connection("mysql")->table("users")->get();
     dd($users);
 });
-
 Route::get('/c-c-2', function () {
 
     $sbs = DB::connection("mysql2")->table("paises")->where('pais_nombre', '=', 'AGUACALIENTES')->first();
@@ -85,17 +84,7 @@ Route::get('/cortes',[
   'roles' => ['Admin']
 ]);
 
-Route::get('/c-c', function () {
 
-    $users = DB::connection("mysql")->table("users")->get();
-    dd($users);
-
-});
-
-Route::get('/c-c-2', function () {
-    $sbs = DB::connection("sybase")->table("Catalogotext")->get();
-    dd($sbs);
-});
 
 
 Route::put('/creaListas',[
@@ -146,10 +135,74 @@ Route::get('imprimePDF',[
   'roles' => ['Sria']
 ]);
 
-Route::get('pdf', 'PdfController@invoice');
-
 Route::get('dropdowns',function(){
    return view('components/dropdowns');
  });
 
 // Fin de rutas y cortes.
+// Gestion de Listas AGUNAM -- INICIO
+Route::get('agunam',[
+  'uses'=> 'ListadosController@gestionAgunam',
+  'as'=> 'gestion_agUnam',
+  'middleware' => 'roles',
+  'roles' => ['Admin','Sria']
+]);
+Route::get('agunamUpdate/{corte}/{listado}',[
+  'uses'=> 'ListadosController@agunamUpdate',
+  'as'=> 'agunamUpdate',
+  'middleware' => 'roles',
+  'roles' => ['Admin','Sria']
+]);
+Route::put('agunamUpdateOk',[
+  'uses'=> 'ListadosController@agunamUpdateOk',
+  'as'=> 'agunamUpdateOk',
+  'middleware' => 'roles',
+  'roles' => ['Admin','Sria']
+]);
+// Gestion de listas AGUNAM -- FIN
+
+// Gestion de expedientes no encontrados en agunam
+Route::get('agunam/lista_noagunam',[
+    'uses' => 'AgunamNoController@expedientes',
+    'as' => 'agunam/expedientes',
+    'roles' => ['Admin']
+]);//->name('users');
+
+Route::get('agunam/{expediente}/editar', [
+    'uses' => 'AgunamNoController@editar_noagunam',
+    'as' => 'editar_noagunam',
+    'roles' => ['Admin']
+    ])->where('exped','[0-9]+');
+
+Route::get('agunam/{expediente}/ver', [
+    'uses' => 'AgunamNoController@ver_noagunam',
+    'as' => 'ver_noagunam',
+    'roles' => ['Admin']
+    ])->where('exped','[0-9]+');
+
+Route::put('agunam/alta', [
+    'uses' => 'AgunamNoController@alta_noagunam',
+    'as' => 'alta_noagunam',
+    'roles' => ['Admin']
+    ]);
+
+Route::put('agunam/{expediente}/salvar', [
+    'uses' => 'AgunamNoController@salvar_noagunam',
+    'as' => 'salvar_noagunam',
+    'roles' => ['Admin']
+    ])->where('expediente','[0-9]+');
+
+Route::delete('agunam/{expediente}}/borrar' ,[
+    'uses'=> 'AgunamNoController@eliminar_noagunam',
+    'as' => 'eliminar_noagunam',
+    'roles' => ['Admin']
+  ]);
+// Fin Gestion de expedientes no encontrados.
+
+// graficos
+Route::get('graficas' ,[
+    'uses'=> 'GrafiController@diario',
+    'as' => 'grafico',
+    'roles' => ['Admin']
+  ]);
+// fin graficos

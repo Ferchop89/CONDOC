@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Corte;
+use App\Models\Agunam;
 use App\Models\Procedencia;
 use App\Models\User;
 use DB;
@@ -33,11 +34,11 @@ class ListadosController extends Controller
         $rpp = 9; // registros por pagina del archivo PDF
         $limitesPDF = $this->paginas(count($data),$rpp); // limites de iteracion para registros del PDF
         $vista = $this->listaValesHTML($data,$corte,$lista,$limitesPDF); // generacion del content del PDF
-        return view("consultas.vales", compact('vista'));
-        // $view = \View::make('consultas.vales', compact('vista'))->render();
-        // $pdf = \App::make('dompdf.wrapper');
-        // $pdf->loadHTML($view)->setPaper('legal','portrait');
-        // return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
+        // return view("consultas.vales", compact('vista'));
+        $view = \View::make('consultas.vales', compact('vista'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view)->setPaper('legal','portrait');
+        return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
     }
     public function Etiquetas()
     {
@@ -46,13 +47,12 @@ class ListadosController extends Controller
         $data = $this->lista_Corte($corte,$lista); // solicitudes de la lista y corte
         $rpp = 14; // registros por pagina del archivo PDF
         $limitesPDF = $this->paginas(count($data),$rpp); // limites de iteracion para registros del PDF
-        // dd($limitesPDF);
         $vista = $this->listaEtiquetasHTML($data,$corte,$lista,$limitesPDF); // generacion del content del PDF
-        return view("consultas.etiquetas", compact('vista'));
-        // $view = \View::make('consultas.etiquetas', compact('vista'))->render();
-        // $pdf = \App::make('dompdf.wrapper');
-        // $pdf->loadHTML($view);
-        // return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
+        // return view("consultas.etiquetas", compact('vista'));
+        $view = \View::make('consultas.etiquetas', compact('vista'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_lista '.$lista.'.pdf');
     }
     public function paginas($total_rpp,$rpp)
     {
@@ -91,8 +91,12 @@ class ListadosController extends Controller
             $composite .= "</td>";
             $composite .= "</tr>";
             $composite .= "</table>";
+            // $composite .= "<div id='invoice'>";
+            // // $composite .=     "<h1>CORTE: ".$corte."</h1>";
+            // $composite .= "</div>";
             $composite .= "</header>";
             $composite .= "<main>";
+            $composite .= "<div class='test'>Impresión de prueba</div>";
             $composite .= "<table class='lista'>";
             $composite .= "<thead>";
             $composite .= "<tr>";
@@ -108,7 +112,8 @@ class ListadosController extends Controller
             {
                 $composite .= "<tr>";
                 $composite .= "<th scope='row'>".($x+1)."</th>";
-                $composite .= "<td class='columna_1'>".$data[$x]->cuenta."</td>";
+                $composite .= "<td class='columna_1'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</td>";
+                // $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
                 $composite .= "<td class='columna_2'>".strtoupper($data[$x]->nombre)."</td>";
                 $composite .= "<td class='columna_3'>".strtoupper($data[$x]->procedencia)."</td>";
                 $composite .= "<td class='columna_4'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
@@ -129,6 +134,7 @@ class ListadosController extends Controller
         }
         return $composite;
     }
+
     public function listaValesHTML($data,$corte,$lista,$limitesPDF)
     {
         // numero de hojas
@@ -198,7 +204,8 @@ class ListadosController extends Controller
             $composite .= "</main>";
             $composite .= "<footer>";
             $composite .= "</footer>";
-            $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
+            // $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
+            $composite .= "<div class='page-break'></div>";
         }
         return $composite;
     }
@@ -259,7 +266,9 @@ class ListadosController extends Controller
     }
     public function listas()
     {
+        // Generación de Listas por corte para ser impresas en PDF
         $title = "Impresión de Listados";
+        // Eleccion de la fecha de corte. Si no se ha elegido, se escoge la ultima.
         $reqFecha = request()->input('datepicker');
         if ($reqFecha==null) {
             $corte = $this->ultimoCorte();
@@ -268,6 +277,7 @@ class ListadosController extends Controller
             $xfecha = $vfecha[0].".".$vfecha[1].".".$vfecha[2];
             $corte = $xfecha;
         }
+        // Se pulso el boton PDF o se eligio el cambio de fecha de corte para listar nuevos No de Cuenta.
         if (isset($_GET['btnLista'])) {
             $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
             $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
@@ -286,7 +296,7 @@ class ListadosController extends Controller
             $lista = $_GET['btnEtiqueta'];
         return redirect()->route('imprimeEtiqueta',compact('corte','lista'));
         }
-        else {
+        else {// Cambio de fecha de corte y listado del mismo.
             $data = $this->listasxCorte($corte);
             $nListas = count($data);
             $xProcede  = $this->procedencias($data);
@@ -319,7 +329,8 @@ class ListadosController extends Controller
     }
     public function listasxCorte($corte)
     {
-      $cortes = DB::table('cortes')
+        // cortes y listas relacionando las tablas para resolver llaves de la tabla.
+        $cortes = DB::table('cortes')
                          ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
                          ->join('users','solicitudes.user_id','=','users.id')
                          ->join('procedencias','users.procedencia_id','=','procedencias.id')
@@ -369,9 +380,99 @@ class ListadosController extends Controller
                          ->GET()->toArray();
       return $cortes;
     }
-    public function pdf()
+    public function gestionAgunam()
     {
-      dd('Hola');
+      // Despliega los cortes y listas de un mes en particular para registrar envio y recepcion de Expedientes.
+      $title = 'Cortes y Listas';
+      // Obtenemos todos los cortes y las listas disponibles en un listado
+      $data = Agunam::orderByRaw('CONCAT(SUBSTR(listado_corte,7,4),SUBSTR(listado_corte,4,2),SUBSTR(listado_corte,1,2)) DESC')
+              ->orderBy('listado_id', 'ASC')
+              ->get()
+              ->toArray();
+      // Si en la url viene la fecha de corte, extraemos año-mes para inicializar el campo en la vista
+      if (isset($_GET['mes'])) {
+        $A_mes = $_GET['mes'];
+      }else {
+        if (count($data)!=0) {
+          $A_mes = substr($data[0]['listado_corte'],6,4).'-'.substr($data[0]['listado_corte'],3,2);
+        } else {
+          // No existen registro en la tabla cortes.
+          $A_mes = "";
+        }
+      }
+      // Filtramos el arreglo de cortes y listas disponibles si coinciden con el mes-año...
+      $data_F = array();
+      foreach ($data as $corte) {
+        $Anio_mes = substr($corte['listado_corte'],6,4).'-'.substr($corte['listado_corte'],3,2);
+        if ($Anio_mes==$A_mes) {
+           // dd($Anio_mes,$A_mes);
+           array_push($data_F,$corte);
+        }
+      }
+      // buscamos si cada corte contiene una promocion o proviene de multiples escuelas.
+      $cortes_plus = array();
+      for ($i=0; $i < count($data_F) ; $i++) {
+        $promo = DB::table('cortes')
+                           ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
+                           ->join('users','solicitudes.user_id','=','users.id')
+                           ->join('procedencias','users.procedencia_id','=','procedencias.id')
+                           ->select('procedencias.procedencia')
+                           ->where('cortes.listado_corte',$data_F[$i]['listado_corte'])
+                           ->where('cortes.listado_id',$data_F[$i]['listado_id'])
+                           ->groupBy('procedencias.procedencia')
+                           ->GET()->toArray();
+       $data_F[$i]['procedencia'] = (count($promo)==1)? $promo[0]->procedencia: "";
+       array_push($cortes_plus,$data_F[$i]);
+      }
+      // enviamos a la vista, cortes-listas, el titulo y el año-mes.
+      return view('listas.listaAgunam',[
+              // 'listas'=>$data_F,
+              'listas' => $cortes_plus,
+              'title' =>$title,
+              'mesCorte' =>$A_mes
+            ]);
     }
+    public function agunamUpdate($listado_corte,$listado_id)
+    {
+      // Actualizacion de Envio y Recibo de corte-lista.
+      $title = 'Edicion Listados';
+      $corte = Agunam::where('listado_corte',$listado_corte)
+                       ->where('listado_id',$listado_id)
+                       ->get()
+                       ->toArray();
+      // El formato Año-mes de la consulta va como parametro
+       $A_mes = substr($listado_corte,6,4).'-'.substr($listado_corte,3,2);
+       // Enviamos a la vista el registro del corte que cumple con corte-listado y el mes de corte
+       return view('listas.editar_agunam',[
+               'agunam'=>$corte,
+               'title'=>$title,
+               'mesCorte' => $A_mes
+             ]);
+    }
+    public function agunamUpdateOk()
+    {
+      // Registro de los cambios en la tabla cortes
 
+      // El primer campo de fecha de Envio del listado se vuelve obligatoria
+      $data = request()->validate
+      (
+        ['solicitar' => 'required'],
+        ['solicitar.required' => 'Fecha de Envío AGUNAM obligatoria']
+      );
+      $data =       request()->input('prueba');
+      $corte =      request()->input('corte');
+      $listado =    request()->input('listado');
+      $solicitar =  request()->input('solicitar');
+      $recibir =    request()->input('recibir');
+      $lista = Agunam::where('listado_corte',$corte)
+      ->where('listado_id',$listado)->first();
+      // Si los campos de solicitado y recibido son nulos se almacenan nulos en la fecha
+      $lista->Solicitado_at = ($solicitar!=null)? date($solicitar): null;
+      $lista->Recibido_at =  ($recibir!=null)? date($recibir): null;
+      $lista->update();
+      // De regreso, el campo $A_mes nos sirve para filtrar los registros a un año-mes en particular.
+      $A_mes = substr($corte,6,4).'-'.substr($corte,3,2);
+      // Una ves actualizado el registro, regresamos a la vista de Cortes-Listado.
+      return redirect()->route('gestion_agUnam',['mes'=>$A_mes]);
+    }
 }

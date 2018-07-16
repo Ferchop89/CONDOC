@@ -171,6 +171,8 @@ return [
         //Sybase
         Uepg\LaravelSybase\Database\SybaseServiceProvider::class,
 
+        // chartjs
+        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
         /*
          * Package Service Providers...
          */

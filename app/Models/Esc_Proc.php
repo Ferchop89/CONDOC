@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Esc_Proc extends Model
 {
     //
-	protected $connection = 'mysql2';
+	protected $connection = 'condoc_old';
 
     protected $fillable = [
 		'id_esc_proc',
@@ -20,7 +20,7 @@ class Esc_Proc extends Model
 		'inicio_periodo',
 		'fin_periodo',
 		'promedio',
-		'pais_cve', 
+		'pais_cve',
 		'num_cta'
     ];
 

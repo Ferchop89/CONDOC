@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Niveles extends Model
 {
     //
-	protected $connection = 'mysql2';
+	protected $connection = 'condoc_old';
 
     protected $fillable = [
-		'id_nivel', 
+		'id_nivel',
 		'nombre_nivel'
     ];
 

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
           'irregularidades_r_es',
           'cortes',
           'agunam',
+          'agunamno',
           'firmas'
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(IrregularidadesRESeeder::class);
         $this->call(CorteSeeder::class);
         $this->call(AgunamSeeder::class);
+        $this->call(AgunamNoSeeder::class);
         $this->call(FirmasRESeeder::class);
     }
 

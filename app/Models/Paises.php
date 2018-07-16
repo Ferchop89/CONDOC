@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Paises extends Model
 {
     //
-	protected $connection = 'mysql2';
+	protected $connection = 'condoc_old';
 
     protected $fillable = [
-        'pais_cve', 
+        'pais_cve',
         'pais_nombre',
     ];
 

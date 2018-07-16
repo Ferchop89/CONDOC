@@ -15,7 +15,7 @@ a {
 body {
   position: relative;
   /* width: 21cm;   */
-  width: 21.6cm;
+  width: 21.6cm !important;
   height: 27.94cm;
   /* 216 x 279 */
   /* width: 16cm; */
@@ -129,7 +129,7 @@ table .desc {
 }
 
 table td {
-  padding: 20px;
+  padding: 0px;
   text-align: right;
 }
 
@@ -199,7 +199,7 @@ main{
 
 }
 .lista{
-    width: 90%;
+    width: 95%;
     margin: auto;
     /* margin-top: 100px; */
 }
@@ -218,21 +218,21 @@ footer {
    line-height: 35px;
 }
 .num{
-    width: 10px;
+    width: 3% !important;
 }
 .num_cta{
-    width: 50px;
+    width: 8% !important;
 }
 .nombre{
-    width: 220px;
+    width: 37% !important;
     /* border:solid 1px black; */
 }
 .fac{
-    width: 130px;
+    width: 32% !important;
     /* border:solid 1px black; */
 }
 .fecha{
-    width: 70px;
+    width: 10% !important;
     /* border:solid 1px black; */
 }
 table.lista{
@@ -240,7 +240,7 @@ table.lista{
 }
 .lista th, .lista td
 {
-    padding: 2px;
+    padding: 2px 1px;
     color:black;
     border-bottom: 1px solid #C1CED9;
     white-space: nowrap;

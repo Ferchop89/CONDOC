@@ -15,7 +15,7 @@
     <link href="{{ asset('css/listados.css') }}" rel="stylesheet">
 @endsection
 @section('content')
-<div class="capsule">
+<div class="capsule cortes">
 
 @if ($solW_cta>0)
     <h2 id="titulo">{{$title}}</h2>
@@ -49,6 +49,12 @@
                 <i class="fa fa-search fa-3x " aria-hidden="true"></i>
                 <input type='text' name="cuenta" id='search' placeholder='Número de Cuenta'>
             </div>
+        </div>
+		<div class="form-group">
+          <div>
+            <label for="pruebas">Regeneracion de registros para pruebas.</label>
+            <input type="checkbox" name="pruebas">
+          </div>
         </div>
 
         {{-- <a href="{{ route('cortes') }}" class="btn btn-primary">filtrar</a> --}}

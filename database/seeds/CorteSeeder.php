@@ -22,7 +22,8 @@ class CorteSeeder extends Seeder
       // $solicitudes_count = (int)(Solicitud::count()-100);
       $solicitudes_count = (int)Solicitud::count();
       $corte = Carbon::create(2018, 5, 1, 13, 0, 0, 'America/Mexico_City');
-      for ($i=1; $i <= $solicitudes_count;) {
+      for ($i=1; $i <= $solicitudes_count;)
+      {
         $list_id = 1;
         do {
             // Encontramos la solicitud id consecutivo
@@ -37,6 +38,7 @@ class CorteSeeder extends Seeder
                 $rev_est->listado_corte = $registro->created_at->format("d.m.Y");
                 $rev_est->listado_id = $list_id;
                 $rev_est->user_id=rand(1,$users_count);
+                // $rev_est->update();
                 $rev_est->save();
             }
             $i++;
