@@ -91,6 +91,22 @@ class MenuSeeder extends Seeder
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
+               'name' => 'Solicitud y Recepción de Expedientes por parte de AGUNAM',
+               'slug' => 'opcion-1.5',
+               'parent' => $m1->id,
+               'ruta' => 'AGUNAM',
+               'order' => 5,
+               'is_structure' => 0
+           ]);
+           factory(Menu::class)->create([
+               'name' => 'Expedientes no encontrados en AGUNAM',
+               'slug' => 'opcion-1.6',
+               'parent' => $m1->id,
+               'ruta' => 'agunam/expedientes_noagunam',
+               'order' => 6,
+               'is_structure' => 0
+           ]);
+           factory(Menu::class)->create([
                'name' => 'm2',
                'slug' => 'opcion-2.1',
                'parent' => $m2->id,

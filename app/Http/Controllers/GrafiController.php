@@ -10,7 +10,7 @@ class GrafiController extends Controller
 {
     //
     public function diario(){
-
+        $title = "Recepción de Solicitudes y Citatorios";
        $paraMes = 6;
        $anio = 2018;
        $paraProc = 4;
@@ -28,7 +28,7 @@ class GrafiController extends Controller
        $chart2 = $this->barraGrafico($paraMes,$anio,null,'General');
 
         // Renderizamos en la vista.
-        return view('graficas/example', compact('chart1','chart2','procedencia','mes','anio'));
+        return view('graficas/example', compact('chart1','chart2','procedencia','mes','anio', 'title'));
     }
 
     public function barraGrafico($paraMes,$anio,$paraProc,$nombreGraf){
@@ -55,7 +55,7 @@ class GrafiController extends Controller
       $chartjs = app()->chartjs
         ->name($nombreGraf)
         ->type('bar')
-        ->size(['width' => 400, 'height' => 200])
+        ->size(['width' => 360, 'height' => 200])
         ->labels($lables)
         ->datasets([
             [

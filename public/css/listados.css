@@ -15,7 +15,11 @@
     width: 20%;
 }
 .cortes .filtro.cell.center {
+    text-align: center;
+}
+.select2-container{
     text-align: left;
+    padding: 5px 0px;
 }
 .filtro.cell.center {
     vertical-align: top;

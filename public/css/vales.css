@@ -18,261 +18,98 @@ header{
     width: 100%;
     display: block;
     clear: both;
-    border: solid 1px red;
+    /* border: solid 1px red; */
     display: none;
 }
 main {
     width: 21.9cm;
-    border: solid 1px;
+    /* border: solid 1px; */
     display: block;
 }
-.content{
-    display: table;
-}
-table{
-    margin: 0;
-    padding: 0;
-    border-collapse: separate;
-    border-spacing: 0px 0px;
-}
-th{
-    width: 7.1cm;
-    padding: 0;
-    margin: 0;
-}
-td{
-    height: 11.5cm;
+.vale {
+    height: 3.2cm;
+    padding: 0.3cm 0.5cm;
+    display: block;
     border: solid 1px;
-    padding: 0;
-    margin: 0;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.linea
+{
+    clear: both;
+    height: 0.1px;
+}
+.left{
+    float: left;
+    width : 27%;
+    height: 11.1cm;
+    border: solid 1px black;
+    display : inline-block;
+}
+.center{
+    float: left;
+    width : 27%;
+    height: 11.1cm;
+    border: solid 1px black;
+    display : inline-block;
+    margin-left: 0.5cm;
+    padding-left: 0.5cm;
+}
+.right{
+    float: right;
+    width : 27%;
+    height: 11.1cm;
+    border: solid 1px black;
 }
 p {
     margin: 0;
     padding: 0;
 }
 .test {
-    width: 7.3cm;
-    transform: rotate(-60deg);
-    position: absolute;
+    width: 10.3cm;
+    position: relative;
     color: silver;
     font-size: 3.2em;
     opacity: 0.5;
+    top: 4cm;
+    left: -2cm;
+    transform: rotate(-60deg);
 }
 .num_cta {
-    width: 7.3cm;
+    width: 10cm;
+    position: relative;
+    left: -4.5cm;
+    top: 4cm;
     transform: rotate(-90deg);
-    position: absolute;
 }
 .nombre {
-   width: 7.3cm;
-   transform: rotate(-90deg);
-   position: absolute;
+    width: 10cm;
+    position: relative;
+    left: -4cm;
+    top: 3.65cm;
+    transform: rotate(-90deg);
 }
 .oficina {
-    width: 7.3cm;
+    width: 10cm;
+    position: relative;
+    left: -3cm;
+    top: 3.3cm;
     transform: rotate(-90deg);
-    position: absolute;
 }
 .fecha {
-    width: 7.3cm;
+    width: 10cm;
+    display: inline-block;
+    position: relative;
+    left: -2cm;
+    top: 2.8cm;
     transform: rotate(-90deg);
-    position: absolute;
 }
-/*Fila 1*/
-/*Columna 1*/
-.col_1 .test.elem_0 {
-    top: 5.5cm;
-    left: 0cm;
-}
-.col_1 .num_cta.elem_0 {
-    top: 6.5cm;
-    left: -3cm;
-}
-.col_1 .nombre.elem_0 {
-    top: 6.5cm;
-    left: -2cm;
-}
-.col_1 .oficina.elem_0 {
-    top: 6.5cm;
-    left: 0cm;
-}
-.col_1 .fecha.elem_0 {
-    top: 6.5cm;
-    left: 2.5cm;
-}
-/*Columna 2*/
-.col_2 .test.elem_1 {
-    top: 5.5cm;
-    left: 7.3cm;
-}
-.col_2 .num_cta.elem_1 {
-    top: 6.5cm;
-    left: 4.3cm;
-}
-.col_2 .nombre.elem_1 {
-    top: 6.5cm;
-    left: 5.3cm;
-}
-.col_2 .oficina.elem_1 {
-    top: 6.5cm;
-    left: 7.3cm;
-}
-.col_2 .fecha.elem_1 {
-    top: 6.5cm;
-    left: 9.8cm;
-}
-/*Columna 3*/
-.col_3 .test.elem_2 {
-    top: 5.5cm;
-    left: 14.6cm;
-}
-.col_3 .num_cta.elem_2 {
-    top: 6.5cm;
-    left: 11.7cm;
-}
-.col_3 .nombre.elem_2 {
-    top: 6.5cm;
-    left: 12.7cm;
-}
-.col_3 .oficina.elem_2 {
-    top: 6.5cm;
-    left: 14.7cm;
-}
-.col_3 .fecha.elem_2 {
-    top: 6.5cm;
-    left: 17.2cm;
-}
-/*Fila 2*/
-/*Columna 1*/
-.col_1 .test.elem_3 {
-    top: 17cm;
-    left: 0cm;
-}
-.col_1 .num_cta.elem_3 {
-    top: 18cm;
-    left: -3cm;
-}
-.col_1 .nombre.elem_3 {
-    top: 18cm;
-    left: -2cm;
-}
-.col_1 .oficina.elem_3 {
-    top: 18cm;
-    left: 0cm;
-}
-.col_1 .fecha.elem_3 {
-    top: 18cm;
-    left: 2.5cm;
-}
-
-/*Columna 2*/
-.col_2 .test.elem_4 {
-    top: 17cm;
-    left: 7.3cm;
-}
-.col_2 .num_cta.elem_4 {
-    top: 18cm;
-    left: 4.3cm;
-}
-.col_2 .nombre.elem_4 {
-    top: 18cm;
-    left: 5.3cm;
-}
-.col_2 .oficina.elem_4 {
-    top: 18cm;
-    left: 7.3cm;
-}
-.col_2 .fecha.elem_4 {
-    top: 18cm;
-    left: 9.8cm;
-}
-/*Columna 3*/
-.col_3 .test.elem_5 {
-    top: 17cm;
-    left: 14.6cm;
-}
-.col_3 .num_cta.elem_5 {
-    top: 18cm;
-    left: 11.7cm;
-}
-.col_3 .nombre.elem_5 {
-    top: 18cm;
-    left: 12.7cm;
-}
-.col_3 .oficina.elem_5 {
-    top: 18cm;
-    left: 14.7cm;
-}
-.col_3 .fecha.elem_5 {
-    top: 18cm;
-    left: 17.2cm;
-}
-/*Fila 3*/
-/*Columna 1*/
-.col_1 .test.elem_6 {
-    top: 28.5cm;
-    left: 0cm;
-}
-.col_1 .num_cta.elem_6 {
-    top: 29.5cm;
-    left: -3cm;
-}
-.col_1 .nombre.elem_6 {
-    top: 29.5cm;
-    left: -2cm;
-}
-.col_1 .oficina.elem_6 {
-    top: 29.5cm;
-    left: 0cm;
-}
-.col_1 .fecha.elem_6 {
-    top: 29.5cm;
-    left: 2.5cm;
-}
-/*Columna 2*/
-.col_2 .test.elem_7 {
-    top: 28.5cm;
-    left: 7.3cm;
-}
-.col_2 .num_cta.elem_7 {
-    top: 29.5cm;
-    left: 4.3cm;
-}
-.col_2 .nombre.elem_7 {
-    top: 29.5cm;
-    left: 5.3cm;
-}
-.col_2 .oficina.elem_7 {
-    top: 29.5cm;
-    left: 7.3cm;
-}
-.col_2 .fecha.elem_7 {
-    top: 29.5cm;
-    left: 9.8cm;
-}
-/*Columna 3*/
-.col_3 .test.elem_8 {
-    top: 28.5cm;
-    left: 14.6cm;
-}
-.col_3 .num_cta.elem_8 {
-    top: 29.5cm;
-    left: 11.7cm;
-}
-.col_3 .nombre.elem_8 {
-    top: 29.5cm;
-    left: 12.7cm;
-}
-.col_3 .oficina.elem_8 {
-    top: 29.5cm;
-    left: 14.7cm;
-}
-.col_3 .fecha.elem_8 {
-    top: 29.5cm;
-    left: 17.2cm;
+.fecha p {
+    width: 20%;
+    display: inherit;
 }
 footer{
-    width: 100%;
+    /* width: 100%;
     display: block;
-    height: 100px;
+    height: 100px; */
 }

@@ -135,6 +135,82 @@ class ListadosController extends Controller
         return $composite;
     }
 
+    // public function listaValesHTML($data,$corte,$lista,$limitesPDF)
+    // {
+    //     // numero de hojas
+    //     $composite = "";
+    //     $paginas = count($limitesPDF);
+    //     for ($i=0; $i < $paginas ; $i++)
+    //     {
+    //         $composite .= "<header>";
+    //         $composite .= "</header>";
+    //         $composite .= "<main>";
+    //         $y=0;
+    //         for ($x=$limitesPDF[$i][0]; $x < $limitesPDF[$i][1] ; $x=$x+3)
+    //         {
+    //             $composite .= "<table class='lista'>";
+    //             $composite .= "<tbody>";
+    //             $composite .= "<thead>";
+    //             $composite .= "<tr>";
+    //             $composite .= "<th class='columna_1' scope='col'></th>";
+    //             $composite .= "<th class='columna_2' scope='col'></th>";
+    //             $composite .= "<th class='columna_3' scope='col'></th>";
+    //             $composite .= "</tr>";
+    //             $composite .= "</thead>";
+    //             $composite .= "<tr>";
+    //             $composite .= "<td class='col_1'>";
+    //             $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+    //             $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
+    //             $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x]->nombre)."</p>";
+    //             $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+    //             $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
+    //                            .explode('-',explode(' ',$data[$x]->created_at)[0])[1].'-'
+    //                            .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
+    //                            .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</p>";
+    //             $composite .= "</td>";
+    //             if(isset($data[$x+1])){
+    //                 $y++;
+    //                 $composite .= "<td class='col_2'>";
+    //                 $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+    //                 $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x+1]->cuenta,0,1)."-".substr($data[$x+1]->cuenta,1,7)."-".substr($data[$x+1]->cuenta,8,1)."</p>";
+    //                 $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x+1]->nombre)."</p>";
+    //                 $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+    //                 $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x+1]->created_at)[0])[2].'-'
+    //                                .explode('-',explode(' ',$data[$x+1]->created_at)[0])[1].'-'
+    //                                .explode('-',explode(' ',$data[$x+1]->created_at)[0])[0].'; '
+    //                                .substr(explode(' ',$data[$x+1]->created_at)[1],0,5)."</p>";
+    //                 $composite .= "</td>";
+    //             }
+    //             if (isset($data[$x+2])) {
+    //                 $y++;
+    //                 $composite .= "<td class='col_3'>";
+    //                 $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
+    //                 $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x+2]->cuenta,0,1)."-".substr($data[$x+2]->cuenta,1,7)."-".substr($data[$x+2]->cuenta,8,1)."</p>";
+    //                 $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x+2]->nombre)."</p>";
+    //                 $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+    //                 $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x+2]->created_at)[0])[2].'-'
+    //                                .explode('-',explode(' ',$data[$x+2]->created_at)[0])[1].'-'
+    //                                .explode('-',explode(' ',$data[$x+2]->created_at)[0])[0].'; '
+    //                                .substr(explode(' ',$data[$x+2]->created_at)[1],0,5)."</p>";
+    //                 $composite .= "</td>";
+    //                 $composite .= "</tr>";
+    //                 $composite .= "</tbody>";
+    //                 $composite .= "</table>";
+    //                 $y++;
+    //                 if($y==9)
+    //                 {
+    //                     $y=0;
+    //                 }
+    //             }
+    //         }
+    //         $composite .= "</main>";
+    //         $composite .= "<footer>";
+    //         $composite .= "</footer>";
+    //         // $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
+    //         $composite .= "<div class='page-break'></div>";
+    //     }
+    //     return $composite;
+    // }
     public function listaValesHTML($data,$corte,$lista,$limitesPDF)
     {
         // numero de hojas
@@ -142,70 +218,60 @@ class ListadosController extends Controller
         $paginas = count($limitesPDF);
         for ($i=0; $i < $paginas ; $i++)
         {
+            $composite .= "<header>";
+            $composite .= "</header>";
             $composite .= "<main>";
+            $composite .= "<div class='content'>";
             $y=0;
-            for ($x=$limitesPDF[$i][0]; $x < $limitesPDF[$i][1] ; $x=$x+3)
+            for ($x=$limitesPDF[$i][0]; $x < $limitesPDF[$i][1] ; $x++)
             {
-                $composite .= "<table class='lista'>";
-                $composite .= "<tbody>";
-                $composite .= "<thead>";
-                $composite .= "<tr>";
-                $composite .= "<th class='columna_1' scope='col'></th>";
-                $composite .= "<th class='columna_2' scope='col'></th>";
-                $composite .= "<th class='columna_3' scope='col'></th>";
-                $composite .= "</tr>";
-                $composite .= "</thead>";
-                $composite .= "<tr>";
-                $composite .= "<td class='col_1'>";
+                if($x%3==0)
+                {
+                    // var_dump($x%3);
+                    $composite .= "<div class='vale left'>";
+                }
+                elseif($x%3==1){
+                    $composite .= "<div class='vale center'>";
+                }
+                else{
+                    $composite .= "<div class='vale right'>";
+                }
                 $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
                 $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
                 $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x]->nombre)."</p>";
                 $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
-                $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
-                               .explode('-',explode(' ',$data[$x]->created_at)[0])[1].'-'
-                               .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
-                               .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</p>";
-                $composite .= "</td>";
-                if(isset($data[$x+1])){
-                    $y++;
-                    $composite .= "<td class='col_2'>";
-                    $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
-                    $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x+1]->cuenta,0,1)."-".substr($data[$x+1]->cuenta,1,7)."-".substr($data[$x+1]->cuenta,8,1)."</p>";
-                    $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x+1]->nombre)."</p>";
-                    $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
-                    $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x+1]->created_at)[0])[2].'-'
-                                   .explode('-',explode(' ',$data[$x+1]->created_at)[0])[1].'-'
-                                   .explode('-',explode(' ',$data[$x+1]->created_at)[0])[0].'; '
-                                   .substr(explode(' ',$data[$x+1]->created_at)[1],0,5)."</p>";
-                    $composite .= "</td>";
+                $composite .= "<div class='fecha elem_$y'>";
+                $composite .= "<p class='dia elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2]."</p>";
+                $composite .= "<p class='mes elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[1]."</p>";
+                $composite .= "<p class='dia elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[0]."</p>";
+                $composite .= "</div>";
+                $composite .= "</div>";
+                // var_dump($y%3);
+                if ($y%3==2){
+                    $composite .= "<div class='linea'>";
+                    $composite .= "</div>";
                 }
-                if (isset($data[$x+2])) {
-                    $y++;
-                    $composite .= "<td class='col_3'>";
-                    $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
-                    $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x+2]->cuenta,0,1)."-".substr($data[$x+2]->cuenta,1,7)."-".substr($data[$x+2]->cuenta,8,1)."</p>";
-                    $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x+2]->nombre)."</p>";
-                    $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
-                    $composite .= "<p class='fecha elem_$y'>".explode('-',explode(' ',$data[$x+2]->created_at)[0])[2].'-'
-                                   .explode('-',explode(' ',$data[$x+2]->created_at)[0])[1].'-'
-                                   .explode('-',explode(' ',$data[$x+2]->created_at)[0])[0].'; '
-                                   .substr(explode(' ',$data[$x+2]->created_at)[1],0,5)."</p>";
-                    $composite .= "</td>";
-                    $composite .= "</tr>";
-                    $composite .= "</tbody>";
-                    $composite .= "</table>";
+                // elseif ($y%3==0 && $x == $limitesPDF[$i][1]-1 ) {
+                //     $composite .= "<div class='linea'>";
+                //     $composite .= "</div>";
+                // }
+
                     $y++;
                     if($y==9)
                     {
+                        $composite .= "</div>";
                         $y=0;
                     }
                 }
+
+        $composite .= "</main>";
+        $composite .= "<footer>";
+        $composite .= "</footer>";
+        if($i < $paginas-1)
+        {
+            $composite .= "<div class='page-break'>";
+            $composite .= "</div>";
             }
-            $composite .= "</main>";
-            $composite .= "<footer>";
-            $composite .= "</footer>";
-            // $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
-            $composite .= "<div class='page-break'></div>";
         }
         return $composite;
     }
@@ -237,7 +303,7 @@ class ListadosController extends Controller
                 $d = new DNS1D();
                 $d->setStorPath(__DIR__."/cache/");
                 $composite.= "<div class='barcode'>".$d->getBarcodeHTML($data[$x]->cuenta, "C39", 1.6, 37)."</div>";
-                $composite .= "</td>";
+                // $composite .= "</td>";
                 $composite .= "</div>";
                 if ($y%2!=0){
                     $composite .= "<div class='linea'>";
@@ -383,7 +449,7 @@ class ListadosController extends Controller
     public function gestionAgunam()
     {
       // Despliega los cortes y listas de un mes en particular para registrar envio y recepcion de Expedientes.
-      $title = 'Cortes y Listas';
+      $title = 'Solicitud y Recepción de Expedientes por parte de AGUNAM';
       // Obtenemos todos los cortes y las listas disponibles en un listado
       $data = Agunam::orderByRaw('CONCAT(SUBSTR(listado_corte,7,4),SUBSTR(listado_corte,4,2),SUBSTR(listado_corte,1,2)) DESC')
               ->orderBy('listado_id', 'ASC')
@@ -435,7 +501,7 @@ class ListadosController extends Controller
     public function agunamUpdate($listado_corte,$listado_id)
     {
       // Actualizacion de Envio y Recibo de corte-lista.
-      $title = 'Edicion Listados';
+      $title = 'Edición de Solicitud y Recepción por parte de AGUNAM';
       $corte = Agunam::where('listado_corte',$listado_corte)
                        ->where('listado_id',$listado_id)
                        ->get()
@@ -473,6 +539,6 @@ class ListadosController extends Controller
       // De regreso, el campo $A_mes nos sirve para filtrar los registros a un año-mes en particular.
       $A_mes = substr($corte,6,4).'-'.substr($corte,3,2);
       // Una ves actualizado el registro, regresamos a la vista de Cortes-Listado.
-      return redirect()->route('gestion_agUnam',['mes'=>$A_mes]);
+      return redirect()->route('AGUNAM',['mes'=>$A_mes]);
     }
 }

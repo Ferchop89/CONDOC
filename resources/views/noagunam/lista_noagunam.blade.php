@@ -1,9 +1,19 @@
 @extends('layouts.app')
-@section('title',$title)
+@section('title','CONDOC | '.$title)
+@section('location')
+    <div>
+    	<p id="navegacion">
+            <a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
+    		<span> >> </span>
+    		<a> Licenciatura </a>
+            <span> >> </span>
+    		<a href="#"> {{$title}} </a> </p>
+    </div>
+@endsection
 @section('content')
-<div class="container">
+<div class="capsule no-agunam">
     <div class="d-flex justify-content-between align-items-end mb-3">
-        <h2 class="pb-1">Gestion de Expedientes No Encontrados en AGUNAM</h2>
+        <h2 id="titulo">{{$title}}</h2>
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -16,13 +26,13 @@
             </div>
         @endif
 
-      <form action="{{ route('alta_noagunam') }}" method="POST">
+      <form id="corte" action="{{ route('alta_noagunam') }}" method="POST">
         {{ csrf_field() }}
         {{ method_field('put')}}
-        <p class="button">
-          <button type="submit" class="btn btn-primary text-yellow">Nuevo Expediente</i></button>
-        </p>
         <input type="text" name="cuenta" id="cuenta" placeholder="No. de Cuenta" value="{{ old('cuenta') }}"/>
+        <p class="button">
+            <button type="submit" class="btn btn-primary text-yellow">Nuevo Expediente</i></button>
+        </p>
       </form>
 
     </div>
@@ -36,19 +46,21 @@
                 <th scope="col">procedencia</th>
                 <th scope="col">Corte</th>
                 <th scope="col">Listado</th>
-                <th scope="col">Encontrado</th>
+                {{-- <th scope="col">Encontrado</th> --}}
+                <th scope="col">Operación</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($expedientes as $expediente)
+            {{-- {{dd($expedientes)}} --}}
+            @foreach($expedientes as $key => $expediente)
                 <tr>
-                    <th scope="row">{{ $expediente->id}}</th>
+                    <th scope="row">{{ $key+1}}</th>
                     <td>{{ $expediente->cuenta }}</td>
                     <td>{{ $expediente->nombre }}</td>
                     <td>{{ $expediente->procedencia }}</td>
                     <td>{{ $expediente->listado_corte }}</td>
                     <td>{{ $expediente->listado_id }}</td>
-                    <td><input type="checkbox" {{ $expediente->encontrado ? 'checked' : ''   }} name="activo" OnClick="return false;" ></td>
+                    {{-- <td><input type="checkbox" {{ $expediente->encontrado ? 'checked' : ''   }} name="activo" OnClick="return false;" ></td> --}}
                     <td>
                         <form action="{{ route('eliminar_noagunam',[ $expediente->id ]) }}" method="POST">
                             {{ csrf_field() }}

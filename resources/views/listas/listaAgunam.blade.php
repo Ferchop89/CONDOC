@@ -1,24 +1,37 @@
 @extends('layouts.app')
-@section('title',$title)
+@section('title', 'CONDOC | '.$title)
+@section('location')
+    <div>
+    	<p id="navegacion">
+            <a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
+    		<span> >> </span>
+    		<a> Licenciatura </a>
+            <span> >> </span>
+    		<a href="#"> {{$title}} </a> </p>
+    </div>
+@endsection
 @section('content')
-<div class="container">
-    @if(count($listas)>0)
-      <h2>Listas de Solicitud AGUNAM</h2>
-    <form action="{{ route('gestion_agUnam',['mes'=>$mesCorte]) }} method="POST"">
+<div class="capsule agunam">
+
+      {{-- <h2>Listas de Solicitud AGUNAM</h2> --}}
+
+    <h2 id="titulo">{{$title}}</h2>
+    <form id="corte" action="{{ route('AGUNAM',['mes'=>$mesCorte]) }} method="POST"">
       <label for="mes">Mes de Consulta</label>
       <input id="mes" type="month" name="mes" value={{$mesCorte}}>
       <button  id="btnMes" name="btnMes" type="submit" class="btn btn-success">Consulta</button>
-    {{-- </form> --}}
+    </form>
+    @if(count($listas)>0)
     <div class="table-responsive">
         <table class="table table-hover table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Corte</th>
                     <th scope="col">Listado</th>
-                    <th scope="col">Promocion</th>
+                    <th scope="col">Promoción</th>
                     <th scope="col">Fecha Solicitud</th>
                     <th scope="col">Fecha Recibido</th>
-                    <th scope="col">Operacion</th>
+                    <th scope="col">Operación</th>
                 </tr>
             </thead>
             <tbody>

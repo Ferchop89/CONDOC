@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Corte;
+use App\Models\Solicitud;
+use App\Models\AgunamNo;
 
 Route::get('/m4',[
   'uses'=> 'RutasController@Menu1',
@@ -27,7 +29,7 @@ Route::get('/m9',[
   'roles' => ['Jud','Ofisi']
   ]);
 
-/**/
+/* Rutas de listas y cortes.*/
 Route::get('/cortes',[
     'uses'=> 'InformesController@cortes',
     'as'=> 'cortes',
@@ -35,13 +37,67 @@ Route::get('/cortes',[
     'roles' => ['Sria']
   ]);
 
+Route::put('/creaListas',[
+    'uses'=> 'InformesController@creaListas',
+    'as'=> 'creaListas',
+    'middleware' => 'roles',
+    'roles' => ['Sria']
+    ]);
+
 Route::get('/listas',[
   'uses'=> 'ListadosController@listas',
   'as'=> 'listas',
   'middleware' => 'roles',
   'roles' => ['Sria']
   ]);
+  Route::get('solicitudes', function(){
+    $data = DB::table('solicitudes')
+             ->select(db::raw('DATE_FORMAT(created_at, "%d.%m.%Y") as listado_corte'),
+               DB::raw('count(*) as total'))
+             ->where('pasoACorte',false)
+             ->where('cancelada',false)
+             ->orderBy('created_at','asc')
+             ->groupBy('listado_corte')
+             ->pluck('total','listado_corte')->all();
+    return $data;
+  });
 
+  Route::get('grupoListas', function(){
+    $data = DB::table('cortes')
+             ->select('listado_corte as corte',
+                      DB::raw('count(*) as cuenta'),
+                      DB::raw('count(DISTINCT listado_id) as listas'))
+             ->groupBy('corte')
+             ->get();
+    return $data;
+  });
+
+  Route::get('fechaCorte',function(){
+     $fCorte = Corte::all()->last()->listado_corte;
+     return $fCorte;
+  });
+  /*Impresión de Listas*/
+  Route::get('imprimePDF',[
+    'uses'=> 'ListadosController@Pdfs',
+    'as'=> 'imprimePDF',
+    'middleware' => 'roles',
+    'roles' => ['Sria']
+  ]);
+  /*Impresión de Vales*/
+  Route::get('imprimeVale',[
+    'uses'=> 'ListadosController@Vales',
+    'as'=> 'imprimeVale',
+    'middleware' => 'roles',
+    'roles' => ['Sria']
+  ]);
+  /*Impresión de Etiquetas*/
+  Route::get('imprimeEtiqueta',[
+    'uses'=> 'ListadosController@Etiquetas',
+    'as'=> 'imprimeEtiqueta',
+    'middleware' => 'roles',
+    'roles' => ['Sria']
+  ]);
+ // Fin de rutas y cortes.
 /*Revisiones de Estudio*/
 Route::get('/datos-personales',[
     'uses'=> 'RevEstudiosController@showSolicitudNC',
@@ -87,19 +143,61 @@ Route::post('/recepcion-expedientes', [
     'middleware' => 'roles',
     'roles' => ['Sria']
 ]);
-/*Impresión de Vales*/
-
-Route::get('imprimeVale',[
-  'uses'=> 'ListadosController@Vales',
-  'as'=> 'imprimeVale',
+// Gestion de Listas AGUNAM -- INICIO
+Route::get('AGUNAM',[
+  'uses'=> 'ListadosController@gestionAgunam',
+  'as'=> 'AGUNAM',
   'middleware' => 'roles',
-  'roles' => ['Sria']
+  'roles' => ['Admin','Sria']
 ]);
-
-/*Impresión de Etiquetas*/
-Route::get('imprimeEtiqueta',[
-  'uses'=> 'ListadosController@Etiquetas',
-  'as'=> 'imprimeEtiqueta',
+Route::get('agunamUpdate/{corte}/{listado}',[
+  'uses'=> 'ListadosController@agunamUpdate',
+  'as'=> 'agunamUpdate',
   'middleware' => 'roles',
-  'roles' => ['Sria']
+  'roles' => ['Admin','Sria']
 ]);
+Route::put('agunamUpdateOk',[
+  'uses'=> 'ListadosController@agunamUpdateOk',
+  'as'=> 'agunamUpdateOk',
+  'middleware' => 'roles',
+  'roles' => ['Admin','Sria']
+]);
+// Gestion de listas AGUNAM -- FIN
+
+// Gestion de expedientes no encontrados en agunam
+Route::get('agunam/expedientes_noagunam',[
+    'uses' => 'AgunamNoController@expedientes',
+    'as' => 'agunam/expedientes_noagunam',
+    'roles' => ['Admin', 'Sria']
+]);//->name('users');
+
+Route::get('agunam/{expediente}/editar', [
+    'uses' => 'AgunamNoController@editar_noagunam',
+    'as' => 'editar_noagunam',
+    'roles' => ['Admin', 'Sria']
+    ])->where('exped','[0-9]+');
+
+Route::get('agunam/{expediente}/ver', [
+    'uses' => 'AgunamNoController@ver_noagunam',
+    'as' => 'ver_noagunam',
+    'roles' => ['Admin']
+    ])->where('exped','[0-9]+');
+
+Route::put('agunam/alta', [
+    'uses' => 'AgunamNoController@alta_noagunam',
+    'as' => 'alta_noagunam',
+    'roles' => ['Admin', 'Sria']
+    ]);
+
+Route::put('agunam/{expediente}/salvar', [
+    'uses' => 'AgunamNoController@salvar_noagunam',
+    'as' => 'salvar_noagunam',
+    'roles' => ['Admin', 'Sria']
+    ])->where('expediente','[0-9]+');
+
+Route::delete('agunam/{expediente}}/borrar' ,[
+    'uses'=> 'AgunamNoController@eliminar_noagunam',
+    'as' => 'eliminar_noagunam',
+    'roles' => ['Admin', 'Sria']
+  ]);
+// Fin Gestion de expedientes no encontrados.

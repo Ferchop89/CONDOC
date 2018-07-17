@@ -35,7 +35,7 @@ class AgunamNoController extends Controller
                        ->GET();
 
     // dd($expedientes);agunam/expedientes
-    $title = 'Expedientes no encontrados';
+    $title = 'Expedientes no encontrados en AGUNAM';
     return view('noagunam/lista_noagunam',['expedientes'=>$expedientes, 'title'=>$title]);
     // return view('noagunam/lista_noagunam', compact('title','expedientes'));
   }
@@ -57,7 +57,7 @@ class AgunamNoController extends Controller
     $noagunam->save();
 
     // regresamos a la lista para visualizar en Nuevo registro
-    return redirect()->route('agunam/expedientes');
+    return redirect()->route('agunam/expedientes_noagunam');
   }
 
   /*Método para editar información de un usuario*/
@@ -88,7 +88,7 @@ class AgunamNoController extends Controller
       // Si se ha realizado la gestión de corte-lista, esto es, tienen fechas de solicitado y recibido
       $edita = ($agunam->Solicitado_at==null || $agunam->Recibido_at==null)? false: true;
 
-      $title = 'Edicion Expedientes';
+      $title = 'Edición de expedientes no encontrados en AGUNAM';
 
       return view('noagunam/editar_noagunam',['expediente'=> $expOK, 'title'=>$title, 'agunam' => $agunam, 'edita'=>$edita]);
   }
@@ -143,7 +143,7 @@ class AgunamNoController extends Controller
       // Si se ha realizado la gestión de corte-lista, esto es, tienen fechas de solicitado y recibido
       $edita = ($agunam->Solicitado_at==null || $agunam->Recibido_at==null)? false: true;
 
-      $title = 'Vista Expediente';
+      $title = ' Vista de expediente no encontrado en AGUNAM ';
 
       return view('noagunam/ver_noagunam',['expediente'=> $expOK, 'title'=>$title, 'agunam' => $agunam, 'edita'=>$edita]);
   }
@@ -153,7 +153,7 @@ class AgunamNoController extends Controller
       // soft delete registros de expedientes no encontrados.
      $expediente->delete();
 
-     return redirect()->route('agunam/expedientes');
+     return redirect()->route('agunam/expedientes_noagunam');
   }
 
 

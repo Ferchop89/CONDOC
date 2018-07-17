@@ -58,11 +58,11 @@ class InformesController extends Controller
   {
     // dd($facesc,$seleccion,$tipo);
       // Elabora el Form Select. sin selección si no se ha seleccionada ninguna escuela de procedencia.
-      sort($facesc);array_unshift($facesc,'Selecciona');
+      sort($facesc);array_unshift($facesc,'Selecciona una opción');
       $html = "<select  name='facultad' id='facultad' onchange='location = this.value;'>";
 
       foreach ($facesc as $value) {
-        if ($value!='Selecciona') {
+        if ($value!='Selecciona una opción') {
           $valorSel = ($value==$seleccion) ? ' selected ' : ''; // Valor Seleccionado
           $html .= "<option value='/cortes?facesc=".$value."' ".$valorSel.">".$value."</option>";
         } else
