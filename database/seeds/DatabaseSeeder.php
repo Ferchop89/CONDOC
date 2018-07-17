@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
           'irregularidades_r_es',
           'cortes',
           'agunam',
-          'firmas'
+          'nacionalidades',
+          'niveles'
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
         $this->call(Web_Service_Seeder::class);
@@ -34,7 +35,8 @@ class DatabaseSeeder extends Seeder
         $this->call(IrregularidadesRESeeder::class);
         $this->call(CorteSeeder::class);
         $this->call(AgunamSeeder::class);
-        $this->call(FirmasRESeeder::class);
+        $this->call(NacionalidadesSeeder::class);
+        $this->call(NivelesSeeder::class);
     }
 
     public function truncateTables(array $tables){

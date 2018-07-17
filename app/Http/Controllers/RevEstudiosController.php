@@ -120,6 +120,8 @@ class RevEstudiosController extends Controller
         //Verificamos si el alumno se encuentra en la BD del CONDOC
         if($condoc != NULL){
 
+          $vista = '/menus/captura_datos';
+
           $situaciones = array();
           $total_situaciones = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
           
@@ -193,12 +195,14 @@ class RevEstudiosController extends Controller
         }
         else {
           
+          $vista = '/menus/captura_datos';
+
           //En caso de no encontrarse, se busca primero en SIAE
           $ws_SIAE = Web_Service::find(2);
           $identidad = new WSController();
           $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
-          if(isset($identidad->mensaje) && $identidad->mensaje == "El Alumno existe"){
+          if(isset($identidad) && $identidad->mensaje == "El Alumno existe"){
 
             $siae = [
               'sistema' => 'SIAE',
@@ -248,11 +252,125 @@ class RevEstudiosController extends Controller
             $ws_DGIRE = new WSController();
             $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
 
+            //Verificamos si DGIRE no tiene información del alumno, notificamos
+            if(property_exists($ws_DGIRE->respuesta, "error")){
+
+              $descripcion = $ws_DGIRE->respuesta->error->descripcion;
+              $vista = '/errors/error_info';
+              $datos = ['descripcion' => $descripcion];
+
+            }
+            //En caso de que sí cuente con ella, continuamos
+            else{
+
+              $vista = '/menus/captura_datos';
+              $info = $ws_DGIRE->respuesta->datosAlumnos->datosAlumno;
+              //Validacion para el sexo
+              if($info->sexo == 1){
+                $sexo_db = "MASCULINO";
+              }
+              else if($info->sexo == 2){
+                $sexo_db = "FEMENINO";
+              }
+              else{
+                $sexo_db = NULL;
+              }
+              //Validación para la nacionalidad
+              if($info->nacionalidad == "M"){
+                $id_nacionalidad = 1;
+              }
+              else{
+                $id_nacionalidad = NULL;
+              }
+              $situaciones = array();
+
+              //Datos necesarios para identidad
+              $identidad = (object) [
+                'cuenta' => $info->numeroCuenta,
+                'nombres' => $info->nombre,
+                'apellido1' => $info->apellidoPaterno,
+                'apellido2' => $info->apellidoMaterno,
+                'curp' => $info->curp,
+                'sexo' => $sexo_db,
+                'nacimiento' => $info->fechaNacimiento,
+                'nacionalidad' => $id_nacionalidad,
+                'entidad-nacimiento' => NULL
+              ];
+
+              //Situaciones del alumno (niveles B y L)
+              array_push($situaciones, $situacion = (object) [
+                                            'plantel_nombre' => $info->nombreEscuelaBachillerato,
+                                            'nivel' => "B",
+                                            'plantel_clave' => NULL,
+                                            'folio_certificado' => NULL,
+                                            'seleccion_fecha' => NULL,
+                                            'mes_anio' => NULL,
+                                            'inicio_periodo' => NULL,
+                                            'fin_periodo' => NULL,
+                                            'promedio' => $info->promedioBachillerato,
+                                            'pais_cve' => NULL,
+                                            'num_cta' => $info->numeroCuenta,
+                                            'irre_cert' => NULL
+              ]);
+
+              array_push($situaciones, $situacion = (object) [
+                                            'plantel_nombre' => $info->nombreEscuelaLicenciatura,
+                                            'nivel' => "L",
+                                            'plantel_clave' => NULL,
+                                            'folio_certificado' => NULL,
+                                            'seleccion_fecha' => NULL,
+                                            'mes_anio' => NULL,
+                                            'inicio_periodo' => NULL,
+                                            'fin_periodo' => NULL,
+                                            'promedio' => $info->promedioLicenciatura,
+                                            'pais_cve' => NULL,
+                                            'num_cta' => $info->numeroCuenta,
+                                            'irre_cert' => NULL
+              ]);
+
+              $trayectoria = (object) [
+                'cuenta' => $info->numeroCuenta,
+                'situaciones' => $situaciones
+              ];
+
+              $lic = (object) [
+                'nivel' => "L",
+                'plan_clave' => (int)$info->clavePlanLicenciatura,
+                'carrera_nombre' => NULL,
+                'plan_nombre' => $info->nombrePlanLicenciatura
+              ];
+
+              $dgire = [
+                'sistema' => 'DGIRE',
+                'title' => $title,
+                'num_cta' => $num_cta,
+                'trayectoria' => $trayectoria,
+                'identidad' => $identidad,
+                'irr_acta' => $irr_acta,
+                'irr_cert' => $irr_cert,
+                'irr_migr' => $irr_migr,
+                'paises' => $paises,
+                'nacionalidades' => $nacionalidades,
+                'roles_us' => $roles_us,
+                'lic' => $lic
+              ];
+
+              //Escuelas de interés (Finalizadas o en curso que cubran al menos el 70% de créditos)
+              $dgire['escuelas'] = $situaciones;
+
+              //Registro de las firmas en el sistema del alumno
+              $dgire['firmas'] = $firmas;
+
+              DB::disconnect('mysql2');
+              $datos = $dgire;
+
+            }
+
           }
 
         }
 
-        return view('/menus/captura_datos', $datos);
+        return view($vista, $datos);
     }
 
     public function postDatosPersonales(Request $request)
@@ -290,32 +408,9 @@ class RevEstudiosController extends Controller
            'fecha_nac.regex' => 'La fecha de nacimiento debe ser DD/MM/AAAA',
       ]);
 
-      $num_cta = $request->num_cta; 
+      $num_cta = $request->num_cta;
 
-      $ws_SIAE = Web_Service::find(2);
-      $identidad = new WSController();
-      $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-      
-      $ws_SIAE = Web_Service::find(1);
-      $trayectoria = new WSController();
-      $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-
-      //Información de escuelas de interés (Finalizadas)
-      $nivel_esc = array();
-      foreach ($trayectoria->situaciones as $situacion) {
-        if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
-          array_push($nivel_esc, $situacion->nivel);
-        }
-      }
-
-      $sistema = $_POST['sistema'];
-      $nombres = $identidad->nombres;
-      $apellido1 = $identidad->apellido1;
-      $apellido2 = $identidad->apellido2;
-      $plan_est = $trayectoria->situaciones[$num_situaciones]->plantel_clave;
-      $nivel = $trayectoria->situaciones[$num_situaciones]->nivel;
-      $carrera_nombre = $trayectoria->situaciones[$num_situaciones]->carrera_nombre;
-      $orientacion = $trayectoria->situaciones[$num_situaciones]->plan_nombre;
+      $sistema = $request->sistema;
       $curp = $_POST['curp'];
       $sexo = $_POST['sexo'];
       $nacionalidad = $_POST['nacionalidad'];
@@ -341,72 +436,130 @@ class RevEstudiosController extends Controller
       $jdeptit_firma = $request->input('jdeptit_firma');
       $jdeptit_firma = $request->input('jdeptit_firma');
 
-      dd($sistema);
-      
-      $sql = Alumno::insert(
-        array('num_cta' => $num_cta,
-              'curp' => $curp,
-              'foto' => null,
-              'nombre_alumno' => $nombres,
-              'primer_apellido' => $apellido1,
-              'segundo_apellido' => $apellido2,
-              'sexo' => $sexo,
-              'fecha_nacimiento' => date('Y-m-d', strtotime(str_replace('/', '-', $fecha_nac))),
-              'id_nacionalidad' => (int)$nacionalidad,
-              'pais_cve' => (int)$lugar_nac
-      ));
+      $condoc = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
 
-      if($situacion->porcentaje_totales >= 70.00){
-        $porcentaje = 1;
-      }
-      else{
-        $porcentaje = 0;
-      }
+        //Verificamos si el alumno se encuentra en la BD del CONDOC
+        if($condoc != NULL){
 
-      $sql1 = Trayectoria::insertGetId(
-        array('generacion' => (int)$situacion->generacion,
-              'num_planestudios' => (int)$situacion->plan_clave,
-              'nombre_planestudios' => $orientacion, //¿Son lo mismo?
-              'num_cta'=> $num_cta,
-              'avance_creditos' => (float)$situacion->porcentaje_totales,
-              'cumple_requisitos' => $porcentaje,
-              'id_nivel' => $nivel,
-              'nombre_carrera' => $situacion->carrera_nombre
-      ));
+          $nombres = $condoc[0]->nombre_alumno;
+          $apellido1 = $condoc[0]->primer_apellido;
+          $apellido2 = $condoc[0]->segundo_apellido;
 
-      $sql2 = Registro_RE::insertGetId(
-        array('actualizacion_nombre' => Auth::user()->nombre,
-              'actualizacion_fecha' => null,
-              'jsec_nombre' => null,
-              'jsec_fecha' => null,
-              'jarea_nombre' => null,
-              'jarea_fecha' => null,
-              'jdepre_nombre' => null,
-              'jdepre_fecha' => null,
-              'jdeptit_nombre' => null,
-              'jdeptit_fecha' => null,
-              'direccion_nombre' => null,
-              'direccion_fecha' => null,
-              'num_cta' => $num_cta
-      ));
+          $trayectoria = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+          $plan_est = $trayectoria[0]->num_planestudios;
+          $nivel = $trayectoria[0]->id_nivel;
+          $carrera_nombre = $trayectoria[0]->nombre_carrera;
+          $orientacion = $trayectoria[0]->nombre_planestudios;
 
-      foreach($nivel_esc as $key=>$value) {
-        $sql3 = Esc_Proc::insertGetId(
-          array('nombre_escproc' => $escuela_proc[$key],
-                'nivel' => $nivel_esc[$key],
-                'clave' => $cct[$key],
-                'folio_certificado' => (int)$folio_cert[$key],
-                'seleccion_fecha' => (int)$seleccion_fecha[$key],
-                'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))),
-                'inicio_periodo' => (int)$inicio_periodo[$key],
-                'fin_periodo' => (int)$fin_periodo[$key],
-                'promedio' => (float)$promedio[$key],
-                'pais_cve' => (int)$entidad_esc[$key],
-                'num_cta' => $num_cta
-        ));
-      }
+          dd($orientacion);
+
+          DB::disconnect('mysql2');
+
+        }
+        //Si es vacía, obtenermos información del WS
+        else{
+
+          //Verificamos si la información proviene del SIAE
+          if($sistema == 'SIAE'){
+
+            $ws_SIAE = Web_Service::find(2);
+            $identidad = new WSController();
+            $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+               
+            $ws_SIAE = Web_Service::find(1);
+            $trayectoria = new WSController();
+            $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+
+            $nombres = $identidad->nombres;
+            $apellido1 = $identidad->apellido1;
+            $apellido2 = $identidad->apellido2;
+            $plan_est = $trayectoria->situaciones[$num_situaciones]->plan_clave;
+            $nivel = $trayectoria->situaciones[$num_situaciones]->nivel;
+            $carrera_nombre = $trayectoria->situaciones[$num_situaciones]->carrera_nombre;
+            $orientacion = $trayectoria->situaciones[$num_situaciones]->plan_nombre;
+
+            //Información de escuelas de interés (Finalizadas)
+            $nivel_esc = array();
+            foreach ($trayectoria->situaciones as $situacion) {
+              if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
+                array_push($nivel_esc, $situacion->nivel);
+              }
+            }
+                
+            $sql = Alumno::insert(
+              array('num_cta' => $num_cta,
+                    'curp' => $curp,
+                    'foto' => null,
+                    'nombre_alumno' => $nombres,
+                    'primer_apellido' => $apellido1,
+                    'segundo_apellido' => $apellido2,
+                    'sexo' => $sexo,
+                    'fecha_nacimiento' => date('Y-m-d', strtotime(str_replace('/', '-', $fecha_nac))),
+                    'id_nacionalidad' => (int)$nacionalidad,
+                    'pais_cve' => (int)$lugar_nac
+            ));
+
+            if($situacion->porcentaje_totales >= 70.00){
+              $porcentaje = 1;
+            }
+            else{
+              $porcentaje = 0;
+            }
+
+            $sql1 = Trayectoria::insertGetId(
+              array('generacion' => (int)$situacion->generacion,
+                    'num_planestudios' => (int)$plan_est,
+                    'nombre_planestudios' => $orientacion, //¿Son lo mismo?
+                    'num_cta'=> $num_cta,
+                    'avance_creditos' => (float)$situacion->porcentaje_totales,
+                    'cumple_requisitos' => $porcentaje, //1 cumple, 0 no cumple
+                    'id_nivel' => $nivel,
+                    'nombre_carrera' => $situacion->carrera_nombre
+            ));
+
+            $sql2 = Registro_RE::insertGetId(
+              array('actualizacion_nombre' => Auth::user()->nombre,
+                    'actualizacion_fecha' => null,
+                    'jsec_nombre' => null,
+                    'jsec_fecha' => null,
+                    'jarea_nombre' => null,
+                    'jarea_fecha' => null,
+                    'jdepre_nombre' => null,
+                    'jdepre_fecha' => null,
+                    'jdeptit_nombre' => null,
+                    'jdeptit_fecha' => null,
+                    'direccion_nombre' => null,
+                    'direccion_fecha' => null,
+                    'num_cta' => $num_cta
+            ));
+
+            foreach($nivel_esc as $key=>$value) {
+              $sql3 = Esc_Proc::insertGetId(
+                array('nombre_escproc' => $escuela_proc[$key],
+                      'nivel' => $nivel_esc[$key],
+                      'clave' => $cct[$key],
+                      'folio_certificado' => (int)$folio_cert[$key],
+                      'seleccion_fecha' => (int)$seleccion_fecha[$key],
+                      'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))),
+                      'inicio_periodo' => (int)$inicio_periodo[$key],
+                      'fin_periodo' => (int)$fin_periodo[$key],
+                      'promedio' => (float)$promedio[$key],
+                      'pais_cve' => (int)$entidad_esc[$key],
+                      'num_cta' => $num_cta
+              ));
+            }
+
+          }
+          //En caso contrario, buscamos en DGIRE
+          else{
+
+
+
+          }
+        }
 
       return redirect()->route('home');
+
     }
 
     public function showAgregarEsc($num_cta)
@@ -469,23 +622,12 @@ class RevEstudiosController extends Controller
     }
 
     public function prueba($num_cta){
+
       $ws_SIAE = Web_Service::find(2);
-      $identidad = new WSController();
-      $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+          $identidad = new WSController();
+          $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
-      $ws_SIAE = Web_Service::find(1);
-      $trayectoria = new WSController();
-      $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-
-      $irr_acta = IrregularidadesRE::where('cat_cve', 1)->get();
-      $irr_cert = IrregularidadesRE::where('cat_cve', 2)->get();
-
-      $paises = Paises::all();
-
-      $ws_DGIRE = new WSController();
-      $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
-
-      dd($ws_DGIRE);
+      dd($identidad);
 
       return view('/menus/prueba', ['num_cta'=> $num_cta, 'identidad' => $identidad, 
         'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'paises' => $paises]); 

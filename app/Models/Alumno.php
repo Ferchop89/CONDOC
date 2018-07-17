@@ -21,8 +21,7 @@ class Alumno extends Model
 		'id_nacionalidad', 
 		'pais_cve',
 		'sistema',
-		'irre_act',
-		'sistema'
+		'irre_act'
     ];
     
 }

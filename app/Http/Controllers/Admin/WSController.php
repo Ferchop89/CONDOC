@@ -14,7 +14,7 @@ class WSController extends Controller
         ini_set("display_errors", 1);
         ini_set('soap.wsdl_cache_enabled', '0');
         ini_set('soap.wsdl_cache_ttl', '0');
-        ini_set("default_socket_timeout", 5);
+        ini_set("default_socket_timeout", 50);
 
         //$key = SHA1('He seguido la trayectoria en la que he creido y he confiado en mi mismo / Antonio Saura');
         // parametros de entrada para SOAP
