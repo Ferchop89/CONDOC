@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bach extends Model
+class Baches extends Model
 {
     //
 	protected $connection = 'condoc_old';

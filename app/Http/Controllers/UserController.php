@@ -77,6 +77,7 @@ class UserController extends Controller
                     $id['plan_clave_SIAE'] = $value->plan_clave;
                 }
             }
+            // dd(DB::connection('condoc_old')->enableQueryLog());
             $plantel = DB::connection('condoc_old')->select('select car_cve_plt_car, car_nom_plan from carreras WHERE car_car_siae = '.$id['carrera_clave_SIAE'].' AND car_plan_siae = '.$id['plan_clave_SIAE']);
             if($plantel == NULL)
             {

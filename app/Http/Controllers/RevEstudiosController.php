@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
-use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises, 
+use App\Models\{Web_Service, IrregularidadesRE, Baches, Paises,
                 Niveles, User, Trayectoria, Nacionalidades,
                 Registro_RE, Alumno, Esc_Proc};
 use Illuminate\Support\Facades\Auth;
@@ -78,7 +78,7 @@ class RevEstudiosController extends Controller
 
         return view('/menus/datos_personales', ['title' => $title]);
     }
-    
+
     public function showDatosPersonales(User $user, $num_cta)
     {
         $title = "Revisión de Estudios";
@@ -86,7 +86,7 @@ class RevEstudiosController extends Controller
         $ws_SIAE = Web_Service::find(2);
         $identidad = new WSController();
         $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-        
+
         $ws_SIAE = Web_Service::find(1);
         $trayectoria = new WSController();
         $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
@@ -106,14 +106,14 @@ class RevEstudiosController extends Controller
         //Información sobre escuelas según el plantel (catálogo)
         $esc_proc = array();
         foreach ($trayectoria->situaciones as $situacion) {
-          $value = Bach::where('nom', $situacion->plantel_nombre)->first();
+          $value = Baches::where('nom', $situacion->plantel_nombre)->first();
           array_push($esc_proc, $value);
         }
 
         //Escuelas de interés (Finalizadas o en curso que cubran al menos el 70% de créditos)
         $escuelas = array();
         foreach ($trayectoria->situaciones as $situacion) {
-          if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' 
+          if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'
             || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){
             array_push($escuelas, $situacion);
           }
@@ -134,15 +134,15 @@ class RevEstudiosController extends Controller
 
         //Variable que permitirá verirficar si el usuario actual es Oficinista
         // $rol = Auth::user()->hasRole('Ofisi');
-    
+
         //Registro de las firmas en el sistema dado el número de cuenta del alumno
         $firmas = Registro_RE::where('num_cta', $num_cta)->first();
 
         //dd($firmas->actualizacion_fecha->date_format(d.m.Y));
 
-        return view('/menus/captura_datos', ['title' => $title, 'num_cta'=> $num_cta, 'trayectoria' => $trayectoria, 
-          'user' => $user, 'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 
-          'irr_migr' => $irr_migr, 'esc_proc' => $esc_proc, 'paises' => $paises, 'num_situaciones' => $num_situaciones, 
+        return view('/menus/captura_datos', ['title' => $title, 'num_cta'=> $num_cta, 'trayectoria' => $trayectoria,
+          'user' => $user, 'identidad' => $identidad, 'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert,
+          'irr_migr' => $irr_migr, 'esc_proc' => $esc_proc, 'paises' => $paises, 'num_situaciones' => $num_situaciones,
           'escuelas' => $escuelas, 'nacionalidades' => $nacionalidades, 'roles_us' => $roles_us, 'firmas' => $firmas]);
     }
 
@@ -166,7 +166,7 @@ class RevEstudiosController extends Controller
 
     public function verificaDatosPersonales(Request $request)
     {
-    
+
       $request->validate([
           'curp' => 'required|min:18|max:18|regex:/^[A-Z]{4}[0-9]{2}[0-1][0-9][0-9]{2}[M,H][A-Z]{5}[0-9]{2}$/',
           'fecha_nac' => 'required|min:10|max:10|regex:/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/'
@@ -186,7 +186,7 @@ class RevEstudiosController extends Controller
       $ws_SIAE = Web_Service::find(2);
       $identidad = new WSController();
       $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-      
+
       $ws_SIAE = Web_Service::find(1);
       $trayectoria = new WSController();
       $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
@@ -209,7 +209,7 @@ class RevEstudiosController extends Controller
       $nivel = $trayectoria->situaciones[$num_situaciones]->nivel;
       $carrera_nombre = $trayectoria->situaciones[$num_situaciones]->carrera_nombre;
       $orientacion = $trayectoria->situaciones[$num_situaciones]->plan_nombre;
-      $curp = $_POST['curp']; 
+      $curp = $_POST['curp'];
       $sexo = $_POST['sexo'];
       $nacionalidad = $_POST['nacionalidad'];
       $fecha_nac = $_POST['fecha_nac'];
@@ -218,9 +218,9 @@ class RevEstudiosController extends Controller
       $folio_doc = $_POST['folio_doc'];
       $irregularidad_doc = $_POST['irregularidad_doc'];
       //$tipo_esc = $request->tipo_esc; PENDIENTE X CATÁLOGO [ENTIDAD TAMBIÉN]
-      $escuela_proc = $_POST['escuela_proc']; 
-      $cct = $_POST['cct']; 
-      $entidad_esc = $_POST['entidad_esc']; 
+      $escuela_proc = $_POST['escuela_proc'];
+      $cct = $_POST['cct'];
+      $entidad_esc = $_POST['entidad_esc'];
       $folio_cert = $_POST['folio_cert'];
       $seleccion_fecha = $_POST['seleccion_fecha'];
       $inicio_periodo = $_POST['inicio_periodo'];
@@ -233,21 +233,21 @@ class RevEstudiosController extends Controller
       $jdepre_firma = $request->input('jdepre_firma');
       $jdeptit_firma = $request->input('jdeptit_firma');
       $jdeptit_firma = $request->input('jdeptit_firma');
-      
+
       /*$sql = Alumno::insert(
         array('num_cta' => $num_cta,
               'curp' => $curp,
-              'foto' => null, 
-              'nombre_alumno' => $nombres, 
-              'primer_apellido' => $apellido1, 
-              'segundo_apellido' => $apellido2, 
-              'sexo' => $sexo, 
-              'fecha_nacimiento' => date('Y-m-d', strtotime($fecha_nac)),  
-              'id_nacionalidad' => (int)$nacionalidad, 
+              'foto' => null,
+              'nombre_alumno' => $nombres,
+              'primer_apellido' => $apellido1,
+              'segundo_apellido' => $apellido2,
+              'sexo' => $sexo,
+              'fecha_nacimiento' => date('Y-m-d', strtotime($fecha_nac)),
+              'id_nacionalidad' => (int)$nacionalidad,
               'pais_cve' => (int)$lugar_nac
       ));
 
-      
+
       if($situacion->porcentaje_totales >= 70.00){
         $porcentaje = 1;
       }
@@ -256,8 +256,8 @@ class RevEstudiosController extends Controller
       }
 
       $sql1 = Trayectoria::insertGetId(
-        array('generacion' => (int)$situacion->generacion, 
-              'num_planestudios' => (int)$situacion->plan_clave, 
+        array('generacion' => (int)$situacion->generacion,
+              'num_planestudios' => (int)$situacion->plan_clave,
               'nombre_planestudios' => $orientacion, //¿Son lo mismo?
               'num_cta'=> $num_cta,
               'avance_creditos' => (float)$situacion->porcentaje_totales,
@@ -266,18 +266,18 @@ class RevEstudiosController extends Controller
       ));
 
       $sql2 = Registro_RE::insertGetId(
-        array('actualizacion_nombre' => Auth::user()->nombre, 
-              'actualizacion_fecha' => null, 
-              'jsec_nombre' => null, 
-              'jsec_fecha' => null, 
-              'jarea_nombre' => null, 
-              'jarea_fecha' => null, 
-              'jdepre_nombre' => null, 
-              'jdepre_fecha' => null, 
-              'jdeptit_nombre' => null, 
-              'jdeptit_fecha' => null, 
-              'direccion_nombre' => null, 
-              'direccion_fecha' => null, 
+        array('actualizacion_nombre' => Auth::user()->nombre,
+              'actualizacion_fecha' => null,
+              'jsec_nombre' => null,
+              'jsec_fecha' => null,
+              'jarea_nombre' => null,
+              'jarea_fecha' => null,
+              'jdepre_nombre' => null,
+              'jdepre_fecha' => null,
+              'jdeptit_nombre' => null,
+              'jdeptit_fecha' => null,
+              'direccion_nombre' => null,
+              'direccion_fecha' => null,
               'num_cta' => $num_cta
       ));
 
@@ -288,11 +288,11 @@ class RevEstudiosController extends Controller
                 'clave' => $cct[$i],
                 'folio_certificado' => (int)$folio_cert[$i],
                 'seleccion_fecha' => $seleccion_fecha[$i],
-                'mes_anio' => date('Y-m-d', strtotime($mes_anio[$i])), 
+                'mes_anio' => date('Y-m-d', strtotime($mes_anio[$i])),
                 'inicio_periodo' => (int)$inicio_periodo[$i],
                 'fin_periodo' => (int)$fin_periodo[$i],
                 'promedio' => (float)$promedio[$i],
-                'pais_cve' => (int)$entidad_esc[$i], 
+                'pais_cve' => (int)$entidad_esc[$i],
                 'num_cta' => $num_cta
         ));
       }*/
@@ -329,14 +329,14 @@ class RevEstudiosController extends Controller
           array_push($escuelas, $situacion);
         }
       }
-      
+
       return view('/menus/agregar_esc', ['num_cta' => $num_cta, 'trayectoria' => $trayectoria, 'nombres_nivel' => $nombres_nivel,
                   'escuelas' => $escuelas]);
     }
 
     public function validarInformacion(Request $request)
     {
-    
+
       $request->validate([
           'num_cta' => 'required|numeric|digits:9'
           ],[
@@ -369,8 +369,8 @@ class RevEstudiosController extends Controller
 
       $paises = Paises::all();
 
-      return view('/menus/prueba', ['num_cta'=> $num_cta, 'identidad' => $identidad, 
-        'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'paises' => $paises]); 
-    } 
+      return view('/menus/prueba', ['num_cta'=> $num_cta, 'identidad' => $identidad,
+        'irr_acta' => $irr_acta, 'irr_cert' => $irr_cert, 'paises' => $paises]);
+    }
 
 }
