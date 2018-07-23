@@ -1,4 +1,5 @@
 <?php
+
 Route::get('/home', 'Dashboard@index')
         ->name('admin_dashboard');
 
@@ -36,7 +37,6 @@ Route::put('/usuarios/{user}','Dashboard@update');
 
 Route::delete('/usuarios/{user}' ,'Dashboard@eliminar_usuario')
         ->name('eliminar_usuario');
-
 Route::any('{any}', function (){
     return response()->view('errors/404', [], 404);
 })->where('any', '.*');

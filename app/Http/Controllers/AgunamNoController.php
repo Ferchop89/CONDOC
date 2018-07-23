@@ -41,24 +41,44 @@ class AgunamNoController extends Controller
   }
   public function alta_noagunam(Request $request){
 
-    $request->validate([
-      'cuenta' => ['required', 'string', new ctaNoAgunam]
-    ]);
+     $request->validate([
+       'cuenta' => ['required', 'numeric', 'digits:9', new ctaNoAgunam]
+     ],[
+       'cuenta.required' => 'Numero de cuenta obligatorio',
+       'cuenta.numeric' => 'El Número de cuenta debe ser numérico',
+       'cuenta.digits' => 'El Número de cuenta debe tener una longitud de 9 caracteres'
+     ]);
 
-    $cuenta = request()->cuenta;
-    // como pasó la validacion, damos de alta un registro en noAgunam
+     $cuenta = request()->cuenta;
+     // como pasó la validacion, damos de alta un registro en noAgunam
 
-    // buscamos el corte_id.
-    $corteId = Solicitud::where('cuenta',$cuenta)->first()->CorteLista->id;
+     // Buscamos en la lista de expedientes NOagunam el expediente que vamos a dar de alta
+     $expedientes = DB::table('agunamno')
+                        ->where('solicitudes.cuenta',$cuenta)
+                        ->join('cortes','agunamno.corte_id','=','cortes.id')
+                        ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
+                        ->select('agunamno.id',
+                                 'agunamno.encontrado_at',
+                                 'solicitudes.cuenta',
+                                 'solicitudes.nombre'
+                                 )
+                        ->GET()->first();
 
-    // Damos de alta el registro
-    $noagunam = new AgunamNo();
-    $noagunam->corte_id = $corteId; // único campo obligatorio
-    $noagunam->save();
+     if ($expedientes!=null) {
+       // El registro se encontraba borrado, así que solo lo recuperamos.
+       AgunamNo::withTrashed()->find($expedientes->id)->restore();
+     } else {
+       // El registro no existia, así que lo damos de alta
+       $corteId = Solicitud::where('cuenta',$cuenta)->first()->CorteLista->id;
+       // Damos de alta el registro
+       $noagunam = new AgunamNo();
+       $noagunam->corte_id = $corteId; // único campo obligatorio
+       $noagunam->save();
+     }
 
-    // regresamos a la lista para visualizar en Nuevo registro
-    return redirect()->route('agunam/expedientes_noagunam');
-  }
+     // regresamos a la lista para visualizar en Nuevo registro
+     return redirect()->route('agunam/expedientes_noagunam');
+   }
 
   /*Método para editar información de un usuario*/
   public function editar_noagunam(AgunamNo $expediente)
@@ -93,29 +113,43 @@ class AgunamNoController extends Controller
       return view('noagunam/editar_noagunam',['expediente'=> $expOK, 'title'=>$title, 'agunam' => $agunam, 'edita'=>$edita]);
   }
 
-  public function salvar_noagunam($expediente){
-    // actualización del registro
+  public function salvar_noagunam(AgunamNo $expediente){
+    // actualización del registro;
+
+    // dd($expediente);
+    $data = request()->validate
+    (
+      ['norecibido' => 'sometimes|date',
+       'encontrado' => 'sometimes|nullable|date|after_or_equal:norecibido'],
+      [ 'encontrado.required' => 'La fecha en se encontró el expediente es obligatoria',
+        'encontrado.after_or_equal' => 'La fecha de expediente encontrado debe ser posterior a la recepción del listado en CERCONDOC']
+    );
+
     $encontrado = request()->input('encontrado');
     $descrip    = request()->input('descrip');
-    $fecha      = request()->input('actualiza');
 
-    // dd($fecha);
 
-    $exped = AgunamNo::find($expediente);
-    $exped->descripcion = ($descrip!=null)? $descrip: "";
-    $exped->encontrado = ($encontrado!=null)? true: false;
-    $exped->Encontrado_at = $fecha;
-    $exped->update();
+    // los demas campos de noagunam
+    $expediente->encontrado_at = $encontrado;
+    $expediente->descripcion = ($descrip!=null)? $descrip: "";
+    $expediente->update();
 
     // return redirect()->route('agunam/expedientes');
     // return redirect()->route('noagunam/ver_noagunam',['expediente'=>$expediente]);
     $title = 'Salvar expediente';
 
-    return view('noagunam/ver_noagunam',['expediente' => $exped_id, 'title' => $title ]);
+    // dd($expediente->id);
+    return redirect()->route('ver_noagunam',['expediente'=>$expediente,'title'=>$title]);
+
+    // return view('noagunam/ver_noagunam',['expediente' => $expediente->id, 'title' => $title ]);
     // return view('noagunam/ver_noagunam',['expediente' => $exped, 'title'=> $title]);
   }
 
   /*Método para visualizar información de un usuario*/
+
+
+
+
   public function ver_noagunam(AgunamNo $expediente)
   {
     // Edicion de expedientes no encontrados no en Agunam.
@@ -126,7 +160,6 @@ class AgunamNoController extends Controller
                        ->join('users','solicitudes.user_id','=','users.id')
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
                        ->select('agunamno.id',
-                                'agunamno.encontrado',
                                 'agunamno.descripcion',
                                 'agunamno.Encontrado_at',
                                 'solicitudes.cuenta',
@@ -143,7 +176,7 @@ class AgunamNoController extends Controller
       // Si se ha realizado la gestión de corte-lista, esto es, tienen fechas de solicitado y recibido
       $edita = ($agunam->Solicitado_at==null || $agunam->Recibido_at==null)? false: true;
 
-      $title = ' Vista de expediente no encontrado en AGUNAM ';
+      $title = 'Vista de expediente no encontrado en AGUNAM';
 
       return view('noagunam/ver_noagunam',['expediente'=> $expOK, 'title'=>$title, 'agunam' => $agunam, 'edita'=>$edita]);
   }

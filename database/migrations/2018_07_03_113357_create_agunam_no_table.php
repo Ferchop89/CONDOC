@@ -18,8 +18,7 @@ class CreateAgunamNoTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('corte_id');
             $table->text('descripcion')->nullable();
-            $table->boolean('encontrado')->default(false);
-            $table->dateTime('Encontrado_at')->nullable();
+            $table->dateTime('encontrado_at')->nullable();
             $table->softDeletes();  // columna de soft-delete
         });
     }

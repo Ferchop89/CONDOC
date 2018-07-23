@@ -27,7 +27,7 @@ class ctaNoAgunam implements Rule
      */
     public function passes($attribute, $value)
     {
-      // si no tienen un listado y corte, no pasa la validación
+      // si no tienen un listado y corte, no pasa la validación u no fue solicituado en Agunam.
 
       $cortes = DB::table('cortes')
             ->Join('agunam', function ($j) {
@@ -35,11 +35,19 @@ class ctaNoAgunam implements Rule
                     ->on('cortes.listado_id', '=', 'agunam.listado_id');
                     })
             ->join('solicitudes','cortes.solicitud_id','solicitudes.id')
-            ->select('agunam.listado_corte','agunam.listado_id') // example, select what you need
+            ->select('agunam.listado_corte','agunam.listado_id',
+                     'agunam.Solicitado_at', 'agunam.Recibido_at') // example, select what you need
             ->where('solicitudes.cuenta',$value)
-            ->get()->toArray();;
+            ->get()->first();
 
-      return ($cortes!=[])? true: false;
+      if ($cortes) { // preguntamos si existe la lista
+        // Si existe el listado,  debe tener las dos fechas de recepcion y envio a AGUNAM
+        return ($cortes->Solicitado_at==null || $cortes->Recibido_at==null)? false: true;
+      } else {
+        // No existe la lista de envio
+        return false;
+      }
+
     }
 
     /**
@@ -49,6 +57,6 @@ class ctaNoAgunam implements Rule
      */
     public function message()
     {
-        return 'El expediente no fue solicitado a  AGUNAM';
+        return 'El expediente no ha sido solicitado o recibido por parte de AGUNAM';
     }
 }

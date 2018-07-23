@@ -9,53 +9,78 @@ use DB;
 class GrafiController extends Controller
 {
     //
-    public function diario(){
-        $title = "Recepción de Solicitudes y Citatorios";
-       $paraMes = 6;
-       $anio = 2018;
-       $paraProc = 4;
+    public function solicitudes()
+    {
+        // Genera las graficas de solicitudes y citatorios
+        $title = "Solicitudes de Revisiones de Estudio";
+        // En su primera carga, toma varores de la base de datos, sino, selecciona y enviados por submit
+        $a = $m = $o = array();
+        $a = $this->solicitudesAnio();
+        $aSel = (request()->anio_id==null)? max($a)             : request()->anio_id;
+        $m = $this->solicitudesMes($aSel);
+        $mSel = (request()->mes_id==null)? substr(max($m),0,2)  : request()->mes_id; // "07. Julio" obtenemos el '07'
+        $o = $this->solicitudesOrigen($aSel,$mSel);
+        $oSel = (request()->origen_id==null)? ''                : request()->origen_id;
 
-       $meses = array();
-       $meses = ['01'=>'01. Enero','02'=>'02. Febrero','03'=>'03. Marzo','04'=>'04. Abril','05'=>'05. Mayo','06'=>'06. Junio',
-                 '07'=>'07. Julio','08'=>'08. Agosto','09'=>'09. Septiembre','10'=>'10. Octubre','11'=>'11. Noviembre','12'=>'12. Diciembre'];
+        // Asimamos esos arreglos para los select de la vista
+        $anio   = $a;  // arreglo de años y el valor seleccionado (ultimo año)
+        $mes    = $m;  // arreglo de meses y valor sleccionado (ultimo mes)
+        $origen = $o;  // arreglo de procedencias y el valor seleccionado (todas las procedencias)
 
-       $mes = $meses[str_pad($paraMes,2,'0',STR_PAD_LEFT)];
-       $procedencia = Procedencia::find($paraProc)->procedencia;
-
-       // Grafico con filtro de procedencia
-       $chart1 = $this->barraGrafico($paraMes,$anio,$paraProc,'Particular');
-       // Grafico sin filtro de procedencia.
-       $chart2 = $this->barraGrafico($paraMes,$anio,null,'General');
+       // Grafico de barras
+       $chart1 = $this->bar_Genera($mSel,$aSel,$oSel,'Particular');
+       $data = $this->dataBarra($mSel,$aSel,$oSel);
+       // Grafico pie
+       $chart2 = $this->pie_Genera($mSel,$aSel,$oSel,'General');
 
         // Renderizamos en la vista.
-        return view('graficas/example', compact('chart1','chart2','procedencia','mes','anio', 'title'));
+        return view('graficas/solycita', compact('title','chart1','chart2','anio', 'aSel','mes','mSel','origen','oSel','data'));
+        // return view('graficas/solycita', compact('chart1','chart2','procedencia','mes','origen','periodos'));
     }
 
-    public function barraGrafico($paraMes,$anio,$paraProc,$nombreGraf){
-      // Generamos el grafico a partir de los datos
+    public function bar_Genera($paraMes,$anio,$paraProc,$nombreGraf)
+    {
+        // Generamos el grafico de barra a partir de los datos
 
-      // $arreglo contiene los datos de la consulta en arrenglo de llave-pair
-      $arreglo = $this->dataProcede($paraMes,$anio,$paraProc);
-      // El $arreglo se pasa a tres arreglos uno de etiquetas (dias de mes), otro de Solicitudes ($data1) y Citatorios ($data2)
-      $lables = $data1 = $data2 = array();
-      foreach ($arreglo as $key => $value) {
-        array_push($lables,$key);
-        array_push($data1,$value[0]);
-        array_push($data2,$value[1]);
-      }
-      // Componemos el arreglo para el gráfico con etiquetas y datos
-      $chart = $this->diarioGrafico($lables,$data1,$data2,$nombreGraf);
+        // $arreglo contiene los datos de la consulta en arrenglo de llave-pair
+        $arreglo = $this->dataBarra($paraMes,$anio,$paraProc);
+        // $arreglo = $this->dataBarra('05','2018','010');
+        // El $arreglo se pasa a tres arreglos uno de etiquetas (dias de mes), otro de Solicitudes ($data1) y Citatorios ($data2)
+        $lables = $data1 = $data2 = array();
+        foreach ($arreglo as $key => $value) {
+          array_push($lables,$key);
+          array_push($data1,$value[0]);
+          array_push($data2,$value[1]);
+        }
+        // Componemos el arreglo para el gráfico con etiquetas y datos
+        $chart = $this->bar_Grafico($lables,$data1,$data2,$nombreGraf);
 
-      return $chart;
+        return $chart;
     }
 
-    public function diarioGrafico($lables,$data1,$data2,$nombreGraf){
+    public function pie_Genera($paraMes,$anio,$paraProc,$nombreGraf)
+    {
+        // Generamos el grafico de pie a partir de los datos
+
+        // $arreglo contiene los datos de la consulta en arrenglo de llave-pair
+        $data = $this->dataPie($paraMes,$anio,$paraProc);
+
+        // El $arreglo se pasa a tres arreglos uno de etiquetas (dias de mes), otro de Solicitudes ($data1) y Citatorios ($data2)
+        $lables = ['Solicitudes','Citatorios'];
+        // Componemos el arreglo para el gráfico con etiquetas y datos
+        $chart = $this->pie_Grafico($lables,$data,$nombreGraf);
+
+        return $chart;
+    }
+
+    public function bar_Grafico($lables,$data1,$data2,$nombreGraf)
+    {
       // grafico de barras de 2 conjuntos de datos
 
       $chartjs = app()->chartjs
         ->name($nombreGraf)
         ->type('bar')
-        ->size(['width' => 360, 'height' => 200])
+        ->size(['width' => 400, 'height' => 200])
         ->labels($lables)
         ->datasets([
             [
@@ -84,7 +109,26 @@ class GrafiController extends Controller
         return $chartjs;
     }
 
-    public function dataProcede($mes,$anio,$procede){
+    public function pie_Grafico($lables,$data)
+    {
+      $chartjs = app()->chartjs
+        ->name('pieChartTest')
+        ->type('doughnut')
+        ->size(['width' => 400, 'height' => 200])
+        ->labels($lables)
+        ->datasets([
+            [
+                'backgroundColor' => ['#FF6384', '#36A2EB'],
+                'hoverBackgroundColor' => ['#FF6384', '#36A2EB'],
+                'data' => $data
+            ]
+        ])
+        ->options([]);
+      return $chartjs;
+    }
+
+    public function dataBarra($mes,$anio,$procede)
+    {
        // consultas diarias de solicitudes y citatorios.
 
        // Año y mes para filtrar la consulta.
@@ -95,7 +139,7 @@ class GrafiController extends Controller
         $query .= 'count(*) as cantidad ';
         $query .= 'from solicitudes inner join users on users.id = solicitudes.user_id ';
         $query .= 'where DATE_FORMAT(solicitudes.created_at,"%m%Y") = '.$mesAnio.' ';
-        $query .=  ($procede!=null)? 'and users.procedencia_id = '.$procede.' ' : '';
+        $query .=  ($procede!='')? 'and users.procedencia_id = '.$procede.' ' : '';
         $query .= 'and cancelada = 0 ';
         $query .= 'group by citatorio, dia ';
         $query .= 'order by dia asc ';
@@ -103,17 +147,105 @@ class GrafiController extends Controller
 
         // mapeamos la consulta a una arreglo de dia=>[cantidad de solicitudes, cantidad de citatorios.]
 
-        // arreglo que contiene las cantidades de 0-citatorios 1-solicitudes
+        // arreglo que contiene las cantidades de 0-citatorios 0-solicitudes que son el value del Key (dia)
         $arreglo = array(); $tipo = [0,0];
         // Colocamos por cada llave (dia) una arreglo con la cantidad de citatorios [0] y solicitudes en [1]
         foreach ($data as $value) {
           if (array_key_exists($value->dia,$arreglo)) {
+            // Un key (dia) puede tener hasta 2 registros, si existe la llave actualiza con la cantidad
             $arreglo[$value->dia][$value->citatorio] = $value->cantidad;
           } else {
+            // Un key (dia) puede tener hasta 2 registros, no existe la llave se crea y apunta al array $tipo
+            // y se uno de los dos indices (solicitud o citatoro) se actualiza con la cantidad
             $arreglo[$value->dia] = $tipo;
             $arreglo[$value->dia][$value->citatorio] = $value->cantidad;
           }
         }
+
         return $arreglo;
     }
+
+    public function dataPie($mes,$anio,$procede)
+    {
+       // consultas diarias de solicitudes y citatorios.
+
+       // dd($mes,$anio,$procede);
+
+       // Año y mes para filtrar la consulta.
+        $mesAnio = "'".str_pad($mes,2,0,STR_PAD_LEFT).$anio."'";
+
+        $query =  'select citatorio, count(*) as cantidad ';
+        $query .= 'from solicitudes inner join users on users.id = solicitudes.user_id ';
+        $query .= 'where DATE_FORMAT(solicitudes.created_at,"%m%Y") = '.$mesAnio.' ';
+        $query .=  ($procede!='')? 'and users.procedencia_id = '.$procede.' ' : '';
+        $query .= 'and cancelada = 0 ';
+        $query .= 'group by citatorio ';
+        $query .= 'order by citatorio asc ';
+        $data = DB::select($query);
+
+        // arreglo que contiene dos items las cantidades de 0-citatorios 1-solicitudes
+        $arreglo = array();
+        // Si no existen los citatorios o las solicitudes, entonces creamos con un valor cero para poder graficar
+        $arreglo['0'] = ( array_key_exists('0',$data) )? $data[0]->cantidad: 0; // solicitud normal
+        $arreglo['1'] = ( array_key_exists('1',$data) )? $data[1]->cantidad: 0; // solicitud tipo citatorio
+
+        // Colocamos por cada llave (dia) una arreglo con la cantidad de citatorios [0] y solicitudes en [1]
+        return $arreglo;
+    }
+
+    public function solicitudesAnio()
+    {
+        // de las Solicitudes, obtenemos los años en un key-value array. ["2017"=>"2017","2108" => "2018"]
+        $arreglo = array();
+        $query =  'select DISTINCT DATE_FORMAT(solicitudes.created_at, "%Y") as anio from solicitudes ';
+        $query .= 'where cancelada=0';
+        $data = DB::select($query);
+        foreach ($data as $value) {
+          $arreglo[$value->anio] = $value->anio;
+        }
+        return $arreglo;
+    }
+    public function solicitudesMes($anio)
+    {
+      // Genera las graficas de solicitudes y citatorios
+        $meses = $arreglo = array();
+        $meses = ['01'=>'01. Enero','02'=>'02. Febrero','03'=>'03. Marzo','04'=>'04. Abril','05'=>'05. Mayo','06'=>'06. Junio',
+                  '07'=>'07. Julio','08'=>'08. Agosto','09'=>'09. Septiembre','10'=>'10. Octubre','11'=>'11. Noviembre','12'=>'12. Diciembre'];
+
+        // de las Solicitudes, obtenemos los meses en un key-value array ['05'=>'05', '06'=>'06']
+        $arreglo = array();
+        $query =  'select DISTINCT DATE_FORMAT(solicitudes.created_at, "%m") as mes from solicitudes ';
+        $query .= 'where cancelada=0 AND ';
+        $query .= 'DATE_FORMAT(solicitudes.created_at, "%Y")='.$anio;
+        $data = DB::select($query);
+        // creamos un arreglo key-value de los meses en los que hay información en solicitudes para un año determinado($anio)
+        foreach ($data as $value) {
+          // introducimos los valores del mes "02 Febrero" para aquellos meses disponibles en las Solicitudes
+           $arreglo[$value->mes] = $meses[$value->mes];
+        }
+        return $arreglo;
+    }
+    public function solicitudesOrigen($anio,$mes)
+    {
+      // de las Solicitudes, obtenemos los procedencias en un key-value array ['100'=>'100 escuela 1']
+        $arreglo = array();
+        $arreglo['']='Todas las Procedencias';
+        $data = DB::table('solicitudes')
+                           ->whereRaw('DATE_FORMAT(solicitudes.created_at, "%m")="'.$mes.'"')
+                           ->whereRaw('DATE_FORMAT(solicitudes.created_at, "%Y")="'.$anio.'"')
+                           ->join('users','solicitudes.user_id','=','users.id')
+                           ->join('procedencias','users.procedencia_id','=','procedencias.id')
+                           ->selectRaw('DISTINCT procedencias.procedencia')
+                           ->orderBy('procedencias.procedencia','ASC')
+                           ->GET()->toArray();
+         foreach ($data as $value) {
+           $arreglo[substr($value->procedencia,0,3)] = $value->procedencia;
+         }
+         // agregamos un item superior para poder elegir alguna procedencia (o todas si no se elige ninguna)
+         return $arreglo;
+    }
+    public function prueba(){
+        dd("hola");
+    }
+
 }

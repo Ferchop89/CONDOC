@@ -4,12 +4,6 @@ use App\Models\Corte;
 use App\Models\Solicitud;
 use App\Models\AgunamNo;
 
-Route::get('/m4',[
-  'uses'=> 'RutasController@Menu1',
-  'as'=> 'm4',
-  'middleware' => 'roles',
-  'roles' => ['Ofisi','AgUnam']
-  ]);
 Route::get('/m6',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm6',
@@ -201,3 +195,16 @@ Route::delete('agunam/{expediente}}/borrar' ,[
     'roles' => ['Admin', 'Sria']
   ]);
 // Fin Gestion de expedientes no encontrados.
+// Route::get('/m4',[
+//   'uses'=> 'RutasController@Menu1',
+//   'as'=> 'm4',
+//   'middleware' => 'roles',
+//   'roles' => ['Admin','AgUnam']
+//   ]);
+/*Tablero de Control*/
+Route::get('graficas' ,[
+    'uses'=> 'GrafiController@solicitudes',
+    'as' => 'graficas',
+    'roles' => ['Admin']
+]);
+/*Fin de Tablero de Control*/

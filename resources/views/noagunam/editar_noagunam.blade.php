@@ -19,7 +19,7 @@
     <div class="card-body">
         @if ($errors->any())
             <div class="alert alert-danger">
-                <h5>Por favor corrige los siguientes debajo</h5>
+                <h5>Por favor corrige las siguientes inconsistencias:</h5>
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li> {{ $error}}  </li>
@@ -93,7 +93,7 @@
                 </table>
                 @if (!$edita)
                   <div class="form-group">
-                      <label><font color="red">Faltan las fechas de Envio y Recepción del Corte-Listado.</font></label>
+                      <label><font color="red">Faltan las fechas de Envio y/o Recepción del Corte-Listado.</font></label>
                   </div>
                 @endif
                 <a href="{{ route('agunam/expedientes_noagunam') }}" class="btn btn-primary waves-effect waves-light">Regresar a la lista de expedientes no encontrados</a>
