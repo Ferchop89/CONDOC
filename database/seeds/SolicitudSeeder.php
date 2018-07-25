@@ -22,10 +22,9 @@ class SolicitudSeeder extends Seeder
         // factory(Solicitud::class,10)->create();
         $pesoCancelada = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1];
         $pesoTipo = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0];
-
-        // creamos un arreglo con los usuarios que no vienen de la UNAM
-        $usuarios = User::where('procedencia_id','>','1')->pluck('id')->toArray();
-        $procedencia = procedencia::where('id','>','1')->pluck('id')->toArray();
+        // creamos un arreglo con los usuarios que no vienen de la DEPTO REV ESTUDIOS.
+        $usuarios = User::where('procedencia_id','!=','1001')->pluck('id')->toArray();
+        $procedencia = procedencia::where('id','!=','1001')->pluck('id')->toArray();
         $RegMin = 20; $RegMax = 50;
         $inicioSeed = Carbon::create(2018, 5, 1, 13, 0, 0, 'America/Mexico_City');
         $inicio = clone $inicioSeed;

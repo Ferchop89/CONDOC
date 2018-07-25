@@ -52,7 +52,7 @@
                         </div>
                     @endif
                     <div class="dato fecha_nac">
-                        <span>Fecha de Nacimineto: <p>{{$datos['fecha_nac']}}</p></span>
+                        <span>Fecha de Nacimiento: <p>{{$datos['fecha_nac']}}</p></span>
                     </div>
                     <div class="dato tipo">
                         @if ($datos['sistema'] == 'DGIRE')

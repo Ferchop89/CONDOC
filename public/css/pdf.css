@@ -15,14 +15,18 @@ a {
 body {
   position: relative;
   /* width: 21cm;   */
-  width: 16cm;
-  height: 29.7cm;
+  width: 21.6cm !important;
+  height: 27.94cm;
+  /* 216 x 279 */
+  /* width: 16cm; */
+  /* height: 29.7cm; */
   margin: 0 auto;
   color: #001028;
   background: #FFFFFF;
   font-family: Arial, sans-serif;
   font-size: 12px;
   font-family: Arial;
+  margin: 0;
   padding: 0;
   width: 100%;
 }
@@ -30,6 +34,10 @@ body {
 header {
   /* padding: 10px 0; */
   /* margin-bottom: 30px; */
+  display: block;
+  margin: 0;
+  padding: 0;
+
 }
 
 #logo {
@@ -122,7 +130,7 @@ table .desc {
 }
 
 table td {
-  padding: 20px;
+  padding: 0px;
   text-align: right;
 }
 
@@ -192,7 +200,7 @@ main{
 
 }
 .lista{
-    width: 90%;
+    width: 95%;
     margin: auto;
     /* margin-top: 100px; */
 }
@@ -211,21 +219,21 @@ footer {
    line-height: 35px;
 }
 .num{
-    width: 10px;
+    width: 3% !important;
 }
 .num_cta{
-    width: 50px;
+    width: 8% !important;
 }
 .nombre{
-    width: 220px;
+    width: 37% !important;
     /* border:solid 1px black; */
 }
 .fac{
-    width: 130px;
+    width: 32% !important;
     /* border:solid 1px black; */
 }
 .fecha{
-    width: 70px;
+    width: 10% !important;
     /* border:solid 1px black; */
 }
 table.lista{
@@ -233,7 +241,7 @@ table.lista{
 }
 .lista th, .lista td
 {
-    padding: 2px;
+    padding: 2px 1px;
     color:black;
     border-bottom: 1px solid #C1CED9;
     white-space: nowrap;
@@ -245,7 +253,6 @@ table.lista{
 .columna_2, .columna_3{
     text-align: left;
 }
-
 .test {
     width: 28.3cm;
     transform: rotate(-60deg);

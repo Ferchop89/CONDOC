@@ -53,7 +53,6 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-
         'condoc_old' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST_SECOND', 'localhost'),
@@ -117,7 +116,6 @@ return [
             //'charset'  => 'utf8',
             'prefix'   => '',
         ],
-
         'mysql2' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST_THIRD', '127.0.0.1'),

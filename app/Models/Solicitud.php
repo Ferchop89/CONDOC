@@ -24,4 +24,16 @@ class Solicitud extends Model
       );
     }
 
+    public function NoAgunam(){
+      return $this->hasManyThrough(
+        'App\Models\AgunamNo',
+        'App\Models\Corte',
+        'solicitud_id',
+        'corte_id'
+      );
+    }
+
+    public function CorteLista(){
+      return $this->hasOne('App\Models\Corte');
+    }
 }

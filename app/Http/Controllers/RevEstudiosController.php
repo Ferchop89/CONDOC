@@ -5,7 +5,7 @@ use \Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
 use Illuminate\Support\Facades\DB;
-use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises, 
+use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises,
                 Niveles, User, Trayectoria, Nacionalidades,
                 Registro_RE, Alumno, Esc_Proc};
 use Illuminate\Support\Facades\Auth;
@@ -89,12 +89,14 @@ class RevEstudiosController extends Controller
         $irr_migr = DB::connection('mysql2')->select('select * from irregularidades WHERE cat_cve = 3');
         $paises = DB::connection('mysql2')->select('select * from paises');
         $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
+
         //Roles (nombres) que tiene el usuario actual en el sistema
         $rol = Auth::user()->roles()->get();
         $roles_us = array();
         foreach($rol as $actual){
           array_push($roles_us, $actual->nombre);
         }
+
         //Registro de las firmas en el sistema del alumno
         $firmas = DB::connection('mysql2')->select('select * from registro__r_es WHERE num_cta = '.$num_cta);
         $datos = [
@@ -415,7 +417,7 @@ class RevEstudiosController extends Controller
 
     public function verificaDatosPersonales(Request $request)
     {
-    
+
       $request->validate([
           'curp' => 'required|min:18|max:18|regex:/^[A-Z]{4}[0-9]{2}[0-1][0-9][0-9]{2}[M,H][A-Z]{5}[0-9]{2}$/',
           'fecha_nac' => 'required|min:10|max:10|regex:/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/'
@@ -661,7 +663,6 @@ class RevEstudiosController extends Controller
         }
 
       return redirect()->route('home');
-
     }
 
     public function showAgregarEsc($num_cta)
@@ -694,7 +695,7 @@ class RevEstudiosController extends Controller
           array_push($escuelas, $situacion);
         }
       }
-      
+
       return view('/menus/agregar_esc', ['num_cta' => $num_cta, 'trayectoria' => $trayectoria, 'nombres_nivel' => $nombres_nivel,
                   'escuelas' => $escuelas]);
     }
@@ -868,7 +869,7 @@ class RevEstudiosController extends Controller
 
     public function validarInformacion(Request $request)
     {
-    
+
       $request->validate([
           'num_cta' => 'required|numeric|digits:9'
           ],[
@@ -896,11 +897,12 @@ class RevEstudiosController extends Controller
       $identidad = new WSController();
       $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
       $ws_SIAE = Web_Service::find(1);
+      
       $trayectoria = new WSController();
       $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
       dd($trayectoria);
 
-    } 
+    }
 
 }

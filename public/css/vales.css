@@ -1,0 +1,115 @@
+html {
+    margin: 0;
+}
+body {
+    width: 21.9cm !important;
+    height: 27.94cm;
+    margin: 0 auto;
+    color: #001028;
+    background: #FFFFFF;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+header{
+    width: 100%;
+    display: block;
+    clear: both;
+    /* border: solid 1px red; */
+    display: none;
+}
+main {
+    width: 21.9cm;
+    /* border: solid 1px; */
+    display: block;
+}
+.vale {
+    height: 3.2cm;
+    padding: 0.3cm 0.5cm;
+    display: block;
+    border: solid 1px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.linea
+{
+    clear: both;
+    height: 0.1px;
+}
+.left{
+    float: left;
+    width : 27%;
+    height: 11.1cm;
+    border: solid 1px black;
+    display : inline-block;
+}
+.center{
+    float: left;
+    width : 27%;
+    height: 11.1cm;
+    border: solid 1px black;
+    display : inline-block;
+    margin-left: 0.5cm;
+    padding-left: 0.5cm;
+}
+.right{
+    float: right;
+    width : 27%;
+    height: 11.1cm;
+    border: solid 1px black;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+.test {
+    width: 10.3cm;
+    position: relative;
+    color: silver;
+    font-size: 3.2em;
+    opacity: 0.5;
+    top: 4cm;
+    left: -2cm;
+    transform: rotate(-60deg);
+}
+.num_cta {
+    width: 10cm;
+    position: relative;
+    left: -4.5cm;
+    top: 4cm;
+    transform: rotate(-90deg);
+}
+.nombre {
+    width: 10cm;
+    position: relative;
+    left: -4cm;
+    top: 3.65cm;
+    transform: rotate(-90deg);
+}
+.oficina {
+    width: 10cm;
+    position: relative;
+    left: -3cm;
+    top: 3.3cm;
+    transform: rotate(-90deg);
+}
+.fecha {
+    width: 10cm;
+    display: inline-block;
+    position: relative;
+    left: -2cm;
+    top: 2.8cm;
+    transform: rotate(-90deg);
+}
+.fecha p {
+    width: 20%;
+    display: inherit;
+}
+footer{
+    /* width: 100%;
+    display: block;
+    height: 100px; */
+}

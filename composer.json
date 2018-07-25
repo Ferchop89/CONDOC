@@ -9,11 +9,13 @@
         "asistenteweb/nusoap": "dev-master",
         "barryvdh/laravel-dompdf": "^0.8.2",
         "fideloper/proxy": "~3.3",
+        "fx3costa/laravelchartjs": "^2.5",
         "laravel/framework": "5.5.*",
         "laravel/passport": "~4.0",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "~5.0",
         "lawiet/nusoap": "^0.1.0",
+        "milon/barcode": "^5.3",
         "nesbot/carbon": "^1.26",
         "uepg/laravel-sybase": "^2.0"
     },

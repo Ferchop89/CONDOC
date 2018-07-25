@@ -1,4 +1,5 @@
 <?php
+
 Route::get('/home', 'Dashboard@index')
         ->name('admin_dashboard');
 

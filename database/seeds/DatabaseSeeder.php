@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
           'agunam',
           'nacionalidades',
           'niveles'
+          'agunamno',
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
         $this->call(Web_Service_Seeder::class);
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AgunamSeeder::class);
         $this->call(NacionalidadesSeeder::class);
         $this->call(NivelesSeeder::class);
+        $this->call(AgunamNoSeeder::class);
     }
 
     public function truncateTables(array $tables){

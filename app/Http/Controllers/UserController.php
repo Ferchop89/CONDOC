@@ -77,10 +77,11 @@ class UserController extends Controller
                     $id['plan_clave_SIAE'] = $value->plan_clave;
                 }
             }
+            // dd(DB::connection('mysql2')->enableQueryLog());
             $plantel = DB::connection('mysql2')->select('select car_cve_plt_car, car_nom_plan from carreras WHERE car_car_siae = '.$id['carrera_clave_SIAE'].' AND car_plan_siae = '.$id['plan_clave_SIAE']);
             if($plantel == NULL)
             {
-                // $plantel = DB::connection('condoc_old')->select('select * WHERE mapeocarreracincotres = '.$id['carrera_clave_SIAE']);
+                // $plantel = DB::connection('mysql2')->select('select * WHERE mapeocarreracincotres = '.$id['carrera_clave_SIAE']);
                 $id['carr_siae_nombre'] = '00000';
                 $id['carr_clv_plt_carr'] = '000';
                 $id['carr_nombre_plan'] = '000';
