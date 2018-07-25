@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
           'cortes',
           'agunam',
           'nacionalidades',
-          'niveles'
-          'agunamno',
+          'niveles',
+          'agunamno'
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
         $this->call(Web_Service_Seeder::class);

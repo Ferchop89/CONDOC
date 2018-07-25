@@ -75,16 +75,16 @@ class MenuSeeder extends Seeder
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'Realizar Revisión de Estudios',
-               'slug' => 'realizar-re',
+               'name' => 'Impresión de Autorización Revisión de Estudios',
+               'slug' => 'opcion-1.4',
+               'ruta' => 'autorizacion_re',
                'parent' => $m1->id,
-               'ruta' => 'datos_personales',
                'order' => 3,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
                'name' => 'Recepción de Expedientes por Alumno',
-               'slug' => 'opcion-1.4',
+               'slug' => 'opcion-1.5',
                'parent' => $m1->id,
                'ruta' => 'recepcion',
                'order' => 4,
@@ -92,7 +92,7 @@ class MenuSeeder extends Seeder
            ]);
            factory(Menu::class)->create([
                'name' => 'Solicitud y Recepción de Expedientes por parte de AGUNAM',
-               'slug' => 'opcion-1.5',
+               'slug' => 'opcion-1.6',
                'parent' => $m1->id,
                'ruta' => 'AGUNAM',
                'order' => 5,
@@ -100,7 +100,7 @@ class MenuSeeder extends Seeder
            ]);
            factory(Menu::class)->create([
                'name' => 'Expedientes no encontrados en AGUNAM',
-               'slug' => 'opcion-1.6',
+               'slug' => 'opcion-1.7',
                'parent' => $m1->id,
                'ruta' => 'agunam/expedientes_noagunam',
                'order' => 6,
