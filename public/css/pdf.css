@@ -245,3 +245,13 @@ table.lista{
 .columna_2, .columna_3{
     text-align: left;
 }
+
+.test {
+    width: 28.3cm;
+    transform: rotate(-60deg);
+    position: absolute;
+    color: silver;
+    font-size: 6.2em;
+    opacity: 0.6;
+    top: 160px;
+}

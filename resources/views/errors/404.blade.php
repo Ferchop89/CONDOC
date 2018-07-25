@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title',"Página  no encontrada")
+@section('title',"Página no encontrada")
 
 @section('content')
 <div class="container">

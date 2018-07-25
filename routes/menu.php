@@ -70,12 +70,37 @@ Route::post('/rev_est/{num_cta}',[
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
 
+Route::get('/autorizacion_re', [
+  'uses' => 'RevEstudiosController@showSolicitudAut',
+  'as' => 'autorizacion_re',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi', 'FacEsc']
+]);
+Route::post('/autorizacion_re', [
+  'uses' => 'RevEstudiosController@postSolicitudAut',
+  'as' => 'autorizacion_re',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi', 'FacEsc']
+]);
+/*Route::get('/autorizacion_re/{$num_cta}', [
+  'uses' => 'RevEstudiosController@PdfRevEstudios',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi', 'FacEsc']
+])->where('num_cta','[0-9]+')
+  ->name('autorizacion_re');*/
+Route::get('imprimePDF_RE',[
+    'uses'=> 'RevEstudiosController@PdfRevEstudios',
+    'as'=> 'imprimePDF_RE',
+    'middleware' => 'roles',
+    'roles' => ['Ofisi', 'FacEsc']
+  ]);
+
 /*Solicitud de Revisión de Estudios*/
-    Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
-    Route::post('/FacEsc/solicitud_RE', 'RevEstudiosController@postSolicitudRE');
-    Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
-        ->where('num_cta','[0-9]+')
-        ->name('solicitud_RE');
+Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
+Route::post('/FacEsc/solicitud_RE', 'RevEstudiosController@postSolicitudRE');
+Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
+    ->where('num_cta','[0-9]+')
+    ->name('solicitud_RE');
 
 /*Recepción de Expedientes por Alumno*/
 Route::get('recepcion', [

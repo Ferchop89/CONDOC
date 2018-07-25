@@ -20,8 +20,9 @@ class Alumno extends Model
 		'fecha_nacimiento',  
 		'id_nacionalidad', 
 		'pais_cve',
-		'sistema',
-		'irre_act'
+		'sistema_personal',
+		'irre_doc',
+		'folio_doc'
     ];
     
 }

@@ -241,4 +241,59 @@ html,body{
   text-align: center;
   font-size: 12px;
 }
+
+a.disabled {
+    pointer-events: none;
+}
+/* */
+
+/* Documento RE */
+.doc {
+  font-size: 18px;
+  margin: 40px 40px 40px 40px;
+}
+
+
+#top {
+  font-size: 16px;
+  /*margin-left: 30%;*/
+  margin-top: 2%;
+  margin-bottom: 3%;
+}
+
+#cuerpo { text-align: justify; }
+
+#atte { text-align: center; }
+
+#cons { font-weight: bold; }
+
+#firmas_at {
+  display: inline-block;
+  margin: 2%;
+  text-align:center;
+}
+
+.img_firmas {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.documento_are{font-family: Arial, sans-serif;}
+.documento_are p, div, td { font-size:17px; }
+.documento_are b{ font-size:15px; }
+.t_dos { text-align: center; }
+
+.tit_pdf { padding-left: 10%; }
+
+.test {
+    width: 28.3cm;
+    transform: rotate(-60deg);
+    position: absolute;
+    color: silver;
+    font-size: 6.2em;
+    opacity: 0.6;
+    top: 380px;
+    left: -14%;
+}
 /* */

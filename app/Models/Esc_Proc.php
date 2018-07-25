@@ -22,7 +22,9 @@ class Esc_Proc extends Model
 		'promedio',
 		'pais_cve', 
 		'num_cta',
-		'irre_cert'
+		'irre_cert',
+		'folio_cert',
+		'sistema_escuela'
     ];
 
 }

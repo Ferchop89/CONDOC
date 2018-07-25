@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-
-    "content-hash": "4d506b6b8d7959ae00e24a0f2bd4a897",
+    "content-hash": "b3b19dd01bdba3b68c81344a3bc90b72",
     "packages": [
         {
             "name": "asistenteweb/nusoap",
@@ -3723,8 +3722,6 @@
             "time": "2016-01-20T08:20:44+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "jakub-onderka/php-parallel-lint",
             "version": "v1.0.0",
             "source": {

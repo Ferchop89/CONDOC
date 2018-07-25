@@ -37,7 +37,7 @@
 			<img src="{{ asset('images/foto.png') }}" class="center">
 		</div>
 		<div class="item2">
-			<p name="num_cta">{{$num_cta}}</p>
+			<p>{{$num_cta}}</p>
 			<p>{{$identidad->nombres}} {{$identidad->apellido1}} {{$identidad->apellido2}}</p>
 			<p>Exp. Posgrado: <span name="exp_pos"></span></p>
 			<p>Exp. Sistema Incorporado: <span name="exp_inc"></span></p>
@@ -257,7 +257,8 @@
 						Documento de identidad:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<span name="documento_identidad">ACTA DE NACIMIENTO</span>
+						<span id="acta">ACTA DE NACIMIENTO</span>
+						<span id="carta">CARTA DE NATURALIZACIÓN</span>
 					</div>
 				</div>
 				<div class="row">
@@ -265,7 +266,11 @@
 						Número de folio:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input id="folio_doc" type="text" class="form-control" name="folio_doc" value="">
+						@if(isset($identidad->folio_doc))
+							<input id="folio_doc" type="text" class="form-control" name="folio_doc" value="{{ $identidad->folio_doc }}">
+						@else
+							<input id="folio_doc" type="text" class="form-control" name="folio_doc">
+						@endif
 					</div>
 				</div>
 				<div class="row">
@@ -273,8 +278,13 @@
 						Irregularidad:
 					</div>
 					<div id="irregularidad" class="col-sm-9">
-						<select name="irregularidad_doc">
+						<select id="irre_acta" name="irregularidad_doc">
 							@foreach($irr_acta as $i_actanac)
+						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+						    @endforeach
+						</select>
+						<select id="irre_carta" name="irregularidad_doc">
+							@foreach($irr_migr as $i_actanac)
 						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
 						    @endforeach
 						</select>
@@ -285,8 +295,13 @@
 				<p>
 					<b>Escuelas de procedencia: </b>
 					<scan id="esc_proc">
-						<a class="btn btn-default" id="agregar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
-						<a class="btn btn-default" id="quitar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
+						@if($firmas == null || $firmas->actualizacion_nombre == null)
+							<a class="btn btn-default" id="agregar_esc" disabled>Agregar escuela</a>
+							<a class="btn btn-default" id="quitar_esc" disabled>Quitar escuela</a>
+						@else
+							<a class="btn btn-default" id="agregar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
+							<a class="btn btn-default" id="quitar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
+						@endif
 					</scan>
 				</p>
 				<div id="re_historial">
@@ -351,8 +366,8 @@
 						      			Folio de certificado:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			@if(isset($tyt->folio_certificado))
-						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]" value="{{ $tyt->folio_certificado }}">
+						      			@if(isset($tyt->folio_cert))
+						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]" value="{{ $tyt->folio_cert }}">
 						      			@else
 						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]">
 						      			@endif
@@ -414,8 +429,8 @@
 						      		</div>
 						      	</div>
 						      	<hr/>
-						      	<div class="row" id="detalles" name="sistema">
-						      		Información proveniente de: <b>{{$sistema}}</b>
+						      	<div class="row" id="detalles" name="sistema_escuela">
+						      		Información proveniente de: <b>{{$tyt->sistema_escuela}}</b>
 						      	</div>
 						    </div>
 					    @endforeach
@@ -448,6 +463,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="{{asset('js/yearpicker.js')}}"></script>
+
+    {{-- Para mostrar irregularidades dada la nacionalidad del alumno --}}
+    <script>
+    	$(function() {
+    	  $("#nacionalidad").change(function() {
+    	    if ($("#1").is(":selected") || $("#3").is(":selected")) {
+    	      $("#acta").show();
+    	      $("#irre_acta").show();
+    	      $("#carta").hide();
+    	      $("#irre_carta").hide();
+    	    } else {
+    	      $("#acta").hide();
+    	      $("#irre_acta").hide();
+    	      $("#carta").show();
+    	      $("#irre_carta").show();
+    	    }
+    	  }).trigger('change');
+    	});
+    </script>
 
     {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
     {{-- <script src="{{asset('js/aniomes.js')}}"></script> --}}
