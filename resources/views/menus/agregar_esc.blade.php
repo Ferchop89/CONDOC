@@ -1,13 +1,13 @@
 @extends('layouts.app')
-@section('title', 'CONDOC | Agregar Escuela Procedencia')
+@section('title', 'CONDOC | Agregar escuela procedencia')
 
 @section('location')
-<div style="padding-top: 1%">
+<div>
 	<p id="navegacion">
-		<a href="{{ url('/home') }}"><span class="glyphicon glyphicon-home"></span>
+		<a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>  >>
 		<span> </span> Licenciatura </a> >> 
-		<a href="{{ url('/datos_personales') }}"> Revisión de Estudios </a> >>
-		<a href="{{ url('/agregar_esc/'.$num_cta) }}"> Agregar escuela de procedencia </a></p>
+		<a href="{{ url('/datos-personales') }}"> Revisión de Estudios </a> >>
+		<a href="{{ url('/agregar_esc/'.$num_cta) }}"> {{$title}} </a> </p>
 </div>
 @endsection
 

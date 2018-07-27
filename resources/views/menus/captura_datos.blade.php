@@ -213,7 +213,11 @@
 					<div id="campo" class="col-sm-6">
 						<select id="nacionalidad" name="nacionalidad">
 							@foreach($nacionalidades as $nacion)
-								<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+								@if($nacion->id_nacionalidad == $identidad->nacionalidad)
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}" selected="">{{ $nacion->nacionalidad }}</option>
+								@else
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+								@endif
 							@endforeach
 						</select>
 					</div>
@@ -234,8 +238,12 @@
 						<div id="paises_mexicano">
 							<select name="lugar_nac">
 								@foreach($paises as $pais)
-							    	<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
-							    @endforeach
+								  	@if($pais->pais_cve == $identidad->{'entidad-nacimiento'})
+										<option value="{{ $pais->pais_cve }}" selected>{{ $pais->pais_nombre }}</option>
+									@else
+										<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
+									@endif
+								@endforeach
 							</select>
 						</div>
 						<div id="paises_otro"> 
@@ -299,8 +307,8 @@
 							<a class="btn btn-default" id="agregar_esc" disabled>Agregar escuela</a>
 							<a class="btn btn-default" id="quitar_esc" disabled>Quitar escuela</a>
 						@else
-							<a class="btn btn-default" id="agregar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
-							<a class="btn btn-default" id="quitar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
+							<a class="btn btn-default" id="agregar_esc" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
+							<a class="btn btn-default" id="quitar_esc" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
 						@endif
 					</scan>
 				</p>
@@ -429,7 +437,7 @@
 						      		</div>
 						      	</div>
 						      	<hr/>
-						      	<div class="row" id="detalles" name="sistema_escuela">
+						      	<div class="row" id="detalles">
 						      		Información proveniente de: <b>{{$tyt->sistema_escuela}}</b>
 						      	</div>
 						    </div>
