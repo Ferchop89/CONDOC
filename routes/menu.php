@@ -28,7 +28,7 @@ Route::get('/cortes',[
     'uses'=> 'InformesController@cortes',
     'as'=> 'cortes',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
 
 Route::put('/creaListas',[

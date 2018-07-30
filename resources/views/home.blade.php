@@ -3,14 +3,13 @@
     <link href="{{ asset('css/MenuHome.css') }}" rel="stylesheet">
 @endsection
 @section('content')
-<div id="is" class="container">
-    {{-- <div class="row"> --}}
-        {{-- <div class="col-md-8 col-md-offset-2"> --}}
+<div id="is" class="container capsule home">
             <div class="panel panel-default">
                 <div class="tab panel-heading">
                     @noadmin
                         @if (count($items_role)>0)
                             @foreach ($menus as $key => $item)
+                                {{-- {{var_dump($item)}} --}}
                                 @if ($item['parent'] != 0)
                                     @break
                                 @endif

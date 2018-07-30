@@ -36,7 +36,7 @@
     border-top: none;
 }
 .tabcontent {
-    padding: 6px 12px;
+    padding: 0px 12px 6px 12px;
     border: 2px solid black;
     min-height: 260px;
 }
@@ -64,4 +64,27 @@
     padding: 0;
     margin: 0;
     border: none;
+}
+.home ul {
+    margin: 0;
+    padding: 0px 20px;
+    text-align: left;
+    list-style: none;
+}
+.home ul a{
+    text-decoration: none;
+    /* color:black; */
+}
+.cabecera {
+    color: black !important;
+    text-decoration: none !important;
+    display: block;
+    background-color: cadetblue;
+    width: 113%;
+    padding: 4px 0px 4px 30px;
+    margin-left: -32px;
+}
+.home li{
+    /* margin: 0; */
+    padding: 4px;
 }

@@ -80,7 +80,7 @@ class GrafiController extends Controller
       $chartjs = app()->chartjs
         ->name($nombreGraf)
         ->type('bar')
-        ->size(['width' => 400, 'height' => 200])
+        ->size(['width' => 900, 'height' => 380])
         ->labels($lables)
         ->datasets([
             [
@@ -114,7 +114,7 @@ class GrafiController extends Controller
       $chartjs = app()->chartjs
         ->name('pieChartTest')
         ->type('doughnut')
-        ->size(['width' => 400, 'height' => 200])
+        ->size(['width' => 480, 'height' => 318])
         ->labels($lables)
         ->datasets([
             [

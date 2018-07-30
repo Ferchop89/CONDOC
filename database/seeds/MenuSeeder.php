@@ -50,78 +50,86 @@ class MenuSeeder extends Seeder
                'is_structure' => 1
            ]);
            // Opciones de Submenú...
-           factory(Menu::class)->create([
-               'name' => 'Bandeja de Solicitudes de Revisión de Estudios',
+           $m100 = factory(Menu::class)->create([
+               'name' => 'Revisión de Estudios Profesionales',
                'slug' => 'opcion-1.1',
+               'ruta' => '',
                'parent' => $m1->id,
+               'order' => 0,
+               'is_structure' => 1
+           ]);
+           factory(Menu::class)->create([
+               'name' => 'Bandeja de Solicitudes',
+               'slug' => 'opcion-1.1.1',
+               'parent' => $m100->id,
                'ruta' => 'cortes',
                'order' => 0,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'Impresión de Listados',
-               'slug' => 'opcion-1.2',
+               'name' => 'Listados',
+               'slug' => 'opcion-1.1.2',
                'ruta' => 'listas',
-               'parent' => $m1->id,
+               'parent' => $m100->id,
                'order' => 1,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'Revisión de Estudios',
-               'slug' => 'opcion-1.3',
+               'name' => 'Certificado Global',
+               'slug' => 'opcion-1.1.3',
                'ruta' => 'datos-personales',
-               'parent' => $m1->id,
+               'parent' => $m100->id,
                'order' => 2,
                'is_structure' => 0
            ]);
-           factory(Menu::class)->create([
-               'name' => 'Realizar Revisión de Estudios',
-               'slug' => 'realizar-re',
+           $m200 = factory(Menu::class)->create([
+               'name' => 'AGUNAM',
+               'slug' => 'opcion-1.2',
+               'ruta' => '',
                'parent' => $m1->id,
-               'ruta' => 'datos_personales',
-               'order' => 3,
-               'is_structure' => 0
+               'order' => 1,
+               'is_structure' => 1
            ]);
            factory(Menu::class)->create([
-               'name' => 'Recepción de Expedientes por Alumno',
-               'slug' => 'opcion-1.4',
-               'parent' => $m1->id,
-               'ruta' => 'recepcion',
-               'order' => 4,
-               'is_structure' => 0
-           ]);
-           factory(Menu::class)->create([
-               'name' => 'Solicitud y Recepción de Expedientes por parte de AGUNAM',
-               'slug' => 'opcion-1.5',
-               'parent' => $m1->id,
+               'name' => 'Solicitud y Recepción de Expedientes',
+               'slug' => 'opcion-1.2.1',
+               'parent' => $m200->id,
                'ruta' => 'AGUNAM',
-               'order' => 5,
-               'is_structure' => 0
-           ]);
-           factory(Menu::class)->create([
-               'name' => 'Expedientes no encontrados en AGUNAM',
-               'slug' => 'opcion-1.6',
-               'parent' => $m1->id,
-               'ruta' => 'agunam/expedientes_noagunam',
-               'order' => 6,
-               'is_structure' => 0
-           ]);
-           factory(Menu::class)->create([
-               'name' => 'm2',
-               'slug' => 'opcion-2.1',
-               'parent' => $m2->id,
-               'ruta' => 'm2',
                'order' => 0,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'm6',
-               'slug' => 'opcion-2.2',
-               'parent' => $m2->id,
-               'ruta' => 'm6',
+               'name' => 'Expedientes no encontrados en AGUNAM',
+               'slug' => 'opcion-1.2.2',
+               'parent' => $m200->id,
+               'ruta' => 'agunam/expedientes_noagunam',
                'order' => 1,
                'is_structure' => 0
            ]);
+           factory(Menu::class)->create([
+               'name' => 'Recepción de Expedientes por Alumno',
+               'slug' => 'opcion-1.3',
+               'parent' => $m1->id,
+               'ruta' => 'recepcion',
+               'order' => 2,
+               'is_structure' => 0
+           ]);
+           // factory(Menu::class)->create([
+           //     'name' => 'm2',
+           //     'slug' => 'opcion-2.1',
+           //     'parent' => $m2->id,
+           //     'ruta' => 'm2',
+           //     'order' => 0,
+           //     'is_structure' => 0
+           // ]);
+           // factory(Menu::class)->create([
+           //     'name' => 'm6',
+           //     'slug' => 'opcion-2.2',
+           //     'parent' => $m2->id,
+           //     'ruta' => 'm6',
+           //     'order' => 1,
+           //     'is_structure' => 0
+           // ]);
            factory(Menu::class)->create([
                'name' => 'm9',
                'slug' => 'opcion-2.3',
