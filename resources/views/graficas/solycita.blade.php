@@ -15,7 +15,7 @@
 @endsection
 @section('content')
     <div class="capsule graficas">
-        <h2 id="titulo">{{$title}}</h2>
+        <h2 id="titulo">{{$title}}: Prueba</h2>
         <div class="filtros">
             {!! Form::open(['class'=>'form','method'=>'GET','id'=>'Sol_Cit', 'route'=>'graficas']) !!}
                 <div class="fil anio">
