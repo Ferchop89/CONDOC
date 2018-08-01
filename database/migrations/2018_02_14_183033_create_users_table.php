@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('username',15)->unique();
             $table->string('email')->unique();
-            $table->string('procedencia_id')->nullable();
+            $table->unsignedInteger('procedencia_id')->nullable();
             $table->string('password');
             $table->boolean('is_active')->default(true);
             $table->rememberToken();

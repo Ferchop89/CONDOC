@@ -34,6 +34,61 @@ class InformesController extends Controller
             'esc_Html'=>$escuelasHtml
           ]);
   }
+  public function cortesVista()
+  {
+    // Vista para la consulta de solicitudes y citatorios.
+
+    // En su primera carga, toma varores de la base de datos, sino, selecciona y enviados por submit
+    $a = $m = $o = array();
+
+    // Ultima fecha que tiene información.
+    $ultimaSol= Solicitud::latest()->first();
+
+    $fecha = (request()->fecha_v==null)? $ultimaSol->created_at : Carbon::createFromFormat('Y-m-d',request()->fecha_v);
+    $plantel  = (request()->plantel_id==null)? '' : request()->plantel_id;
+
+    $fecha_1 = clone $fecha; $fecha_2 = clone $fecha;
+
+    $title = "Consulta de Solicitudes de Revisión de Estudios";
+    // $this->liberaSolicitudes();
+    // escuelas de las que provienen las solicitudes
+    $escuelas = $this->escuelaDeProcedencia_V($fecha_1);
+
+    // Consultamos todas las solicitudes, incluye citatorios y excluye canceladas
+    $solicitudesW = $this->solicitudesSyC_V($fecha_2,$plantel);
+
+    // tabla HTML de cuentas pendientes de listado, separadas por dia
+    $sol_Html = $this->solicitudesHtml($solicitudesW);
+
+    return view('consultas.solicitud_vw',[
+            'title' => $title,
+            'solW_cta'=>count($solicitudesW),
+            'sol_Html'=>$sol_Html,
+            'plantel' =>$plantel,
+            'escuelas'=>$escuelas,
+            'fecha_Sel' => $fecha
+          ]);
+  }
+  public function escuelaDeProcedencia_V($fecha)
+  {
+    // DropDown menu de procedencias para listados restringido a las solicitudes del mes de la fecha.
+
+    // Generamos rango de fechas al $inicio y $final de mes.
+    $inicio = clone $fecha->startOfMonth(); $final = clone $fecha->endOfMonth();
+
+    // Seleccionamos todas las escuelas que reportaron del inicio al final del mes de la fecha seleccionada.
+    $data = DB::table('solicitudes')
+              ->whereBetween('solicitudes.created_at',[$inicio, $final])
+              ->where('pasoACorte',false)
+              ->where('cancelada',false)
+              ->join('users','solicitudes.user_id','=','users.id')
+              ->join('procedencias','users.procedencia_id','=','procedencias.id')
+              ->select('procedencias.id',
+                       'procedencias.procedencia')
+              ->groupBy('procedencias.id','procedencias.procedencia')
+              ->pluck('procedencias.procedencia','procedencias.id')->all();
+    return $data;
+  }
   public function escuelaDeProcedencia()
   {
     // DropDown menu de procedencias para listados.
@@ -72,6 +127,76 @@ class InformesController extends Controller
       }
       $html .= "</select>";
       return $html;
+  }
+  public function escuelasDeProcedenciaHtml_V( $facesc, $seleccion)
+  {
+    // dd($facesc,$seleccion,$tipo);
+      // Elabora el Form Select. sin selección si no se ha seleccionada ninguna escuela de procedencia.
+      sort($facesc);array_unshift($facesc,'Selecciona una opción');
+      $html = "<select  name='facultad' id='facultad' onchange='location = this.value;'>";
+
+      foreach ($facesc as $value) {
+        if ($value!='Selecciona una opción') {
+          $valorSel = ($value==$seleccion) ? ' selected ' : ''; // Valor Seleccionado
+          $html .= "<option value='/cortesV?facesc=".$value."' ".$valorSel.">".$value."</option>";
+        } else
+        {
+          $html .= "<option value='/cortesV' selected >".$value."</option>";
+        }
+      }
+      $html .= "</select>";
+      return $html;
+  }
+  public function solicitudesSyC($facesc)
+  {
+      // Solicitudes y citatorios para consulta.  Excluye canceladas.
+
+      // Generación de solicitudes para organizar en listados de Solicitudes y Citatorios
+      if ($facesc!=null) {
+        // Recuperamos el/los usuarios que dieron de alta los registros
+        $procede_id    = Procedencia::where('procedencia','=',$facesc)->pluck('id')->first();
+        $procede_users = Procedencia::find($procede_id)->users->pluck('id')->toArray();
+
+        $pendientes =     Solicitud::select('id','cuenta','tipo','created_at','user_id')
+                          ->where('cancelada',false)
+                          ->wherein('user_id',$procede_users)
+                          ->orderBy('created_at','desc')
+                          ->get()->toArray();
+      } else {
+        $pendientes =     Solicitud::select('id','cuenta','tipo','created_at','user_id')
+                          ->where('cancelada', false)
+                          ->orderBy('created_at','desc')
+                          ->get()->toArray();
+      }
+      return $pendientes;
+  }
+  public function solicitudesSyC_V($fecha,$plantel)
+  {
+      // Solicitudes y citatorios para consulta.  Excluye canceladas.
+      // Generamos rango de fechas al $inicio y $final de mes.
+      $fecha1 = clone $fecha; $fecha2 = clone $fecha;
+      $inicio = clone $fecha1->startOfMonth(); $final = clone $fecha2->endOfMonth();
+
+      if ($plantel == '') {
+          // no se espeficia un plantel, se elige solo las solicitudes de una fecha
+          $data = Solicitud::select('id','cuenta','tipo','created_at','user_id')
+                      ->where('cancelada',false)
+                      ->whereDate('created_at', '=', $fecha->toDateString())
+                      ->orderBy('created_at','desc')
+                      ->get()->toArray();
+      } else {
+        // Usuarios que tienen las misma procedencia.
+        $procede_users = Procedencia::find($plantel)->users->pluck('id')->toArray();
+
+        // filtramos usuarios del plantel y  rango de fechas
+        $data = Solicitud::select('id','cuenta','tipo','created_at','user_id')
+                    ->whereBetween('solicitudes.created_at',[$inicio, $final])
+                    ->wherein('user_id',$procede_users) // En caso de haber varios usuarios en una procencia
+                    ->where('cancelada',false)
+                    ->orderBy('created_at','desc')
+                    ->get()->toArray();
+      }
+      return $data;
   }
   public function solicitudesWeb($facesc)
   {

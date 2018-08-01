@@ -14,21 +14,15 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-          // Agregamos 50 usuarios fake
-          factory(User::class,50)->create();
-          // Usuario patrón
+          // Los usuarios de dan de alta en el Solicitud Seeder  en este procedimiento se asigna roles.
+          // Agregamos tantos usuarios como procedencias
+
+          // Usuario patrón administrador
           $user = User::find(1);
-          // Modificamos el primer registro para que sea administrador
-          $user->name = 'Administrador';
-          $user->username = 'Administrador';
-          $user->email = 'Admon@correo.com';
-          $user->procedencia_id = '1001'; // Departamento de Rev. de Estudios
-          $user->password = bcrypt('111111');
-          $user->is_active = true;
-          $user->update();
           // Asignamos el role de Admin al prime registro
           $role=Role::where('nombre','Admin')->first();
           $user->roles()->attach($role);
+
           // Arreglo de Roles
           $roles   = Role::all()->pluck('id')->toArray();
 

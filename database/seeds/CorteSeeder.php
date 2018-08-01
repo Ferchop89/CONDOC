@@ -21,7 +21,7 @@ class CorteSeeder extends Seeder
       $users_count = User::count();
       // $solicitudes_count = (int)(Solicitud::count()-100);
       $solicitudes_count = (int)Solicitud::count();
-      $corte = Carbon::create(2018, 5, 1, 13, 0, 0, 'America/Mexico_City');
+      $corte = Carbon::create(2018, 7, 1, 13, 0, 0, 'America/Mexico_City');
       for ($i=1; $i <= $solicitudes_count;)
       {
         $list_id = 1;

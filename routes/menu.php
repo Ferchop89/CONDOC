@@ -31,6 +31,13 @@ Route::get('/cortes',[
     'roles' => ['Sria', 'Admin']
   ]);
 
+Route::get('/cortesV',[
+    'uses'=> 'InformesController@cortesVista',
+    'as'=> 'cortesV',
+    'middleware' => 'roles',
+    'roles' => ['Sria','Admin']
+  ]);
+
 Route::put('/creaListas',[
     'uses'=> 'InformesController@creaListas',
     'as'=> 'creaListas',

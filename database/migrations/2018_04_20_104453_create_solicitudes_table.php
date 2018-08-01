@@ -17,7 +17,10 @@ class CreateSolicitudesTable extends Migration
             $table->increments('id');
             $table->text('cuenta');
             $table->text('nombre');
-            $table->unsignedInteger('escuela_id');
+            $table->unsignedDecimal('avance',8,2);
+            $table->unsignedInteger('plantel_id');
+            $table->unsignedInteger('carrera_id');
+            $table->unsignedInteger('plan_id');
             $table->unsignedInteger('tipo');
             $table->boolean('citatorio')->defaul(false);
             $table->boolean('pasoACorte')->default(false);

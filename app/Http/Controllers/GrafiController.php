@@ -12,7 +12,7 @@ class GrafiController extends Controller
     public function solicitudes()
     {
         // Genera las graficas de solicitudes y citatorios
-        $title = "Solicitudes de Revisiones de Estudio";
+
         // En su primera carga, toma varores de la base de datos, sino, selecciona y enviados por submit
         $a = $m = $o = array();
         $a = $this->solicitudesAnio();
@@ -27,18 +27,23 @@ class GrafiController extends Controller
         $mes    = $m;  // arreglo de meses y valor sleccionado (ultimo mes)
         $origen = $o;  // arreglo de procedencias y el valor seleccionado (todas las procedencias)
 
-       // Grafico de barras
-       $chart1 = $this->bar_Genera($mSel,$aSel,$oSel,'Particular');
-       $data = $this->dataBarra($mSel,$aSel,$oSel);
-       // Grafico pie
-       $chart2 = $this->pie_Genera($mSel,$aSel,$oSel,'General');
+        // Grafico de barras
+        $Titulo = 'SOLICITUDES DE REVISIÓN DE ESTUDIOS';
+        $ejeX   = 'DIA DEL MES';
+        $ejeY   = 'SOLICITUDES';
+        $chart1 = $this->bar_Genera($mSel,$aSel,$oSel,$Titulo,$ejeX,$ejeY);
+        $data = $this->dataBarra($mSel,$aSel,$oSel);
+        // Grafico pie
+        $chart2 = $this->pie_Genera($mSel,$aSel,$oSel,'General');
 
-        // Renderizamos en la vista.
-        return view('graficas/solycita', compact('title','chart1','chart2','anio', 'aSel','mes','mSel','origen','oSel','data'));
-        // return view('graficas/solycita', compact('chart1','chart2','procedencia','mes','origen','periodos'));
+        // Titulo de la vista, Tablero de Control
+        $title = 'Tablero Control';
+         // Renderizamos en la vista.
+         return view('graficas/solycita', compact('chart1','chart2','anio', 'aSel','mes','mSel','origen','oSel','data','title'));
+         // return view('graficas/solycita', compact('chart1','chart2','procedencia','mes','origen','periodos'));
     }
 
-    public function bar_Genera($paraMes,$anio,$paraProc,$nombreGraf)
+    public function bar_Genera($paraMes,$anio,$paraProc,$Titulo,$ejeX,$ejeY)
     {
         // Generamos el grafico de barra a partir de los datos
 
@@ -46,14 +51,14 @@ class GrafiController extends Controller
         $arreglo = $this->dataBarra($paraMes,$anio,$paraProc);
         // $arreglo = $this->dataBarra('05','2018','010');
         // El $arreglo se pasa a tres arreglos uno de etiquetas (dias de mes), otro de Solicitudes ($data1) y Citatorios ($data2)
-        $lables = $data1 = $data2 = array();
+        $labels = $data1 = $data2 = array();
         foreach ($arreglo as $key => $value) {
-          array_push($lables,$key);
+          array_push($labels,$key);
           array_push($data1,$value[0]);
           array_push($data2,$value[1]);
         }
         // Componemos el arreglo para el gráfico con etiquetas y datos
-        $chart = $this->bar_Grafico($lables,$data1,$data2,$nombreGraf);
+        $chart = $this->bar_Grafico($labels,$data1,$data2,$Titulo,$ejeX,$ejeY);
 
         return $chart;
     }
@@ -66,22 +71,22 @@ class GrafiController extends Controller
         $data = $this->dataPie($paraMes,$anio,$paraProc);
 
         // El $arreglo se pasa a tres arreglos uno de etiquetas (dias de mes), otro de Solicitudes ($data1) y Citatorios ($data2)
-        $lables = ['Solicitudes','Citatorios'];
+        $labels = ['Solicitudes','Citatorios'];
         // Componemos el arreglo para el gráfico con etiquetas y datos
-        $chart = $this->pie_Grafico($lables,$data,$nombreGraf);
+        $chart = $this->pie_Grafico($labels,$data,$nombreGraf);
 
         return $chart;
     }
 
-    public function bar_Grafico($lables,$data1,$data2,$nombreGraf)
+    public function bar_Grafico($labels,$data1,$data2,$Titulo,$ejeX,$ejeY)
     {
       // grafico de barras de 2 conjuntos de datos
 
       $chartjs = app()->chartjs
-        ->name($nombreGraf)
+        ->name('grafico')
         ->type('bar')
         ->size(['width' => 900, 'height' => 380])
-        ->labels($lables)
+        ->labels($labels)
         ->datasets([
             [
                 "label" => "Solicitud",
@@ -106,16 +111,49 @@ class GrafiController extends Controller
         ])
         ->options([]);
 
+        $chartjs->optionsRaw([
+          'legend' => [
+              'display' => true,
+              'labels' => [
+                  'fontColor' => '#000'
+              ]
+          ],
+          'title' => [
+            'display' => true,
+            'text' => $Titulo,
+            'fontSize' => 18
+          ],
+          'scales' => [
+              'xAxes' => [
+                  [
+                    'scaleLabel' => ['display' => true, 'labelString'=>$ejeX],
+                    'stacked' => false,
+                    'gridLines' => ['display' => true]
+                  ]
+              ],
+              'yAxes' => [
+                [
+                    'scaleLabel' => ['display' => true, 'labelString'=>$ejeY],
+                    'ticks' => [
+                        'min' => 0,
+                        'stepSize' => 1
+                    ]
+
+                ]
+              ]
+          ]
+        ]);
+
         return $chartjs;
     }
 
-    public function pie_Grafico($lables,$data)
+    public function pie_Grafico($labels,$data)
     {
       $chartjs = app()->chartjs
         ->name('pieChartTest')
         ->type('doughnut')
         ->size(['width' => 480, 'height' => 318])
-        ->labels($lables)
+        ->labels($labels)
         ->datasets([
             [
                 'backgroundColor' => ['#FF6384', '#36A2EB'],
@@ -243,9 +281,6 @@ class GrafiController extends Controller
          }
          // agregamos un item superior para poder elegir alguna procedencia (o todas si no se elige ninguna)
          return $arreglo;
-    }
-    public function prueba(){
-        dd("hola");
     }
 
 }
