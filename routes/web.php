@@ -41,12 +41,21 @@ Route::get('login', function(){
 Route::get('recepcion', 'UserController@showrecepcionExpedientes')->name('recepcion');
 Route::post('/recepcion-expedientes', 'UserController@post_numcta_Validate')->name('postRecepcion');
 
+//Agregar escuela
 Route::get('/agregar_esc/{num_cta}', 'RevEstudiosController@showAgregarEsc')
   ->where('num_cta','[0-9]+')
   ->name('agregar_esc');
 Route::post('/agregar_esc/{num_cta}', 'RevEstudiosController@validarInformacion')
   ->where('num_cta','[0-9]+')
   ->name('agregar_esc');
+
+//Quitar escuela
+Route::get('/quitar_esc/{num_cta}', 'RevEstudiosController@showQuitarEsc')
+  ->where('num_cta','[0-9]+')
+  ->name('quitar_esc');
+Route::post('/quitar_esc/{num_cta}', 'RevEstudiosController@validarQuitarInformacion')
+  ->where('num_cta','[0-9]+')
+  ->name('quitar_esc');
 
     // $encrypted = Crypt::encryptString('Hello world.');
     //

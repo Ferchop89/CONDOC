@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'CONDOC | Agregar escuela procedencia')
+@section('title', 'CONDOC | Quitar escuela procedencia')
 
 @section('location')
 <div>
@@ -7,14 +7,14 @@
 		<a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>  >>
 		<span> </span> Licenciatura </a> >> 
 		<a href="{{ url('/datos-personales') }}"> Revisión de Estudios </a> >>
-		<a href="{{ url('/agregar_esc/'.$num_cta) }}"> {{$title}} </a> </p>
+		<a href="{{ url('/quitar_esc/'.$num_cta) }}"> {{$title}} </a> </p>
 </div>
 @endsection
 
 @section('content')
 <div id="pocos">
 
-	<form class="form-group" method="POST" action="{{ url('/agregar_esc/'.$num_cta) }}">
+	<form class="form-group" method="POST" action="{{ url('/quitar_esc/'.$num_cta) }}">
 		{!! csrf_field() !!}
 
 		<h3 id="titulo1">{{$title}}</h3>
@@ -72,7 +72,7 @@
 		<div class="botones">
 			<a class="btn btn-danger" href="{{ url('/rev_est/'.$num_cta) }}" role="button">Volver</a>
 			<button type="submit" class="btn btn-primary waves-effect waves-light">
-			  	Agregar
+			  	Quitar
 			</button>
 		</div>
 	</form>
@@ -98,7 +98,7 @@
 		  		}
 		  	});
 		}
-		 
+		
 		$( "select" ).change( ssch );
 		ssch();
 	</script>

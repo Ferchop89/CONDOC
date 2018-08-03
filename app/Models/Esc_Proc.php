@@ -22,7 +22,8 @@ class Esc_Proc extends Model
 		'num_cta',
 		'irre_cert',
 		'folio_cert',
-		'sistema_escuela'
+		'sistema_escuela',
+		'nombre_plan'
     ];
 
 }

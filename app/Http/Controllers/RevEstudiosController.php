@@ -5,10 +5,11 @@ use \Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
 use Illuminate\Support\Facades\DB;
-use App\Models\{Web_Service, IrregularidadesRE, Bach, Paises,
+use App\Models\{Web_Service, IrregularidadesRE, Paises,
                 Niveles, User, Trayectoria, Nacionalidades,
                 Registro_RE, Alumno, Esc_Proc};
 use Illuminate\Support\Facades\Auth;
+use Hash;
 use Session;
 use DateTime;
 
@@ -122,7 +123,7 @@ class RevEstudiosController extends Controller
           $vista = '/menus/captura_datos';
 
           $situaciones = array();
-          $total_situaciones = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B","L")');
+          $total_situaciones = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
 
           $alumno = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
           //Informacion de nivel licenciatura
@@ -224,8 +225,8 @@ class RevEstudiosController extends Controller
             //Escuelas de interés (Finalizadas o en curso que cubran al menos el 70% de créditos)
             $siae['escuelas'] = array();
             foreach ($trayectoria->situaciones as $situacion) {
-              if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' 
-                || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){
+              if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' || $situacion->causa_fin == '11'
+                || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00 )){
                 $situacion->sistema_escuela = 'SIAE';
                 array_push($siae['escuelas'], $situacion);
               }
@@ -352,10 +353,14 @@ class RevEstudiosController extends Controller
                   'situaciones' => $situaciones
                 ];
 
+                //Obtenemos el nombre de la carrera
+                $carrera = DB::connection('mysql2')->select('select car_car_siae from carreras WHERE car_cve_plt_car = '.$info->cveCarrera);
+                $res = DB::connection('mysql2')->select('select carr_siae_nombre from carr_siae WHERE carr_siae_cve = '.$carrera[0]->car_car_siae);
+
                 $lic = (object) [
                   'nivel' => "L",
                   'plan_clave' => (int)$info->clavePlanLicenciatura,
-                  'carrera_nombre' => "",
+                  'carrera_nombre' => $res[0]->carr_siae_nombre,
                   'plan_nombre' => $info->nombrePlanLicenciatura
                 ];
 
@@ -427,6 +432,7 @@ class RevEstudiosController extends Controller
       ]);
 
       $num_cta = $request->num_cta;
+      $niveles = $request->niveles;
 
       $curp = $_POST['curp'];
       $sexo = $_POST['sexo'];
@@ -449,7 +455,7 @@ class RevEstudiosController extends Controller
       $jarea_firma = $request->input('jarea_firma');
       $jdepre_firma = $request->input('jdepre_firma');
       $jdeptit_firma = $request->input('jdeptit_firma');
-      $jdeptit_firma = $request->input('jdeptit_firma');
+      $direccion_firma = $request->input('direccion_firma');
 
       $condoc = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
 
@@ -457,7 +463,7 @@ class RevEstudiosController extends Controller
         if($condoc != NULL){
 
           $alumno = DB::connection('mysql2')->table('alumnos')->where('num_cta', $num_cta);
-          $esc_proc = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
+          $esc_proc = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
           $esc = DB::connection('mysql2')->table('esc__procs')->where('num_cta', $num_cta);
           $trayectoria = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
           $registro = DB::connection('mysql2')->select('select * from registro__r_es WHERE num_cta = '.$num_cta);
@@ -485,37 +491,32 @@ class RevEstudiosController extends Controller
           }
           foreach ($esc_proc as $key=>$value) {
             if($escuela_proc[$key] != $esc_proc[$key]->nombre_escproc){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['nombre_escproc' => $escuela_proc[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['nombre_escproc' => $escuela_proc[$key], 'sistema_escuela' => "CONDOC"]);
             }
             if($cct[$key] != $esc_proc[$key]->clave){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['clave' => $cct[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['clave' => $cct[$key], 'sistema_escuela' => "CONDOC"]);
             }
-            if($folio_cert[$key] != $esc_proc[$key]->folio_cert){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['folio_cert' => $folio_cert[$key], 'sistema_escuela' => "CONDOC"]);
+            if($folio_cert[$key] != (int)$esc_proc[$key]->folio_cert){
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['folio_cert' => (int)$folio_cert[$key], 'sistema_escuela' => "CONDOC"]);
             }
-            if($seleccion_fecha[$key] != $esc_proc[$key]->seleccion_fecha){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['seleccion_fecha' => $seleccion_fecha[$key], 'sistema_escuela' => "CONDOC"]);
+            if($seleccion_fecha[$key] != (int)$esc_proc[$key]->seleccion_fecha){
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['seleccion_fecha' => (int)$seleccion_fecha[$key], 'sistema_escuela' => "CONDOC"]);
             }
             //Si se seleccionó el periodo, hacemos null la fecha
             if($seleccion_fecha[$key] == 0){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['mes_anio' => NULL, 'inicio_periodo' => $inicio_periodo[$key], 'fin_periodo' => $fin_periodo[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['mes_anio' => NULL, 'inicio_periodo' => (int)$inicio_periodo[$key], 'fin_periodo' => (int)$fin_periodo[$key], 'sistema_escuela' => "CONDOC"]);
             }
             //En caso contrario, hacemos null periodo
             else{
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['inicio_periodo' => NULL, 'fin_periodo' => NULL, 'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))), 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['inicio_periodo' => NULL, 'fin_periodo' => NULL, 'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))), 'sistema_escuela' => "CONDOC"]);
               }
-            if($promedio[$key] != $esc_proc[$key]->promedio){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['promedio' => $promedio[$key], 'sistema_escuela' => "CONDOC"]);
+            if($promedio[$key] != (float)$esc_proc[$key]->promedio){
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['promedio' => (float)$promedio[$key], 'sistema_escuela' => "CONDOC"]);
             }
             if($irregularidad_esc[$key] != $esc_proc[$key]->irre_cert){
-              $esc->where('clave', $esc_proc[$key]->clave)->where('nivel', $esc_proc[$key]->nivel)->update(['irre_cert' => $irre_cert[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['irre_cert' => $irregularidad_esc[$key], 'sistema_escuela' => "CONDOC"]);
             }
           }
-
-          //Firmas
-
-
-          DB::disconnect('mysql2');
 
         }
         //Si es vacía, obtenermos información del WS
@@ -543,10 +544,12 @@ class RevEstudiosController extends Controller
 
             //Niveles de escuelas de interés
             $nivel_esc = array();
+            $info_sit = array();
             foreach ($trayectoria->situaciones as $situacion) {
-              if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' 
+              if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' || $situacion->causa_fin == '11'
                 || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){
                 array_push($nivel_esc, $situacion->nivel);
+                array_push($info_sit, $situacion);
               }
             }
                 
@@ -577,7 +580,7 @@ class RevEstudiosController extends Controller
                     'nombre_carrera' => $situacion->carrera_nombre
             ));
 
-            $sql2 = Registro_RE::insertGetId(
+            /*$sql2 = Registro_RE::insertGetId(
               array('actualizacion_nombre' => Auth::user()->nombre,
                     'actualizacion_fecha' => null,
                     'jsec_nombre' => null,
@@ -591,7 +594,7 @@ class RevEstudiosController extends Controller
                     'direccion_nombre' => null,
                     'direccion_fecha' => null,
                     'num_cta' => $num_cta
-            ));
+            ));*/
 
             foreach($nivel_esc as $key=>$value) {
               if((int)$seleccion_fecha[$key] == 0){ //Si se elige periodo, se hace null la fecha
@@ -616,7 +619,8 @@ class RevEstudiosController extends Controller
                       'num_cta' => $num_cta,
                       'irre_cert' => $irregularidad_esc[$key],
                       'folio_cert' => (int)$folio_cert[$key],
-                      'sistema_escuela' => 'SIAE'
+                      'sistema_escuela' => 'SIAE',
+                      'nombre_plan' => $info_sit[$key]->plan_nombre
               ));
             }
 
@@ -628,6 +632,10 @@ class RevEstudiosController extends Controller
             $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
 
             $info = $ws_DGIRE->respuesta->datosAlumnos->datosAlumno;
+
+            //Obtenemos el nombre de la carrera
+            $carrera = DB::connection('mysql2')->select('select car_car_siae from carreras WHERE car_cve_plt_car = '.$info->cveCarrera);
+            $res = DB::connection('mysql2')->select('select carr_siae_nombre from carr_siae WHERE carr_siae_cve = '.$carrera[0]->car_car_siae);
 
             $sql = Alumno::insert(
               array('num_cta' => $num_cta,
@@ -646,17 +654,17 @@ class RevEstudiosController extends Controller
             ));
 
             $sql1 = Trayectoria::insertGetId(
-              array('generacion' => (int)$info->generacion, /***************** ¿DGIRE? *****************/
-                    'num_planestudios' => (int)$plan_est, /***************** ¿DGIRE? *****************/
-                    'nombre_planestudios' => $orientacion, //¿Son lo mismo?
+              array('generacion' => NULL,
+                    'num_planestudios' => (int)$info->clavePlanLicenciatura,
+                    'nombre_planestudios' => $info->nombrePlanLicenciatura, //¿Son lo mismo?
                     'num_cta'=> $num_cta,
-                    'avance_creditos' => (float)$situacion->porcentaje_totales, /***************** ¿DGIRE? *****************/
+                    'avance_creditos' => NULL,
                     'cumple_requisitos' => 1, //Para este punto ya debe cumplirlo
                     'id_nivel' => "L", //También debe cumplirlo 
-                    'nombre_carrera' => $situacion->carrera_nombre /***************** ¿DGIRE? *****************/
+                    'nombre_carrera' => $res[0]->carr_siae_nombre
             ));
 
-            $sql2 = Registro_RE::insertGetId(
+            /*$sql2 = Registro_RE::insertGetId(
               array('actualizacion_nombre' => Auth::user()->nombre,
                     'actualizacion_fecha' => null,
                     'jsec_nombre' => null,
@@ -670,7 +678,7 @@ class RevEstudiosController extends Controller
                     'direccion_nombre' => null,
                     'direccion_fecha' => null,
                     'num_cta' => $num_cta
-            ));
+            ));*/
 
             $nivel_esc = array("B", "L");
 
@@ -685,6 +693,11 @@ class RevEstudiosController extends Controller
                 $inicio_p = NULL;
                 $fin_p = NULL;
               }
+              if($nivel_esc[$key] == "L"){
+                $plan = $info->nombrePlanLicenciatura;
+              }else{
+                $plan = NULL;
+              }
               $sql3 = Esc_Proc::insertGetId(
                 array('nombre_escproc' => $escuela_proc[$key],
                       'nivel' => $nivel_esc[$key],
@@ -697,13 +710,76 @@ class RevEstudiosController extends Controller
                       'num_cta' => $num_cta,
                       'irre_cert' => $irregularidad_esc[$key],
                       'folio_cert' => (int)$folio_cert[$key],
-                      'sistema_escuela' => 'DGIRE'
+                      'sistema_escuela' => 'DGIRE',
+                      'nombre_plan' => $plan
               ));
             }
 
           }
         }
 
+        //Firmas
+        $hoy = new DateTime();
+        $firmas = DB::connection('mysql2')->select('select actualizacion_nombre from registro__r_es WHERE num_cta = '.$num_cta);
+        if($firmas[0]->actualizacion_nombre == NULL){
+          $sql2 = Registro_RE::insertGetId(
+                  array('actualizacion_nombre' => Auth::user()->name,
+                        'actualizacion_fecha' => $hoy->format("Y-m-d"),
+                        'num_cta' => $num_cta
+          ));
+        }else{
+          DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['actualizacion_nombre' => Auth::user()->name,
+                        'actualizacion_fecha' => $hoy->format("Y-m-d")]);
+        }
+
+        if($jsec_firma != NULL){
+          $pass = Hash::check($jsec_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
+          if($pass){
+            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jsec_nombre' => Auth::user()->name,
+                          'jsec_fecha' => $hoy->format("Y-m-d")]);
+          }else{
+            dd("Código incorrecto");
+          }
+        }
+        if($jarea_firma != NULL){
+          $pass = Hash::check($jarea_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
+          if($pass){
+            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jarea_nombre' => Auth::user()->name,
+                          'jarea_fecha' => $hoy->format("Y-m-d")]);
+          }else{
+            dd("Código incorrecto");
+          }
+        }
+        if($jdepre_firma != NULL){
+          $pass = Hash::check($jdepre_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
+          if($pass){
+            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jdepre_nombre' => Auth::user()->name,
+                          'jdepre_fecha' => $hoy->format("Y-m-d")]);
+          }else{
+            dd("Código incorrecto");
+          }
+        }
+        if($jdeptit_firma != NULL){
+          $pass = Hash::check($jdeptit_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
+          if($pass){
+            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jdeptit_nombre' => Auth::user()->name,
+                          'jdeptit_fecha' => $hoy->format("Y-m-d")]);
+          }else{
+            dd("Código incorrecto");
+          }
+        }
+        if($direccion_firma != NULL){
+          $pass = Hash::check($direccion_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
+          if($pass){
+            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['direccion_nombre' => Auth::user()->name,
+                            'direccion_fecha' => $hoy->format("Y-m-d")]);
+          }else{
+            dd("Código incorrecto");
+          }
+        }
+
+
+      DB::disconnect('mysql2');
       return redirect()->route('home');
     }
 
@@ -899,68 +975,89 @@ class RevEstudiosController extends Controller
         
         //Niveles de interés dado el número de cuenta
         $niveles = array();
+
+        //Información de escuelas de interés (Finalizadas)
+        $escuelas = array();
+
         foreach ($trayectoria->situaciones as $situacion) {
-          if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' 
-              || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){
-            if(!in_array($situacion, $niveles)){ //No duplicamos niveles
-              $value = $situacion->nivel;
-              array_push($niveles, $value);
+          if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' || $situacion->causa_fin == '11'
+            || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){          
+            $existe = DB::connection('mysql2')->select("select * from esc__procs WHERE num_cta = ".$num_cta." and nivel = '".$situacion->nivel."' and nombre_escproc = '".$situacion->plantel_nombre."'");
+            if($existe == NULL){
+              array_push($escuelas, $situacion);
+              if(!in_array($situacion, $niveles)){ //No duplicamos niveles
+                $value = $situacion->nivel;
+                array_push($niveles, $value);
+              }
             }
           }
         }
 
-        $nvl = "B";
-        $value = DB::connection('mysql2')->select('select nombre_nivel from niveles WHERE id_nivel = '.$nvl);
-        dd($value);
-
         //Nombres completos de cada nivel
         $nombres_nivel = array();
         foreach($niveles as $nvl){
-          array_push($nombres_nivel, $value[0]->nombre_nivel);
+          $value = DB::connection('mysql2')->select('select id_nivel, nombre_nivel from niveles WHERE id_nivel = "'.$nvl.'"');
+          array_push($nombres_nivel, $value[0]);
         }
-
-        dd($nombre_nivel);
-
-        //Información de escuelas de interés (Finalizadas)
-        $escuelas = array();
-        foreach ($trayectoria->situaciones as $situacion) {
-          if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35'){
-            array_push($escuelas, $situacion);
-          }
+        if($escuelas == NULL){
+          $vista = '/errors/error_info';
+          $datos = ['descripcion' => "No hay escuelas para agregar."];
+        }else{
+          $siae = [
+            'title' => $title,
+            'num_cta' => $num_cta,
+            'nombres_nivel' => $nombres_nivel,
+            'escuelas' => $escuelas
+          ];
+          DB::disconnect('mysql2');
+          $vista = '/menus/agregar_esc';
+          $datos = $siae;
         }
-
-        $siae = [
-          'title' => $title,
-          'num_cta' => $num_cta,
-          'nombres_nivel' => $nombres_nivel,
-          'escuelas' => $escuelas
-        ];
-
-        DB::disconnect('mysql2');
-        $datos = $siae;
       
       }else{ //Si no se encontró en SIAE, se obtiene de DGIRE
 
         $ws_DGIRE = new WSController();
-        $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta); /******** DGIRE ********/
+        $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
+        $info = $ws_DGIRE->respuesta->datosAlumnos->datosAlumno;
 
-        $nombres_nivel = ["SECUNDARIA", "BACHILLERATO", "LICENCIATURA"];
+        $niveles = [(object)['id_nivel' => "B", 'nombre_nivel' => "BACHILLERATO"], 
+                    (object)['id_nivel' => "L", 'nombre_nivel' => "LICENCIATURA"]];
 
-        $escuelas = [];
+        $escuelas = array();
+        $nombres_nivel = array();
+        foreach($niveles as $nvl){
+          $existe = DB::connection('mysql2')->select("select * from esc__procs WHERE num_cta = ".$num_cta." and nivel = '".$nvl->id_nivel."'");
+          if($existe == NULL){
+            if($nvl->id_nivel == "L"){
+              array_push($escuelas, (object)['nivel' => $nvl, 'plantel_nombre' => $info->nombreEscuelaBachillerato, 'plan_nombre' => $info->nombrePlanLicenciatura]);
+            }
+            else{
+              array_push($escuelas, (object)['nivel' => $nvl, 'plantel_nombre' => $info->nombreEscuelaLicenciatura]);
+            }
+            if(!in_array($nvl, $nombres_nivel)){ //No duplicamos niveles
+              array_push($nombres_nivel, $nvl);
+            } 
+          }
+        }
 
-        $dgire = [
-          'title' => $title,
-          'num_cta' => $num_cta,
-          'nombres_nivel' => $nombres_nivel,
-          'escuelas' => $escuelas
-        ];
-
-        DB::disconnect('mysql2');
-        $datos = $dgire;
+        if($escuelas == NULL){
+          $vista = '/errors/error_info';
+          $datos = ['descripcion' => "No hay escuelas para agregar."];
+        }else{
+          $dgire = [
+            'title' => $title,
+            'num_cta' => $num_cta,
+            'nombres_nivel' => $nombres_nivel,
+            'escuelas' => $escuelas
+          ];
+          DB::disconnect('mysql2');
+          $vista = '/menus/agregar_esc';
+          $datos = $dgire;
+        }
 
       }
 
-      return view('/menus/agregar_esc', $datos);
+      return view($vista, $datos);
     }
 
     public function validarInformacion(Request $request)
@@ -974,17 +1071,125 @@ class RevEstudiosController extends Controller
            'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
       ]);
 
-      $cuenta = $request->input('cuenta');
+      $num_cta = $request->input('num_cta');
       $nivel_escuela = $request->input('nivel_escuela');
+      $nombre_escuela = $request->input('nombre_escuela');
       $plan_estudios = $request->input('plan');
 
-      $sql = Trayectoria::insertGetId(
-        array('num_cta' => $cuenta, 'nivel' => $nivel_escuela, 'nombre_planestudios' => $plan_estudios)
-      );
+      $ws_SIAE = Web_Service::find(2);
+      $identidad = new WSController();
+      $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
-      dd($sql);
+      //Verificamos si la información proviene del SIAE
+      if(isset($identidad) && (isset($identidad->mensaje) && $identidad->mensaje == "El Alumno existe")){
 
-      return redirect()->route('agregar_esc', ['num_cta' => $request->num_cta]);
+        $ws_SIAE = Web_Service::find(1);
+        $trayectoria = new WSController();
+        $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
+
+        foreach ($trayectoria->situaciones as $situacion){
+          //En caso de que el alumno curse más de una licenciatura, se consideran todas
+          if(($situacion->nivel == "L" && $nivel_escuela == "L") && $situacion->plan_nombre == $plan_estudios){
+            $sql = Esc_Proc::insertGetId(
+              array('nombre_escproc' => $situacion->plantel_nombre,
+                    'nivel' => $nivel_escuela,
+                    'clave' => $situacion->plantel_clave,
+                    'seleccion_fecha' => NULL,
+                    'mes_anio' => NULL,
+                    'inicio_periodo' => NULL,
+                    'fin_periodo' => NULL,
+                    'promedio' => NULL,
+                    'num_cta' => $num_cta,  
+                    'irre_cert' => NULL, 
+                    'folio_cert' => NULL,
+                    'sistema_escuela' => 'SIAE',
+                    'nombre_plan' => $situacion->plan_nombre
+            ));
+          }else if($situacion->nivel == $nivel_escuela && $situacion->plantel_nombre == $nombre_escuela){
+            $sql = Esc_Proc::insertGetId(
+              array('nombre_escproc' => $situacion->plantel_nombre,
+                    'nivel' => $nivel_escuela,
+                    'clave' => $situacion->plantel_clave,
+                    'seleccion_fecha' => NULL,
+                    'mes_anio' => NULL,
+                    'inicio_periodo' => NULL,
+                    'fin_periodo' => NULL,
+                    'promedio' => NULL,
+                    'num_cta' => $num_cta,  
+                    'irre_cert' => NULL, 
+                    'folio_cert' => NULL,
+                    'sistema_escuela' => 'SIAE',
+                    'nombre_plan' => $situacion->plan_nombre
+            ));
+          } 
+        }
+
+      }else{
+        $sql = Esc_Proc::insertGetId(
+          array('num_cta' => $num_cta, 'nivel' => $nivel_escuela, 'nombre_escproc' => $nombre_escuela, 'nombre_plan' => $plan_estudios)
+        );
+      }
+
+      return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
+    }
+
+    public function showQuitarEsc($num_cta){
+
+      $title = "Quitar escuela de procedencia";
+      $vista = '/menus/quitar_esc';
+      $datos = [
+        'title' => $title,
+        'num_cta' => $num_cta
+      ];
+
+      $niveles_bd = DB::connection('mysql2')->select('select nivel from esc__procs WHERE num_cta = '.$num_cta);
+      $niveles = array();
+      $escuelas_temp = array();
+      $escuelas = array();
+      foreach ($niveles_bd as $nvl) {
+        //Niveles en la base de datos
+        $value = DB::connection('mysql2')->select('select * from niveles WHERE id_nivel = "'.$nvl->nivel.'"');
+        array_push($niveles, $value[0]);
+        //Información de cada nivel
+        $value2 = DB::connection('mysql2')->select('select nombre_escproc, nombre_plan, nivel from esc__procs WHERE num_cta = '.$num_cta.' and nivel = "'.$nvl->nivel.'"');
+        array_push($escuelas_temp, $value2[0]);
+      }
+
+      foreach ($escuelas_temp as $esc) {
+        $val = array('plantel_nombre' => $esc->nombre_escproc, 'plan_nombre' => $esc->nombre_plan, 'nivel' => $esc->nivel);
+        array_push($escuelas, $val);
+      }
+
+      $datos['nombres_nivel'] = $niveles;
+      $datos['escuelas'] = $escuelas;
+
+      return view($vista, $datos);
+      
+    }
+
+    public function validarQuitarInformacion(Request $request)
+    {
+
+      $request->validate([
+          'num_cta' => 'required|numeric|digits:9'
+          ],[
+           'num_cta.required' => 'El campo es obligatorio',
+           'num_cta.numeric' => 'El campo debe contener solo números',
+           'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
+      ]);
+
+      $num_cta = $request->input('num_cta');
+      $nivel_escuela = $request->input('nivel_escuela');
+      $nombre_escuela = $request->input('nombre_escuela');
+      $plan_estudios = $request->input('plan');
+
+      if($nivel_escuela == "L"){
+        $sql = DB::connection('mysql2')->delete("delete from esc__procs WHERE num_cta = ".$num_cta." and nivel ='".$nivel_escuela."' and nombre_plan = '".$plan_estudios."'");
+      }else{
+        $sql = DB::connection('mysql2')->delete("delete from esc__procs WHERE num_cta = ".$num_cta." and nivel ='".$nivel_escuela."' and nombre_escproc = '".$nombre_escuela."'");
+      }
+
+      return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
     public function prueba($num_cta){
@@ -992,7 +1197,7 @@ class RevEstudiosController extends Controller
       $ws_SIAE = Web_Service::find(2);
       $identidad = new WSController();
       $identidad = $identidad->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-      
+
       $ws_SIAE = Web_Service::find(1);
       $trayectoria = new WSController();
       $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);

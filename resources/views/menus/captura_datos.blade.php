@@ -147,9 +147,9 @@
 				<div class="col-sm-3">
 					@if($firmas == null || $firmas->direccion_nombre == null)
 						@if(in_array("Direccion", $roles_us))
-							<input type="password" name="jdeptit_firma" style="width: 70%">
+							<input type="password" name="direccion_firma" style="width: 70%">
 						@else
-							<input type="password" name="jdeptit_firma" style="width: 70%" disabled>
+							<input type="password" name="direccion_firma" style="width: 70%" disabled>
 						@endif
 					@else
 						<span class="fa fa-check-square-o"/>
@@ -308,7 +308,7 @@
 							<a class="btn btn-default" id="quitar_esc" disabled>Quitar escuela</a>
 						@else
 							<a class="btn btn-default" id="agregar_esc" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
-							<a class="btn btn-default" id="quitar_esc" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
+							<a class="btn btn-default" id="quitar_esc" href="{{ url('/quitar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
 						@endif
 					</scan>
 				</p>
@@ -317,9 +317,9 @@
 			      	<ul class="nav nav-tabs">
 			      		@foreach($escuelas as $tyt)
 			      			@if($tyt == $trayectoria->situaciones[0])
-			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
+			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{{ $tyt->nivel }}</a></li>
 			        		@else
-			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
+			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{{ $tyt->nivel }}</a></li>
 			        		@endif
 			        	@endforeach
 			      	</ul>
