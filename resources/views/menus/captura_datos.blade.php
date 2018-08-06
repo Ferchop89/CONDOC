@@ -286,14 +286,22 @@
 						Irregularidad:
 					</div>
 					<div id="irregularidad" class="col-sm-9">
-						<select id="irre_acta" name="irregularidad_doc">
+						<select id="irre_acta" name="irregularidad_doc_act">
 							@foreach($irr_acta as $i_actanac)
-						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+							  	@if($identidad->irre_doc == $i_actanac->cat_subcve)
+									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
+								@else
+									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+								@endif
 						    @endforeach
 						</select>
-						<select id="irre_carta" name="irregularidad_doc">
+						<select id="irre_carta" name="irregularidad_doc_cert">
 							@foreach($irr_migr as $i_actanac)
-						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+							  	@if($identidad->irre_doc == $i_actanac->cat_subcve)
+									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
+								@else
+									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+								@endif
 						    @endforeach
 						</select>
 					</div>
@@ -384,8 +392,13 @@
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			<select id="seleccion_periodo" name="seleccion_fecha[]">
-						      				<option id="periodo" name="periodo" value="0" selected>Periodo de expedición</option>
-						      			    <option id="mes_anio" name="mes_anio" value="1">Fecha de expedición</option>
+						      				@if($tyt->seleccion_fecha == 0)
+						      					<option id="periodo" name="periodo" value="0" selected>Periodo de expedición</option>
+						      			    	<option id="mes_anio" name="mes_anio" value="1">Fecha de expedición</option>
+						      			    @else
+						      			    	<option id="periodo" name="periodo" value="0">Periodo de expedición</option>
+						      			    	<option id="mes_anio" name="mes_anio" value="1" selected>Fecha de expedición</option>
+						      			    @endif
 						      			</select>
 								    </div>
 								    <div id="campo" class="col-sm-6">
@@ -431,7 +444,11 @@
 						      		<div id="irregularidad" class="col-sm-9">
 						      			<select name="irregularidad_esc[]">
 						      				@foreach($irr_cert as $i_certificado)
-						      				   	<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
+						      				  	@if($tyt->irre_cert == $i_certificado->cat_subcve)
+						      						<option value="{{ $i_certificado->cat_subcve }}" selected>{{ $i_certificado->cat_nombre }}</option>
+						      					@else
+						      						<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
+						      					@endif
 						      				@endforeach
 						      			</select>
 						      		</div>

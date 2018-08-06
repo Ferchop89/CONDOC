@@ -432,7 +432,16 @@ class RevEstudiosController extends Controller
       ]);
 
       $num_cta = $request->num_cta;
-      $niveles = $request->niveles;
+
+      ////////// SE NECESITAN : NIVELES Y NOMBRES DE PLANES //////////
+      $db = DB::connection('mysql2')->select('select nivel, nombre_plan from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
+      $db_nivel = array();
+      $db_plan = array();
+      foreach ($db as $consulta) {
+        array_push($db_nivel, $consulta->nivel);
+        array_push($db_plan, $consulta->nombre_plan);
+      }
+      ////////// SE NECESITAN : NIVELES Y NOMBRES DE PLANES //////////
 
       $curp = $_POST['curp'];
       $sexo = $_POST['sexo'];
@@ -440,7 +449,11 @@ class RevEstudiosController extends Controller
       $fecha_nac = $_POST['fecha_nac'];
       $lugar_nac = $_POST['lugar_nac'];
       $folio_doc = $_POST['folio_doc'];
-      $irregularidad_doc = $_POST['irregularidad_doc'];
+      if($nacionalidad == "2"){
+        $irregularidad_doc = $_POST['irregularidad_doc_cert'];
+      }else{
+        $irregularidad_doc = $_POST['irregularidad_doc_act'];
+      }
       $escuela_proc = $_POST['escuela_proc'];
       $cct = $_POST['cct'];
       $entidad_esc = $_POST['entidad_esc'];
@@ -491,30 +504,54 @@ class RevEstudiosController extends Controller
           }
           foreach ($esc_proc as $key=>$value) {
             if($escuela_proc[$key] != $esc_proc[$key]->nombre_escproc){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['nombre_escproc' => $escuela_proc[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['nombre_escproc' => $escuela_proc[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("1-".$key);
             }
             if($cct[$key] != $esc_proc[$key]->clave){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['clave' => $cct[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['clave' => $cct[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("2-".$key);
             }
             if($folio_cert[$key] != (int)$esc_proc[$key]->folio_cert){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['folio_cert' => (int)$folio_cert[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['folio_cert' => (int)$folio_cert[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("3-".$key." -----  ".$db_nivel[$key]." ------- ".$db_plan[$key]." ------ ".$folio_cert[$key]);
             }
             if($seleccion_fecha[$key] != (int)$esc_proc[$key]->seleccion_fecha){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['seleccion_fecha' => (int)$seleccion_fecha[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['seleccion_fecha' => (int)$seleccion_fecha[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("4-".$key);
             }
             //Si se seleccionó el periodo, hacemos null la fecha
             if($seleccion_fecha[$key] == 0){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['mes_anio' => NULL, 'inicio_periodo' => (int)$inicio_periodo[$key], 'fin_periodo' => (int)$fin_periodo[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['mes_anio' => NULL, 'inicio_periodo' => (int)$inicio_periodo[$key], 'fin_periodo' => (int)$fin_periodo[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("5-".$key);
             }
             //En caso contrario, hacemos null periodo
             else{
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['inicio_periodo' => NULL, 'fin_periodo' => NULL, 'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))), 'sistema_escuela' => "CONDOC"]);
-              }
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['inicio_periodo' => NULL, 'fin_periodo' => NULL, 'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))), 'sistema_escuela' => "CONDOC"]);
+                  //dd("6-".$key);
+            }
             if($promedio[$key] != (float)$esc_proc[$key]->promedio){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['promedio' => (float)$promedio[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['promedio' => (float)$promedio[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("7-".$key);
             }
             if($irregularidad_esc[$key] != $esc_proc[$key]->irre_cert){
-              $esc->where('nivel', $esc_proc[$key]->nivel)->where('folio_cert', (int)$esc_proc[$key]->folio_cert)->update(['irre_cert' => $irregularidad_esc[$key], 'sistema_escuela' => "CONDOC"]);
+              $esc->where('nivel', '=', $db_nivel[$key])
+                  ->where('nombre_plan', '=', $db_plan[$key])
+                  ->update(['irre_cert' => $irregularidad_esc[$key], 'sistema_escuela' => "CONDOC"]);
+                  //dd("8-".$key);
             }
           }
 
