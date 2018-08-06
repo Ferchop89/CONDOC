@@ -14,7 +14,7 @@ Route::get('/m8',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm8',
   'middleware' => 'roles',
-  'roles' => ['FacEsc', 'Ofisi']
+  'roles' => ['FacEsc', 'Ofisi', 'Sria']
   ]);
 Route::get('/m9',[
   'uses'=> 'RutasController@Menu1',
@@ -51,7 +51,8 @@ Route::get('/listas',[
   'middleware' => 'roles',
   'roles' => ['Sria']
   ]);
-  Route::get('solicitudes', function(){
+
+Route::get('solicitudes', function(){
     $data = DB::table('solicitudes')
              ->select(db::raw('DATE_FORMAT(created_at, "%d.%m.%Y") as listado_corte'),
                DB::raw('count(*) as total'))
@@ -63,7 +64,7 @@ Route::get('/listas',[
     return $data;
   });
 
-  Route::get('grupoListas', function(){
+Route::get('grupoListas', function(){
     $data = DB::table('cortes')
              ->select('listado_corte as corte',
                       DB::raw('count(*) as cuenta'),
@@ -73,7 +74,7 @@ Route::get('/listas',[
     return $data;
   });
 
-  Route::get('fechaCorte',function(){
+Route::get('fechaCorte',function(){
      $fCorte = Corte::all()->last()->listado_corte;
      return $fCorte;
   });
@@ -126,11 +127,26 @@ Route::post('/rev_est/{num_cta}',[
   ->name('rev_est_post');
 
 /*Solicitud de Revisión de Estudios*/
-    Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
-    Route::post('/FacEsc/solicitud_RE', 'RevEstudiosController@postSolicitudRE');
-    Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
+Route::get('/facesc/solicitud_RE', [
+  'uses' => 'SolicitudController@showSolicitudRE',
+  'as' => 'FacEsc/solicitud_RE',
+  'middleware' => 'roles',
+  'roles' => ['FacEsc']
+]);
+
+Route::post('/facesc/solicitud_RE', 'SolicitudController@postSolicitudRE');
+
+Route::get('/facesc/solicitud_RE/{num_cta}', 'SolicitudController@showInfoSolicitudRE')
         ->where('num_cta','[0-9]+')
         ->name('solicitud_RE');
+
+Route::post('/facesc/solicitud_RE/{num_cta}/solicita', 'SolicitudController@createSolicitud')
+        ->where('num_cta','[0-9]+')
+        ->name('solicita_RE');
+
+Route::get('/facesc/solicitud_RE/{num_cta}/cancelacion', 'SolicitudController@cancelSolicitud')
+                ->where('num_cta','[0-9]+')
+                ->name('cancela_RE');
 /*Recepción de Expedientes por Alumno*/
 Route::get('recepcion', [
   'uses' => 'UserController@showrecepcionExpedientes',

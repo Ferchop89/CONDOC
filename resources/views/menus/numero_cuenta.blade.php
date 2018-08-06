@@ -24,7 +24,7 @@
                 	@yield('ruta')
                 		{!! csrf_field() !!}
                         <label for="num_cta"> N° de cuenta: </label>
-                    	<input id="num_cta" type="text" name="num_cta" value="" maxlength="9" />
+                    	<input id="num_cta" type="text" name="num_cta" value="{{old('num_cta')}}" maxlength="9" />
                         @if ($errors->any())
                             <div id="error" class="alert alert-danger">
                                 <ul>
@@ -41,6 +41,10 @@
                            	</button>
                         </div>
     				</form>
+                    {{-- {{dd($errors->all())}} --}}
+                    @if($errors->all()==null)
+                        @include('errors.flash-message')
+                    @endif
                 </div>
 			</div>
 </div>

@@ -1,72 +1,130 @@
 @extends('layouts.app')
-@section('title', 'CONDOC | Solicitud de RE por Alumno')
+@section('title', 'CONDOC | '.$title)
 @section('location')
-    >> {{$num_cta}}
+    <div>
+    	<p id="navegacion">
+            <a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
+            <span> >> </span>
+        	<a> Licenciatura </a>
+            <span> >> </span>
+    		<a href="#"> {{$title}} </a> </p>
+    </div>
 @endsection
-@section('content')
-    <div id="is" class="pta_amplia">
 
-        @if (empty($trayectoria))
+@section('content')
+    <h2 id="titulo">{{$title}}</h2>
+    @include('errors/flash-message')
+    <div class="capsule solicitud_re">
+
+        {{-- @if (empty($trayectoria))
             <div class="contenido msj-error">
                 <span>{{$msj}}</span>
             </div>
-        @else
+        @else --}}
             {{-- {{dd($trayectoria)}} --}}
+            {{-- {{dd($identidad)}} --}}
             <div class="contenido">
-                <div class="info-personal">
-                    <img src="{{ asset('images/sin_imagen.png') }}" alt="">
+                <div class="info">
                     <div class="info-personal">
-                        <div class="fila">
-                            <label for="">Nombre:</label>
-                            <label for="">Nº de Cuenta: </label>{{$num_cta}}
-                        </div>
-                        <div class="fila">
-                            <label for="">CURP: </label>
-                        </div>
-                        <div class="fila">
-                            <label for="">Nº de Plantel: </label>{{$trayectoria[0]->plantel_clave}}
-                            <label for="">Nombre del Plantel: </label>{{$trayectoria[0]->plantel_nombre}}
+                        <img src="{{ asset('images/sin_imagen.png') }}" alt="">
+                        <div class="info-personal-header">
+                            <div class="fila">
+                                <label for="">Nombre: </label>{{$identidad->nombres."*".$identidad->apellido1."*".$identidad->apellido2}}
+                            </div>
+                            <div class="fila">
+                                <label for="">Nº de Cuenta: </label>{{$identidad->cuenta}}
+                            </div>
+                            <div class="fila">
+                                <label for="">CURP: </label>@if($identidad->curp) {{$identidad->curp}} @endif
+                            </div>
                         </div>
                     </div>
-                    <div class="info-trayectorias">
-                        <table class="table table-bordered">
-                            <thead class="thead-dark bg-primary">
-                                <th scope="col">Nº</th>
-                                <th scope="col">Nº plan de estudios</th>
-                                <th scope="col">Plan de Estudios</th>
-                                <th scope="col">Avance</th>
-                                <th scope="col">Acción</th>
-                            </thead>
-                            <tbody>
+                    @if ($trayectoria!=null)
+                        {{-- <div class="info-platel">
+                            <div class="fila">
 
+                            </div>
+                        </div> --}}
+                        <div class="info-trayectorias">
+                            <form action="{{ route('solicita_RE',[ $identidad->cuenta ]) }}" method="POST">
+                                {{ csrf_field() }}
+                                <table class="table table-bordered">
+                                    <thead class="thead-dark bg-primary">
+                                        <th scope="col">Nº</th>
+                                        <th scope="col">Nº de Plantel</th>
+                                        <th scope="col">Nombre del Plantel</th>
+                                        <th scope="col">Nº plan de estudios</th>
+                                        <th scope="col">Plan de Estudios</th>
+                                        <th scope="col">Avance</th>
+                                        <th scope="col">Acción</th>
+                                    </thead>
+                                    <tbody>
+                                        {{-- {{dd($trayectoria)}} --}}
+                                        @foreach ($trayectoria as $key => $value)
+                                            <tr>
+                                                <th>{{$key+1}}</th>
+                                                <td>{{$value->plantel_clave}}</td>
+                                                <td>{{$value->plantel_nombre}}</td>
+                                                <td>{{$value->plan_clave}}</td>
+                                                <td>{{$value->plan_nombre}}</td>
+                                                <td>{{$value->porcentaje_totales."%"}}</td>
+                                                <td>
+                                                    {{-- {{dd()}} --}}
+                                                    @if (empty($solicitudes) && $msj=='')
+                                                        <input type="hidden" name="num_cta" value="{{$identidad->cuenta}}">
+                                                        <input type="hidden" name="nombre" value="{{$identidad->nombres."*".$identidad->apellido1."*".$identidad->apellido2}}">
+                                                        <input type="hidden" name="avance" value="{{$value->porcentaje_totales}}">
+                                                        <input type="hidden" name="plantel_id" value="{{$value->plantel_clave}}">
+                                                        <input type="hidden" name="carrera_id" value="{{$value->carrera_clave}}">
+                                                        <input type="hidden" name="plan_id" value="{{$value->plan_clave}}">
+                                                        @if ($tipo==1)
+                                                            <button type="submit" class="btn btn-default">
+                                                                {!!"Solicitar"!!}
+                                                            </button>
+                                                        @else
+                                                            <a href="">
+                                                                {!!"Generar Citatorio"!!}
+                                                            </a>
+                                                        @endif
 
-                        @foreach ($trayectoria as $value)
-                            <tr>
-                                <th>1</th>
-                                <td>{{$value->plan_clave}}</td>
-                                <td>{{$value->plan_nombre}}</td>
-                                <td>{{$value->porcentaje_totales."%"}}</td>
-                                <td>
-                                    {{-- @if (Si tiene solicitud de estudios)
-                                        <a href="{{ route('admin.users.editar_usuarios',[ $user ]) }}">
-                                            {{"En proceso"}}
-                                        </a>
-                                    @else
-                                        @if($value->porcentaje_totales >= 75.00)
-                                            {{"Solicitar"}}
-                                        @else
-                                            {{"El alumno nombre con número de cuenta ".$num_cta." . No puede realizar una solicitud de Revisión de estudios, ya que no cumple con el avance necesario."}}
-                                        @endif
-                                    @endif --}}
-                                    <a href="">
-                                        {{"boton"}}
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                                    @else
+                                                        @foreach ($solicitudes as $key => $solicitud)
+                                                            @if($solicitud->plantel_id == $value->plantel_clave && $solicitud->carrera_id == $value->carrera_clave && $solicitud->plan_id == $value->plan_clave && $solicitud->pasoACorte == 0)
+                                                                <a href="{{asset(route('cancela_RE', $identidad->cuenta))}}">
+                                                                    {!!"Cancelar"!!}
+                                                                </a>
+                                                            @elseif($solicitud->plantel_id == $value->plantel_clave && $solicitud->carrera_id == $value->carrera_clave && $solicitud->plan_id == $value->plan_clave && $solicitud->pasoACorte == 1)
+                                                                <a href="">
+                                                                    {!!"En proceso"!!}
+                                                                </a>
+                                                            @else
+                                                                <a href="">
+                                                                    {!!"Autorizada"!!}
+                                                                </a>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+
+                                                    {{-- @if ($solictud != null)
+                                                        @if ($solicitud)
+
+                                                        @endif
+                                                        <button type="button" value="Regresar" class="btn btn-primary waves-effect waves-light" onclick="history.back(-1)" />
+                                                            {{"Volver"}}
+                                                        </button>
+                                                    @endif --}}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    @endif
+                    {{-- @if (Session::has('message'))
+                       <div class="alert alert-info">{{ Session::get('message') }}</div>
+                    @endif --}}
+
                 </div>
                 <div class="fila">
                     <form class="" action="index.html" method="post">
@@ -78,6 +136,6 @@
 
                 </div>
             </div>
-        @endif
+        {{-- @endif --}}
     </div>
 @endsection
