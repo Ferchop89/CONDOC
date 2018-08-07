@@ -314,7 +314,8 @@ class RevEstudiosController extends Controller
                   'sexo' => $sexo_db,
                   'nacimiento' => $info->fechaNacimiento,
                   'nacionalidad' => $id_nacionalidad,
-                  'entidad-nacimiento' => NULL
+                  'entidad-nacimiento' => NULL,
+                  'irre_doc' => NULL
                 ];
 
                 //Situaciones del alumno (par Licenciatura y el nivel inmediato anterior)
@@ -432,8 +433,6 @@ class RevEstudiosController extends Controller
       ]);
 
       $num_cta = $request->num_cta;
-
-      ////////// SE NECESITAN : NIVELES Y NOMBRES DE PLANES //////////
       $db = DB::connection('mysql2')->select('select nivel, nombre_plan from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
       $db_nivel = array();
       $db_plan = array();
@@ -441,7 +440,6 @@ class RevEstudiosController extends Controller
         array_push($db_nivel, $consulta->nivel);
         array_push($db_plan, $consulta->nombre_plan);
       }
-      ////////// SE NECESITAN : NIVELES Y NOMBRES DE PLANES //////////
 
       $curp = $_POST['curp'];
       $sexo = $_POST['sexo'];
@@ -477,7 +475,7 @@ class RevEstudiosController extends Controller
 
           $alumno = DB::connection('mysql2')->table('alumnos')->where('num_cta', $num_cta);
           $esc_proc = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
-          $esc = DB::connection('mysql2')->table('esc__procs')->where('num_cta', $num_cta);
+          //$esc = DB::connection('mysql2')->table('esc__procs')->where('num_cta', $num_cta);
           $trayectoria = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
           $registro = DB::connection('mysql2')->select('select * from registro__r_es WHERE num_cta = '.$num_cta);
 
@@ -504,54 +502,62 @@ class RevEstudiosController extends Controller
           }
           foreach ($esc_proc as $key=>$value) {
             if($escuela_proc[$key] != $esc_proc[$key]->nombre_escproc){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['nombre_escproc' => $escuela_proc[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("1-".$key);
             }
             if($cct[$key] != $esc_proc[$key]->clave){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['clave' => $cct[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("2-".$key);
             }
             if($folio_cert[$key] != (int)$esc_proc[$key]->folio_cert){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['folio_cert' => (int)$folio_cert[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("3-".$key." -----  ".$db_nivel[$key]." ------- ".$db_plan[$key]." ------ ".$folio_cert[$key]);
             }
             if($seleccion_fecha[$key] != (int)$esc_proc[$key]->seleccion_fecha){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['seleccion_fecha' => (int)$seleccion_fecha[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("4-".$key);
             }
             //Si se seleccionó el periodo, hacemos null la fecha
             if($seleccion_fecha[$key] == 0){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['mes_anio' => NULL, 'inicio_periodo' => (int)$inicio_periodo[$key], 'fin_periodo' => (int)$fin_periodo[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("5-".$key);
             }
             //En caso contrario, hacemos null periodo
             else{
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['inicio_periodo' => NULL, 'fin_periodo' => NULL, 'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))), 'sistema_escuela' => "CONDOC"]);
-                  //dd("6-".$key);
             }
             if($promedio[$key] != (float)$esc_proc[$key]->promedio){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['promedio' => (float)$promedio[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("7-".$key);
             }
             if($irregularidad_esc[$key] != $esc_proc[$key]->irre_cert){
-              $esc->where('nivel', '=', $db_nivel[$key])
-                  ->where('nombre_plan', '=', $db_plan[$key])
+              DB::connection('mysql2')->table('esc__procs')
+                  ->where('num_cta', $num_cta)
+                  ->where('nivel', $db_nivel[$key])
+                  ->where('nombre_plan', $db_plan[$key])
                   ->update(['irre_cert' => $irregularidad_esc[$key], 'sistema_escuela' => "CONDOC"]);
-                  //dd("8-".$key);
             }
           }
 
@@ -616,22 +622,6 @@ class RevEstudiosController extends Controller
                     'id_nivel' => $nivel,
                     'nombre_carrera' => $situacion->carrera_nombre
             ));
-
-            /*$sql2 = Registro_RE::insertGetId(
-              array('actualizacion_nombre' => Auth::user()->nombre,
-                    'actualizacion_fecha' => null,
-                    'jsec_nombre' => null,
-                    'jsec_fecha' => null,
-                    'jarea_nombre' => null,
-                    'jarea_fecha' => null,
-                    'jdepre_nombre' => null,
-                    'jdepre_fecha' => null,
-                    'jdeptit_nombre' => null,
-                    'jdeptit_fecha' => null,
-                    'direccion_nombre' => null,
-                    'direccion_fecha' => null,
-                    'num_cta' => $num_cta
-            ));*/
 
             foreach($nivel_esc as $key=>$value) {
               if((int)$seleccion_fecha[$key] == 0){ //Si se elige periodo, se hace null la fecha
@@ -700,22 +690,6 @@ class RevEstudiosController extends Controller
                     'id_nivel' => "L", //También debe cumplirlo 
                     'nombre_carrera' => $res[0]->carr_siae_nombre
             ));
-
-            /*$sql2 = Registro_RE::insertGetId(
-              array('actualizacion_nombre' => Auth::user()->nombre,
-                    'actualizacion_fecha' => null,
-                    'jsec_nombre' => null,
-                    'jsec_fecha' => null,
-                    'jarea_nombre' => null,
-                    'jarea_fecha' => null,
-                    'jdepre_nombre' => null,
-                    'jdepre_fecha' => null,
-                    'jdeptit_nombre' => null,
-                    'jdeptit_fecha' => null,
-                    'direccion_nombre' => null,
-                    'direccion_fecha' => null,
-                    'num_cta' => $num_cta
-            ));*/
 
             $nivel_esc = array("B", "L");
 

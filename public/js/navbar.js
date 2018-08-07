@@ -20,7 +20,6 @@ $(window).scroll(function() {
     }
     if (smallPadding < 0) {
         smallPadding = 0;
-        console.log("hola");
 
     }
     if (smallPadding == 0) {
@@ -32,7 +31,7 @@ $(window).scroll(function() {
     }
     if (smallPadding > 35) {
         $('.small-logo-container ').css({
-                "height": "0px",
+                "height": "1px",
         });
     }
     var navOpacity = ySmall / smallLogoHeight;

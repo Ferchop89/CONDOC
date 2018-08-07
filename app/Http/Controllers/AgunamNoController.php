@@ -24,7 +24,7 @@ class AgunamNoController extends Controller
                        ->join('users','solicitudes.user_id','=','users.id')
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
                        ->select('agunamno.id',
-                                'agunamno.encontrado',
+                                'agunamno.encontrado_at',
                                 'solicitudes.cuenta',
                                 'solicitudes.nombre',
                                 'procedencias.procedencia',
@@ -91,9 +91,8 @@ class AgunamNoController extends Controller
                        ->join('users','solicitudes.user_id','=','users.id')
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
                        ->select('agunamno.id',
-                                'agunamno.encontrado',
                                 'agunamno.descripcion',
-                                'agunamno.Encontrado_at',
+                                'agunamno.encontrado_at',
                                 'solicitudes.cuenta',
                                 'solicitudes.nombre',
                                 'procedencias.procedencia',
@@ -161,7 +160,7 @@ class AgunamNoController extends Controller
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
                        ->select('agunamno.id',
                                 'agunamno.descripcion',
-                                'agunamno.Encontrado_at',
+                                'agunamno.encontrado_at',
                                 'solicitudes.cuenta',
                                 'solicitudes.nombre',
                                 'procedencias.procedencia',

@@ -3,9 +3,12 @@
 @section('location')
     <div>
         <p id="navegacion">
-            <a href="{{ route('admin_dashboard') }}"><i class="fa fa-home" style="font-size:28px"></i></a> >>
-            <a href="#"> Administración </a> >>
-            <a href="{{ route('admin/usuarios') }}"> Listado de Usuarios </a> >>
+            <a href="{{ route('admin_dashboard') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
+            <span> >> </span>
+            <a> Administración </a>
+            <span> >> </span>
+            <a href="{{ route('admin/usuarios') }}"> Listado de Usuarios </a>
+            <span> >> </span>
             <a href="#"> {{$title}} </a> </p>
     </div>
 @endsection
@@ -140,6 +143,7 @@
     </div>
 </div>
 @endsection
+
 @section('animaciones')
     {{-- Para el uso del datepicker --}}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

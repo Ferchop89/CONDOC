@@ -103,6 +103,7 @@ class UserController extends Controller
              // dd($titulo, $id);
             DB::disconnect('mysql2');
             $datos = $id;
+            dd($trayectoria, $identidad, $datos);
         }
         else {
             // dd("DGIRE");

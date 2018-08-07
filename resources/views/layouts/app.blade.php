@@ -115,13 +115,10 @@
                         <!-- Left Side Of Navbar -->
                         <ul class="nav navbar-nav">
                             @admin
-                             {{-- (auth()->user()->hasRole('admin')) --}}
                               <div class="container-fluid">
                                     <div class="collapse navbar-collapse">
-                                      {{-- <ul class="nav navbar-nav"> --}}
                                         <ul class="nav navbar-nav menu">
                                             @if (count($items_role)>0)
-
                                                 @foreach ($menus as $key => $item)
                                                     @if ($item['parent'] != 0)
                                                         @break
@@ -133,9 +130,6 @@
                                     </div>
                                 </div>
                             @endadmin
-                            {{-- @else
-                                <div>Nulo</div>
-                            @endif --}}
                         </ul>
                         <!-- Right Side Of Navbar -->
                         <ul class="nav navbar-nav navbar-right">
