@@ -131,7 +131,7 @@ Route::get('/facesc/solicitud_RE', [
   'uses' => 'SolicitudController@showSolicitudRE',
   'as' => 'FacEsc/solicitud_RE',
   'middleware' => 'roles',
-  'roles' => ['FacEsc']
+  'roles' => ['FacEsc','Admin']
 ]);
 
 Route::post('/facesc/solicitud_RE', 'SolicitudController@postSolicitudRE');
@@ -231,3 +231,18 @@ Route::get('graficas' ,[
     'roles' => ['Admin']
 ]);
 /*Fin de Tablero de Control*/
+
+/*Ruta de trazabilidad una o varias solicitudes*/
+Route::get('traza' ,[
+    'uses'=> 'TrazabilidadController@traza',
+    'as' => 'traza',
+    'roles' => ['Admin','Sria']
+]);
+
+/*Ruta de trazabilidad detalle por solicitud*/
+Route::get('trazabilidad/{cuenta}/{carrera}/{plan}' ,[
+    'uses'=> 'TrazabilidadController@TrazaConsulta',
+    'as' => 'trazabilidad',
+    'roles' => ['Admin','Sria']
+]);
+/*Fin uta trazabilidad*/

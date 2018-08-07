@@ -86,7 +86,7 @@
                         {{-- <td class="p-3 mb-2 bg-info"> {{ Form::checkbox('encontrado', null, $expediente->encontrado) }} </td> --}}
                         <td class="p-3 mb-2 bg-danger"><strong>{{ ($agunam->Recibido_at!=null)?Carbon\Carbon::parse($agunam->Recibido_at)->format('d-m-Y; h:m'): '----' }}</strong></td>
                         <td class="p-3 mb-2 bg-info"> <input type="date" id="actualiza" name="actualiza"
-                          value="{{Carbon\Carbon::parse($expediente->Encontrado_at)->format('Y-m-d')}}"></td>
+                          value="{{Carbon\Carbon::parse($expediente->encontrado_at)->format('Y-m-d')}}"></td>
                         <td class="p-3 mb-2 bg-info"> <input type="text" class="form-control" name="descrip" id="descrip" placeholder="Descripción" value="{{ old('descrip',$expediente->descripcion)}}"/> </td>
                       </tr>
                     </tbody>

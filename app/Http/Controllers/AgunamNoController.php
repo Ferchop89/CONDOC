@@ -109,6 +109,8 @@ class AgunamNoController extends Controller
 
       $title = 'Edición de expedientes no encontrados en AGUNAM';
 
+      // dd($expOK);
+
       return view('noagunam/editar_noagunam',['expediente'=> $expOK, 'title'=>$title, 'agunam' => $agunam, 'edita'=>$edita]);
   }
 

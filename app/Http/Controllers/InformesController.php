@@ -288,9 +288,9 @@ class InformesController extends Controller
   }
   public function liberaSolicitudes()
   {
-    // Borramos los ultimos registros de la tabla de Registros
-    $deletedRows = Corte::where('solicitud_id','>',600)->delete();
-    Solicitud::where('id','>',600)->update(['pasoACorte'=>false]);
+    // Borramos uan tercera parte de los ultimos registros de la tabla de Registros
+    $deletedRows = Corte::where('solicitud_id','>',250)->delete();
+    Solicitud::where('id','>',250)->update(['pasoACorte'=>false]);
     // Volvemos a generar las listas una vez restringidos los Registros
     // Agrupamiento y ordenamiento de cortes y listados
     Agunam::truncate(); // eliminamos los registros de listas agunamUpdate

@@ -111,7 +111,7 @@ class SolicitudSeeder extends Seeder
 
     public function particion($list,$p)
     {
-      // Nos divide un arreglo en un numero de partes particiones
+      // Nos divide las solicitudes $list en $p partes para darlas de alta, una parte por cada dia habil.
       // Se utiliza para devidir las solicitudes en los dias trancurridos desde el inicio del seeder hasta hoy sin fines de semana
       $listlen = count( $list ); $partlen = floor( $listlen / $p );
       $partrem = $listlen % $p;
