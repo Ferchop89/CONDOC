@@ -233,7 +233,7 @@ class RevEstudiosController extends Controller
             }
 
             //Registro de las firmas en el sistema del alumno
-            $siae['firmas'] = $firmas;
+            $siae['firmas'] = $firmas[0];
 
             //Informacion de nivel licenciatura
             foreach ($trayectoria->situaciones as $value) {
@@ -384,7 +384,7 @@ class RevEstudiosController extends Controller
                 $dgire['escuelas'] = $situaciones;
 
                 //Registro de las firmas en el sistema del alumno
-                $dgire['firmas'] = $firmas;
+                $dgire['firmas'] = $firmas[0];
 
                 DB::disconnect('mysql2');
                 $datos = $dgire;
@@ -731,8 +731,8 @@ class RevEstudiosController extends Controller
 
         //Firmas
         $hoy = new DateTime();
-        $firmas = DB::connection('mysql2')->select('select actualizacion_nombre from registro__r_es WHERE num_cta = '.$num_cta);
-        if($firmas[0]->actualizacion_nombre == NULL){
+        $firmas_db = DB::connection('mysql2')->select('select actualizacion_nombre from registro__r_es WHERE num_cta = '.$num_cta);
+        if($firmas_db == NULL){
           $sql2 = Registro_RE::insertGetId(
                   array('actualizacion_nombre' => Auth::user()->name,
                         'actualizacion_fecha' => $hoy->format("Y-m-d"),
