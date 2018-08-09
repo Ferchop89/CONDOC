@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\WSController;
 
 
-use App\Models\{Solicitud, Web_Service, IrregularidadesRE, Baches, Paises,
+use App\Models\{Solicitud, CausasCancelacion, CancelacionSolictud, Web_Service, IrregularidadesRE, Baches, Paises,
                 Niveles, User, Trayectoria, Nacionalidades,
                 Registro_RE, Alumno, Esc_Proc};
 
@@ -48,6 +48,7 @@ class SolicitudController extends Controller
         $solicitudPrevia = DB::table('solicitudes')
                          ->select('id', 'cuenta', 'plantel_id', 'carrera_id', 'plan_id', 'citatorio', 'pasoACorte', 'cancelada')
                          ->where('cuenta',$num_cta)
+                         ->where('cancelada_id', null)
                          ->GET()->toArray();
 
         $ws_SIAE = Web_Service::find(1);
@@ -184,8 +185,21 @@ class SolicitudController extends Controller
      * @param  \App\Solicitud  $solicitud
      * @return \Illuminate\Http\Response
      */
-    public function cancelSolicitud(Solicitud $solicitud)
+    public function identidadAlumno($solicitud)
     {
-        dd("Cancelación");
+        return array_flatten(Solicitud::where('id', $solicitud)->get()->toArray());
+    }
+    public function cancelSolicitud($solicitud)
+    {
+        $title = 'Cancelación de Solicitud de Revisión de Estudios';
+        $msj = 'Se cancelará la Solicitud de Revisión de Estudios';
+        Session::flash('error', $msj);
+        $causas = CausasCancelacion::where('nombre', '!=', null)->get()->toArray();
+        return view('/menus/solicitud_RE_cancelacion', ['title' => $title, 'alumno' => $this->identidadAlumno($solicitud), 'causas' => $causas]);
+        // $canSolicitud = new CancelacionSolicitud();
+        // $canSolicitud->causa_id = rand(1,2);
+        // $canSolicitud->user_id = rand(1, $users);
+        // $canSolicitud->save();
+
     }
 }

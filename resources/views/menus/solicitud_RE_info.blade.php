@@ -15,27 +15,19 @@
     <h2 id="titulo">{{$title}}</h2>
     @include('errors/flash-message')
     <div class="capsule solicitud_re">
-
-        {{-- @if (empty($trayectoria))
-            <div class="contenido msj-error">
-                <span>{{$msj}}</span>
-            </div>
-        @else --}}
-            {{-- {{dd($trayectoria)}} --}}
-            {{-- {{dd($identidad)}} --}}
-            <div class="contenido">
-                <div class="info">
-                    <div class="info-personal">
-                        <img src="{{ asset('images/sin_imagen.png') }}" alt="">
-                        <div class="info-personal-header">
+        <div class="contenido">
+            <div class="info">
+                <div class="info-personal">
+                    <img src="{{ asset('images/sin_imagen.png') }}" alt="">
+                    <div class="info-personal-header">
                             <div class="fila">
-                                <label for="">Nombre: </label>{{$identidad->nombres."*".$identidad->apellido1."*".$identidad->apellido2}}
+                                <label for="">Nombre: </label> {!! $identidad->nombres."*".$identidad->apellido1."*".$identidad->apellido2 !!}
                             </div>
                             <div class="fila">
-                                <label for="">Nº de Cuenta: </label>{{$identidad->cuenta}}
+                                <label for="">Nº de Cuenta: </label> {!! $identidad->cuenta !!}
                             </div>
                             <div class="fila">
-                                <label for="">CURP: </label>@if($identidad->curp) {{$identidad->curp}} @endif
+                                <label for="">CURP: </label>@if($identidad->curp) {!! $identidad->curp !!} @endif
                             </div>
                         </div>
                     </div>
@@ -90,7 +82,8 @@
                                                     @else
                                                         @foreach ($solicitudes as $key => $solicitud)
                                                             @if($solicitud->plantel_id == $value->plantel_clave && $solicitud->carrera_id == $value->carrera_clave && $solicitud->plan_id == $value->plan_clave && $solicitud->pasoACorte == 0)
-                                                                <a href="{{asset(route('cancela_RE', $identidad->cuenta))}}">
+                                                                {{-- {{dd($solicitud)}} --}}
+                                                                <a href="{{ asset(route('cancela_RE', [$solicitud->id])) }}">
                                                                     {!!"Cancelar"!!}
                                                                 </a>
                                                             @elseif($solicitud->plantel_id == $value->plantel_clave && $solicitud->carrera_id == $value->carrera_clave && $solicitud->plan_id == $value->plan_clave && $solicitud->pasoACorte == 1)

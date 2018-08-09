@@ -103,7 +103,7 @@ class UserController extends Controller
              // dd($titulo, $id);
             DB::disconnect('condoc_old');
             $datos = $id;
-            dd($trayectoria, $identidad, $datos);
+            // dd($trayectoria, $identidad, $datos);
         }
         else {
             // dd("DGIRE");

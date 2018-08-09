@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Solicitud;
-use App\Models\User;
-use App\Models\Procedencia;
+use App\Models\{Solicitud, User, Procedencia, CancelacionSolicitud};
 use Carbon\Carbon;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Faker\Factory as Faker;
@@ -38,7 +36,7 @@ class SolicitudSeeder extends Seeder
 
         // peso de los registros para la bandera cancelar
         $pesoCancelada = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1];
-        $generacionX = array('08','09','10');
+        $generacionX = array('06','07','08','09','10','11');
 
         // Fecha de inicio para simular el seeder. (año, mes, dia, hora, min, seg,local)
         $inicioSeed = Carbon::create(2018, 7, 2, 13, 0, 0, 'America/Mexico_City');
@@ -98,7 +96,16 @@ class SolicitudSeeder extends Seeder
               $solicitud->tipo = (in_array(substr($diario[1],1,2),$generacionX))? 0: 1;
               $solicitud->citatorio = (in_array(substr($diario[1],1,2),$generacionX))? 1: 0;
               $solicitud->pasoACorte = false;
-              $solicitud->cancelada = $pesoCancelada[rand(0,count($pesoCancelada)-1)]; // 4 a 1 cumple vs citatorio
+
+              $cancelada = $pesoCancelada[rand(0,count($pesoCancelada)-1)];
+              if ($cancelada) {
+                  $table = new CancelacionSolicitud();
+                  $table->causa_id = rand(1,2);
+                  $table->user_id = $solicitud->user_id;
+                  $table->save();
+                  $solicitud->cancelada_id = CancelacionSolicitud::all()->last()->id;
+              }
+
               $solicitud->created_at = $laburo;
               $solicitud->updated_at = $laburo;
               $solicitud->save();

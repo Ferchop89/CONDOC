@@ -13,7 +13,6 @@
 
 @section('content')
     <h2 id="titulo">{{$title}}</h2>
-    @include('errors/flash-message')
     <div class="capsule solicitud_re">
         <div class="contenido">
             <div class="info">
@@ -21,26 +20,35 @@
                     <img src="{{ asset('images/sin_imagen.png') }}" alt="">
                     <div class="info-personal-header">
                         <div class="fila">
-                            <label for="">Nombre: </label>{{}}
+                            <label for="">Nombre: </label> {!! $alumno[2] !!}
                         </div>
                         <div class="fila">
-                            <label for="">Nº de Cuenta: </label>{{}}
+                            <label for="">Nº de Cuenta: </label> {!! $alumno[1] !!}
                         </div>
                         <div class="fila">
-                            <label for="">CURP: </label>@if($identidad->curp) {{}} @endif
+                            <label for="">CURP: </label> {!! $alumno[0] !!}
                         </div>
                     </div>
                 </div>
+                @include('errors/flash-message')
+                {{-- {{dd($alumno)}} --}}
             </div>
             <div class="fila">
                 <form class="" action="index.html" method="post">
+                    {{-- <input type="text" name="" value=""> --}}
+
                     <button type="button" value="Regresar" class="btn btn-primary waves-effect waves-light" onclick="history.back(-1)" />
                         {{"Volver"}}
                     </button>
+                    {{-- <a class="btn btn-primary waves-effect waves-light" href="{{ asset(route('solicitud_RE', $alumno[1])) }}">
+                        {{"Volver"}}
+                    </a> --}}
+                    {{-- <a class="btn btn-primary waves-effect waves-light" href="{{ redirect('solicitud_RE') }}">
+                        {{"Volver"}}
+                    </a> --}}
                 </form>
 
             </div>
         </div>
-        {{-- @endif --}}
     </div>
 @endsection

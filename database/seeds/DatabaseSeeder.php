@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
           'web_services',
           'procedencias',
           'solicitudes',
+          'cancelacion_solicitud',
+          'causas_cancelacion',
           'roles',
           'users',
           'role_user',
@@ -28,6 +30,7 @@ class DatabaseSeeder extends Seeder
       // En este orden porque los roles deben existir antes que los usuarios
         $this->call(Web_Service_Seeder::class);
         $this->call(ProcedenciaSeeder::class);
+        $this->call(CausasCancelacionSeeder::class);
         $this->call(SolicitudSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);

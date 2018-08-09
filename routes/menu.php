@@ -144,8 +144,8 @@ Route::post('/facesc/solicitud_RE/{num_cta}/solicita', 'SolicitudController@crea
         ->where('num_cta','[0-9]+')
         ->name('solicita_RE');
 
-Route::get('/facesc/solicitud_RE/{num_cta}/cancelacion', 'SolicitudController@cancelSolicitud')
-                ->where('num_cta','[0-9]+')
+Route::get('/facesc/solicitud_RE/cancelacion/{solicitud}', 'SolicitudController@cancelSolicitud')
+                // ->where('num_cta','[0-9]+')
                 ->name('cancela_RE');
 /*Recepción de Expedientes por Alumno*/
 Route::get('recepcion', [
