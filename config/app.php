@@ -173,6 +173,8 @@ return [
 
         // chartjs
         Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
+        //slider-pro
+        Edofre\SliderPro\SliderProServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -240,6 +242,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'SliderPro' => Edofre\SliderPro\Facades\SliderPro::class,
     ],
 
 ];

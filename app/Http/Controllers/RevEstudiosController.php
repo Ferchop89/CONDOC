@@ -72,6 +72,7 @@ class RevEstudiosController extends Controller
 
     /*Revisiones de Estudio*/
 
+    //Muestra la vista que solicita en número de cuenta
     public function showSolicitudNC()
     {
         $title = "Realizar Revisión de Estudios";
@@ -79,6 +80,7 @@ class RevEstudiosController extends Controller
         return view('/menus/datos_personales', ['title' => $title]);
     }
 
+    //Obtiene los datos necesarios para mostar en la vista
     public function showDatosPersonales($num_cta)
     {
         $title = "Revisión de Estudios";
@@ -216,6 +218,8 @@ class RevEstudiosController extends Controller
               'nacionalidades' => $nacionalidades,
               'roles_us' => $roles_us
             ];
+
+            $siae['identidad']->irre_doc = NULL;
             $ws_SIAE = Web_Service::find(1);
             $trayectoria = new WSController();
             $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
@@ -233,7 +237,7 @@ class RevEstudiosController extends Controller
             }
 
             //Registro de las firmas en el sistema del alumno
-            $siae['firmas'] = $firmas[0];
+            $siae['firmas'] = $firmas;
 
             //Informacion de nivel licenciatura
             foreach ($trayectoria->situaciones as $value) {
@@ -384,7 +388,7 @@ class RevEstudiosController extends Controller
                 $dgire['escuelas'] = $situaciones;
 
                 //Registro de las firmas en el sistema del alumno
-                $dgire['firmas'] = $firmas[0];
+                $dgire['firmas'] = $firmas;
 
                 DB::disconnect('mysql2');
                 $datos = $dgire;
@@ -401,6 +405,7 @@ class RevEstudiosController extends Controller
         return view($vista, $datos);
     }
 
+    //Valida el número de cuenta
     public function postDatosPersonales(Request $request)
     {
 
@@ -415,6 +420,7 @@ class RevEstudiosController extends Controller
       return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
+    //Hace las respectivas inserciones o actualziaciones de datos
     public function verificaDatosPersonales(Request $request)
     {
 
@@ -647,7 +653,8 @@ class RevEstudiosController extends Controller
                       'irre_cert' => $irregularidad_esc[$key],
                       'folio_cert' => (int)$folio_cert[$key],
                       'sistema_escuela' => 'SIAE',
-                      'nombre_plan' => $info_sit[$key]->plan_nombre
+                      'nombre_plan' => $info_sit[$key]->plan_nombre,
+                      'tipo_ingreso' => $info_sit[$key]->causa_inicio_descripcion
               ));
             }
 
@@ -794,12 +801,14 @@ class RevEstudiosController extends Controller
       return redirect()->route('home');
     }
 
+    //Vista que solicita el número de cuenta
     public function showSolicitudAut(){
       $title = "Autorización Revisión de Estudios";
 
       return view('/menus/autorizacion_re', ['title' => $title]);
     }
 
+    //Verifica el número de cuenta
     public function postSolicitudAut(Request $request){
       $request->validate([
           'num_cta' => 'required|numeric|digits:9'
@@ -824,6 +833,7 @@ class RevEstudiosController extends Controller
 
     }
 
+    //Se obtiene la información necesaria para la creación del PDF
     public function PdfRevEstudios(){
 
       $num_cta = $_GET['num_cta'];
@@ -863,6 +873,7 @@ class RevEstudiosController extends Controller
 
     }
 
+    //PDF
     public function finalizacionRE($encargado_info, $alumno_info, $fecha, $jefe_oficina_re, $jefe_depto_re){
 
       $composite = "";
@@ -961,6 +972,7 @@ class RevEstudiosController extends Controller
       return $composite;
     }
 
+    //Información necesaria para agregar escuela de procedencia
     public function showAgregarEsc($num_cta)
     {
 
@@ -1071,6 +1083,7 @@ class RevEstudiosController extends Controller
       return view($vista, $datos);
     }
 
+    //Valida número de cuenta y hace las respectivas incersiones
     public function validarInformacion(Request $request)
     {
 
@@ -1144,6 +1157,7 @@ class RevEstudiosController extends Controller
       return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
+    //Información para eliminar escuela de procedencia
     public function showQuitarEsc($num_cta){
 
       $title = "Quitar escuela de procedencia";
@@ -1178,6 +1192,7 @@ class RevEstudiosController extends Controller
       
     }
 
+    //Valida la información y hace las respectivas eliminaciones
     public function validarQuitarInformacion(Request $request)
     {
 
@@ -1203,6 +1218,38 @@ class RevEstudiosController extends Controller
       return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
     }
 
+    //Solicitud de número de cuenta para dictámenes
+    public function showSolicitudDictamenes(){
+      $title = "Captura a Dictámenes";
+      return view('/menus/re_dictamenes', ['title' => $title]);
+    }
+
+    public function postSolicitudDictamenes(Request $request){
+      $request->validate([
+          'num_cta' => 'required|numeric|digits:9'
+          ],[
+           'num_cta.required' => 'El campo es obligatorio',
+           'num_cta.numeric' => 'El campo debe contener solo números',
+           'num_cta.digits'  => 'El campo debe ser de 9 dígitos',
+      ]);
+
+      $num_cta = $request->num_cta;
+      $title = "Captura a Dictámenes";
+      $condoc_personal = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+      $condoc_tyt = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
+      $condoc_lic = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+      $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
+      $paises = DB::connection('mysql2')->select('select * from paises');
+      $niveles = DB::connection('mysql2')->select('select * from niveles');
+      $tramites = DB::connection('mysql2')->select('select * from tramites');
+      $oficinas = DB::connection('mysql2')->select('select * from oficinas');
+
+      return view('/menus/re_dictamenes', ['title' => $title])
+                  ->with(compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 
+                                 'nacionalidades', 'paises', 'niveles', 'tramites' , 'oficinas'));
+    }
+
+    //Prueba
     public function prueba($num_cta){
 
       $ws_SIAE = Web_Service::find(2);
@@ -1216,7 +1263,7 @@ class RevEstudiosController extends Controller
       $ws_DGIRE = new WSController();
       $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
 
-      dd($ws_DGIRE);
+      dd($trayectoria);
     }
 
 }

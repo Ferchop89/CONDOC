@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3b19dd01bdba3b68c81344a3bc90b72",
+    "content-hash": "f2366757f132523366d7fe4901647215",
     "packages": [
         {
             "name": "asistenteweb/nusoap",
@@ -390,6 +390,66 @@
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
             "time": "2017-11-26T14:49:08+00:00"
+        },
+        {
+            "name": "edofre/laravel-slider-pro",
+            "version": "V1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Edofre/laravel-slider-pro.git",
+                "reference": "dcae3c6651f234047f2b0cc4d4dcb4a7a0066952"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Edofre/laravel-slider-pro/zipball/dcae3c6651f234047f2b0cc4d4dcb4a7a0066952",
+                "reference": "dcae3c6651f234047f2b0cc4d4dcb4a7a0066952",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "5.*",
+                "npm-asset/slider-pro": "1.2.2",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.2.0|~3.3.0",
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Edofre\\SliderPro\\SliderProServiceProvider"
+                    ],
+                    "aliases": {
+                        "SliderPro": "Edofre\\SliderPro\\Facades\\SliderPro"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Edofre\\SliderPro\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Edo Freriks",
+                    "email": "edofre@gmail.com"
+                }
+            ],
+            "description": "Laravel widget for slider-pro",
+            "homepage": "https://github.com/edofre/laravel-slider-pro",
+            "keywords": [
+                "images",
+                "jquery",
+                "laravel",
+                "slider",
+                "slider-pro"
+            ],
+            "time": "2018-05-18T10:06:48+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -1824,6 +1884,49 @@
                 "php"
             ],
             "time": "2018-06-03T11:33:10+00:00"
+        },
+        {
+            "name": "npm-asset/slider-pro",
+            "version": "1.2.2",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/slider-pro/-/slider-pro-1.2.2.tgz",
+                "reference": null,
+                "shasum": "4519151fe6b14b5151a4fc9f7d28b21ef5146f7f"
+            },
+            "type": "npm-asset-library",
+            "extra": {
+                "npm-asset-bugs": {
+                    "url": "https://github.com/bqworks/slider-pro/issues"
+                },
+                "npm-asset-directories": [],
+                "npm-asset-repository": {
+                    "type": "git",
+                    "url": "https://github.com/bqworks/slider-pro"
+                },
+                "npm-asset-scripts": []
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "bqworks",
+                    "url": "http://bqworks.com/"
+                },
+                {
+                    "name": "David Ghiurau",
+                    "email": "david.ghiurau@gmail.com"
+                }
+            ],
+            "description": "Responsive jQuery slider, featuring modular architecture, CSS3 animations, touch swipe, animated layers, retina, lazy loading and much more.",
+            "homepage": "http://bqworks.com/slider-pro/",
+            "keywords": [
+                "jquery-plugin",
+                "responsive-slider",
+                "slider-pro"
+            ],
+            "time": "2015-08-20T15:47:51+00:00"
         },
         {
             "name": "paragonie/random_compat",

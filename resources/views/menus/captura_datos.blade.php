@@ -214,7 +214,7 @@
 						<select id="nacionalidad" name="nacionalidad">
 							@foreach($nacionalidades as $nacion)
 								@if($nacion->id_nacionalidad == $identidad->nacionalidad)
-									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}" selected="">{{ $nacion->nacionalidad }}</option>
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}" selected>{{ $nacion->nacionalidad }}</option>
 								@else
 									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
 								@endif
@@ -288,7 +288,7 @@
 					<div id="irregularidad" class="col-sm-9">
 						<select id="irre_acta" name="irregularidad_doc_act">
 							@foreach($irr_acta as $i_actanac)
-							  	@if($identidad->irre_doc == $i_actanac->cat_subcve)
+							  	@if(isset($identidad->irre_doc) && $identidad->irre_doc == $i_actanac->cat_subcve)
 									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
 								@else
 									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
@@ -392,7 +392,7 @@
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			<select id="seleccion_periodo" name="seleccion_fecha[]">
-						      				@if($tyt->seleccion_fecha == 0)
+						      				@if(isset($tyt->seleccion_fecha) && $tyt->seleccion_fecha == 0)
 						      					<option id="periodo" name="periodo" value="0" selected>Periodo de expedición</option>
 						      			    	<option id="mes_anio" name="mes_anio" value="1">Fecha de expedición</option>
 						      			    @else
@@ -444,7 +444,7 @@
 						      		<div id="irregularidad" class="col-sm-9">
 						      			<select name="irregularidad_esc[]">
 						      				@foreach($irr_cert as $i_certificado)
-						      				  	@if($tyt->irre_cert == $i_certificado->cat_subcve)
+						      				  	@if(isset($tyt->irre_cert) && $tyt->irre_cert == $i_certificado->cat_subcve)
 						      						<option value="{{ $i_certificado->cat_subcve }}" selected>{{ $i_certificado->cat_nombre }}</option>
 						      					@else
 						      						<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>

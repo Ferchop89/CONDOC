@@ -143,6 +143,18 @@ Route::get('imprimePDF_RE',[
     'middleware' => 'roles',
     'roles' => ['Ofisi', 'FacEsc']
   ]);
+Route::get('/re_dictamenes', [
+    'uses'=> 'RevEstudiosController@showSolicitudDictamenes',
+    'as'=> 're_dictamenes',
+    'middleware' => 'roles',
+    'roles' => ['Ofisi']
+  ]);
+Route::post('/re_dictamenes', [
+    'uses'=> 'RevEstudiosController@postSolicitudDictamenes',
+    'as'=> 're_dictamenes',
+    'middleware' => 'roles',
+    'roles' => ['Ofisi']
+  ]);
 
 /*Solicitud de Revisión de Estudios*/
     Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
