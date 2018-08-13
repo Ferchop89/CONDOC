@@ -35,7 +35,7 @@ Route::get('trayectoria', 'UserController@showTrayectoria');
 Route::put('/WS/trayectorias', 'Admin\WSController@trayectorias')->name('trayectoria');
 
 Route::get('login', function(){
-    return view('Auth/login');
+    return view('auth/login');
 })->name('login');
 
 Route::get('recepcion', 'UserController@showrecepcionExpedientes')->name('recepcion');
