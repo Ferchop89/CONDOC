@@ -156,6 +156,6 @@ class Dashboard extends Controller
         $user->roles()->detach();
 
         $user->delete();
-        return redirect()->route('users'); // equivalente a la ruta 'usuarios'
+        return redirect()->route('admin/usuarios'); // equivalente a la ruta 'usuarios'
     }
 }
