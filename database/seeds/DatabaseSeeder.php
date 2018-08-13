@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
           'irregularidades_r_es',
           'cortes',
           'agunam',
-          'agunamno',
+          'agunam_no',
           // 'firmas'
       ]);
       // En este orden porque los roles deben existir antes que los usuarios

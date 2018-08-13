@@ -14,7 +14,7 @@ use App\Models\Role;
 class Dashboard extends Controller
 {
     public function index(User $user){
-        return view('admin/users/HomeAdmin', ['user' => $user]);
+        return view('Admin/Users/HomeAdmin', ['user' => $user]);
     }
 
     /*Método para listar usuarios*/

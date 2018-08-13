@@ -17,14 +17,14 @@ class AgunamNoController extends Controller
   /*Método para listar usuarios*/
   public function expedientes(){
     // lista de expedientes no encontrados en agunam
-    $expedientes = DB::table('agunamno')
-                       ->where('agunamno.deleted_at','=',null)
-                       ->join('cortes','agunamno.corte_id','=','cortes.id')
+    $expedientes = DB::table('agunam_no')
+                       ->where('agunam_no.deleted_at','=',null)
+                       ->join('cortes','agunam_no.corte_id','=','cortes.id')
                        ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
                        ->join('users','solicitudes.user_id','=','users.id')
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
-                       ->select('agunamno.id',
-                                'agunamno.encontrado_at',
+                       ->select('agunam_no.id',
+                                'agunam_no.encontrado_at',
                                 'solicitudes.cuenta',
                                 'solicitudes.nombre',
                                 'procedencias.procedencia',
@@ -55,10 +55,10 @@ class AgunamNoController extends Controller
      // Buscamos en la lista de expedientes NOagunam el expediente que vamos a dar de alta
      $expedientes = DB::table('agunamno')
                         ->where('solicitudes.cuenta',$cuenta)
-                        ->join('cortes','agunamno.corte_id','=','cortes.id')
+                        ->join('cortes','agunam_no.corte_id','=','cortes.id')
                         ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
-                        ->select('agunamno.id',
-                                 'agunamno.encontrado_at',
+                        ->select('agunam_no.id',
+                                 'agunam_no.encontrado_at',
                                  'solicitudes.cuenta',
                                  'solicitudes.nombre'
                                  )
@@ -85,14 +85,14 @@ class AgunamNoController extends Controller
   {
     // Edicion de expedientes no encontrados no en Agunam.
     $expOK = DB::table('agunamno')
-                       ->where('agunamno.id','=',$expediente->id)
-                       ->join('cortes','agunamno.corte_id','=','cortes.id')
+                       ->where('agunam_no.id','=',$expediente->id)
+                       ->join('cortes','agunam_no.corte_id','=','cortes.id')
                        ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
                        ->join('users','solicitudes.user_id','=','users.id')
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
-                       ->select('agunamno.id',
-                                'agunamno.descripcion',
-                                'agunamno.encontrado_at',
+                       ->select('agunam_no.id',
+                                'agunam_no.descripcion',
+                                'agunam_no.encontrado_at',
                                 'solicitudes.cuenta',
                                 'solicitudes.nombre',
                                 'procedencias.procedencia',
@@ -155,14 +155,14 @@ class AgunamNoController extends Controller
   {
     // Edicion de expedientes no encontrados no en Agunam.
     $expOK = DB::table('agunamno')
-                       ->where('agunamno.id','=',$expediente->id)
-                       ->join('cortes','agunamno.corte_id','=','cortes.id')
+                       ->where('agunam_no.id','=',$expediente->id)
+                       ->join('cortes','agunam_no.corte_id','=','cortes.id')
                        ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
                        ->join('users','solicitudes.user_id','=','users.id')
                        ->join('procedencias','users.procedencia_id','=','procedencias.id')
-                       ->select('agunamno.id',
-                                'agunamno.descripcion',
-                                'agunamno.encontrado_at',
+                       ->select('agunam_no.id',
+                                'agunam_no.descripcion',
+                                'agunam_no.encontrado_at',
                                 'solicitudes.cuenta',
                                 'solicitudes.nombre',
                                 'procedencias.procedencia',

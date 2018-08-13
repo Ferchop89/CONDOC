@@ -11,7 +11,7 @@ class AgunamNo extends Model
   use SoftDeletes;
 
   protected $dates = ['deleted_at'];
-  protected $table = 'agunamno';
+  protected $table = 'agunam_no';
   public $timestamps = false;
 
   protected $fillable = [
