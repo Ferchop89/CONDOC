@@ -21,6 +21,13 @@ class GrafiController extends Controller
         $mSel = (request()->mes_id==null)? substr(max($m),0,2)  : request()->mes_id; // "07. Julio" obtenemos el '07'
         $o = $this->solicitudesOrigen($aSel,$mSel);
         $oSel = (request()->origen_id==null)? ''                : request()->origen_id;
+        // El menu de origen tiene los planteles para el mes seleccionado. Si el usuario elige un plantel y
+        // cambia de mes, existe la posibilidad que el mes no tenga datos para este plantel, si este es el caso,
+        // El nuevo arreglo de planteles ya no va a tener disponible el plantel. por lo que el menu de planteles
+        // debe apuntar a la opcion "Todas las Procedencias" y con estos parametros se debe desplegar los graficos
+        // Lo mismo sucede para el Año, si cambia, puede no tener el mes seleecionado y/o el plantel.
+        $mSel = (array_key_exists(request()->mes_id,$m))? request()->mes_id : $mSel ;
+        $oSel = (array_key_exists(request()->origen_id,$o))? $oSel : '';
 
         // Asimamos esos arreglos para los select de la vista
         $anio   = $a;  // arreglo de años y el valor seleccionado (ultimo año)
@@ -32,14 +39,23 @@ class GrafiController extends Controller
         $ejeX   = 'DIA DEL MES';
         $ejeY   = 'SOLICITUDES';
         $chart1 = $this->bar_Genera($mSel,$aSel,$oSel,$Titulo,$ejeX,$ejeY);
-        $data = $this->dataBarra($mSel,$aSel,$oSel);
+        $data =   $this->dataBarra($mSel,$aSel,$oSel);
+
+        $totales = array(0,0); $totales[0]=$totales[1]=0;
+        // Generamos los Totales en un arreglo [0] Solicitudes y [1] Citatorios
+        foreach ($data as $value) {
+            $totales[0] = $totales[0]+$value['0'];
+            $totales[1] = $totales[1]+$value['1'];
+        }
+        // dd($totales);
+
         // Grafico pie
         $chart2 = $this->pie_Genera($mSel,$aSel,$oSel,'General');
 
         // Titulo de la vista, Tablero de Control
         $title = 'Tablero Control';
          // Renderizamos en la vista.
-         return view('graficas/solycita', compact('chart1','chart2','anio', 'aSel','mes','mSel','origen','oSel','data','title'));
+         return view('graficas/solycita', compact('chart1','chart2','anio', 'aSel','mes','mSel','origen','oSel','data','title','totales'));
          // return view('graficas/solycita', compact('chart1','chart2','procedencia','mes','origen','periodos'));
     }
 
@@ -222,12 +238,13 @@ class GrafiController extends Controller
         $data = DB::select($query);
 
         // arreglo que contiene dos items las cantidades de 0-citatorios 1-solicitudes
-        $arreglo = array();
-        // Si no existen los citatorios o las solicitudes, entonces creamos con un valor cero para poder graficar
-        $arreglo['0'] = ( array_key_exists('0',$data) )? $data[0]->cantidad: 0; // solicitud normal
-        $arreglo['1'] = ( array_key_exists('1',$data) )? $data[1]->cantidad: 0; // solicitud tipo citatorio
+        $arreglo = array(0,0);
 
-        // Colocamos por cada llave (dia) una arreglo con la cantidad de citatorios [0] y solicitudes en [1]
+        // Si no existen los citatorios o las solicitudes, entonces creamos con un valor cero para poder graficar
+        foreach ($data as $value) {
+            $arreglo[$value->citatorio] = $value->cantidad;
+        }
+
         return $arreglo;
     }
 

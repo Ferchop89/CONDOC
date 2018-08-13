@@ -36,7 +36,8 @@ class SolicitudSeeder extends Seeder
 
         // peso de los registros para la bandera cancelar
         $pesoCancelada = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1];
-        $generacionX = array('06','07','08','09','10','11');
+        $pesoActiva = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0];
+        $generacionX = array('06','07','08');
 
         // Fecha de inicio para simular el seeder. (año, mes, dia, hora, min, seg,local)
         $inicioSeed = Carbon::create(2018, 7, 2, 13, 0, 0, 'America/Mexico_City');
@@ -85,7 +86,7 @@ class SolicitudSeeder extends Seeder
                   $user->procedencia_id = $diario[3];
                   $user->password = bcrypt('111111');
                   $user->remember_token = str_random(10);
-                  $user->is_active = rand(0,1);
+                  $user->is_active = $pesoActiva[rand(0,count($pesoActiva)-1)];
                   $user->save();
                   // Consultamos el ID del nuevo usuario y lo asignamos a la solicitud.
                   $solicitud->user_id = User::where('procedencia_id',$diario[3])->pluck('id')[0];

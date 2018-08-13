@@ -16,6 +16,8 @@ class trazabilidadController extends Controller
     // $html = (request()->cuenta==null)? '': $this->trazaConsulta();
     $data =  (request()->cuenta==null)? '': $this->trazabilidad();
 
+    // dd($data);
+
     return view('consultas.traza',compact('title','data'));
   }
 
