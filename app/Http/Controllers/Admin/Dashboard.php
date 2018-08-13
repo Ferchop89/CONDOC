@@ -14,7 +14,7 @@ use App\Models\Role;
 class Dashboard extends Controller
 {
     public function index(User $user){
-        return view('Admin/Users/HomeAdmin', ['user' => $user]);
+        return view('admin/users/HomeAdmin', ['user' => $user]);
     }
 
     /*Método para listar usuarios*/
@@ -90,7 +90,7 @@ class Dashboard extends Controller
         if( isset($_POST['Ofisi'])) { $user->roles()->attach( $_POST['Ofisi'] ); }
         $user->roles()->attach( '9' ); // por omision, el usuario tiene el rol de invitado
 
-        return redirect()->route('users');  // redireccionamos al listado de usuarios
+        return redirect()->route('admin/usuarios');  // redireccionamos al listado de usuarios
     }
 
     function update(User $user)

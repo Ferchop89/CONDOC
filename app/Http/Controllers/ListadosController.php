@@ -104,7 +104,8 @@ class ListadosController extends Controller
             $composite .= "<th class='num_cta'scope='col'><strong>NO. CTA.</strong></th>";
             $composite .= "<th class='nombre' scope='col'><strong>NOMBRE</strong></th>";
             $composite .= "<th class='fac' scope='col'><strong>ESCUELA O FACULTAD</strong></th>";
-            $composite .= "<th class='fecha' scope='col'><strong>FECHA; HORA</strong></th>";
+            // $composite .= "<th class='fecha' scope='col'><strong>FECHA; HORA</strong></th>";
+            $composite .= "<th class='fecha' scope='col'><strong>FECHA</strong></th>";
             $composite .= "</tr>";
             $composite .= "</thead>";
             $composite .= "<tbody>";
@@ -118,8 +119,9 @@ class ListadosController extends Controller
                 $composite .= "<td class='columna_3'>".strtoupper($data[$x]->procedencia)."</td>";
                 $composite .= "<td class='columna_4'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
                                .explode('-',explode(' ',$data[$x]->created_at)[0])[1].'-'
-                               .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
-                               .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</td>";
+                               .explode('-',explode(' ',$data[$x]->created_at)[0])[0];
+                               // .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
+                               // .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</td>";
                 $composite .= "</tr>";
             }
             $composite .= "</tbody>";

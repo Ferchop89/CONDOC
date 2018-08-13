@@ -53,7 +53,7 @@ class AgunamNoController extends Controller
      // como pasó la validacion, damos de alta un registro en noAgunam
 
      // Buscamos en la lista de expedientes NOagunam el expediente que vamos a dar de alta
-     $expedientes = DB::table('agunamno')
+     $expedientes = DB::table('agunam_no')
                         ->where('solicitudes.cuenta',$cuenta)
                         ->join('cortes','agunam_no.corte_id','=','cortes.id')
                         ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
@@ -84,7 +84,7 @@ class AgunamNoController extends Controller
   public function editar_noagunam(AgunamNo $expediente)
   {
     // Edicion de expedientes no encontrados no en Agunam.
-    $expOK = DB::table('agunamno')
+    $expOK = DB::table('agunam_no')
                        ->where('agunam_no.id','=',$expediente->id)
                        ->join('cortes','agunam_no.corte_id','=','cortes.id')
                        ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')
@@ -154,7 +154,7 @@ class AgunamNoController extends Controller
   public function ver_noagunam(AgunamNo $expediente)
   {
     // Edicion de expedientes no encontrados no en Agunam.
-    $expOK = DB::table('agunamno')
+    $expOK = DB::table('agunam_no')
                        ->where('agunam_no.id','=',$expediente->id)
                        ->join('cortes','agunam_no.corte_id','=','cortes.id')
                        ->join('solicitudes','cortes.solicitud_id','=','solicitudes.id')

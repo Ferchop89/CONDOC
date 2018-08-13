@@ -25,7 +25,7 @@ class SolicitudSeeder extends Seeder
         $user->name = 'Administrador';
         $user->username = 'Administrador';
         $user->email = 'Admon@correo.com';
-        $user->procedencia_id = '1001'; // Departamento de Rev. de Estudios
+        $user->procedencia_id = '9000'; // Departamento de Rev. de Estudios
         $user->password = bcrypt('111111');
         $user->is_active = true;
         $user->remember_token = str_random(10);
@@ -457,7 +457,7 @@ class SolicitudSeeder extends Seeder
           $Acuentas[319] = ['GALLOSA*LOPEZ*TADEUS',(string)'311560961','100','90','128','1521'];
           $Acuentas[320] = ['MARTINEZ*GAYOSSO*ADRIAN',(string)'311561487','100','12','208','1438'];
           $Acuentas[321] = ['DURAN*FERNANDEZ*CARLOS',(string)'311621042','100','6','301','1538'];
-          $Acuentas[322] = ['BUSTAMANTE*NADER*PATRICK ALBERTO',(string)'311650147','100','314','202','55'];
+          // $Acuentas[322] = ['BUSTAMANTE*NADER*PATRICK ALBERTO',(string)'311650147','100','314','202','55'];
           $Acuentas[323] = ['BAÑUELOS*RUIZ*LEONARDO FABIAN',(string)'311656149','100','90','128','1521'];
           $Acuentas[324] = ['VEGA*CASTRO*DIEGO ENRIQUE',(string)'311672123','100','210','411','1180'];
           $Acuentas[325] = ['MANZANILLA*LOPEZ*RAFAEL JESUS',(string)'311723184','100','12','208','1438'];

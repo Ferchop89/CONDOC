@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
           $users = User::all();
           $role = Role::where('nombre','FacEsc')->first();
           foreach ($users as $user) {
-              if ($user->procedencia_id != '1001') {
+              if ($user->procedencia_id != '9000') {
                   $user->roles()->attach($role);
               }
           }

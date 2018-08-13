@@ -42,14 +42,14 @@ Route::put('/creaListas',[
     'uses'=> 'InformesController@creaListas',
     'as'=> 'creaListas',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
     ]);
 
 Route::get('/listas',[
   'uses'=> 'ListadosController@listas',
   'as'=> 'listas',
   'middleware' => 'roles',
-  'roles' => ['Sria']
+  'roles' => ['Sria', 'Admin']
   ]);
 
 Route::get('solicitudes', function(){
@@ -83,21 +83,21 @@ Route::get('fechaCorte',function(){
     'uses'=> 'ListadosController@Pdfs',
     'as'=> 'imprimePDF',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
   /*Impresión de Vales*/
   Route::get('imprimeVale',[
     'uses'=> 'ListadosController@Vales',
     'as'=> 'imprimeVale',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
   /*Impresión de Etiquetas*/
   Route::get('imprimeEtiqueta',[
     'uses'=> 'ListadosController@Etiquetas',
     'as'=> 'imprimeEtiqueta',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
  // Fin de rutas y cortes.
 /*Revisiones de Estudio*/

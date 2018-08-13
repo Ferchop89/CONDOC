@@ -5,11 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Corte;
-use App\Models\Solicitud;
-use App\Models\User;
-use App\Models\Procedencia;
-use App\Models\Agunam;
+use App\Models\{Corte, Solicitud, User, Procedencia, Agunam};
 use Illuminate\Support\Facades\Input;
 
 class InformesController extends Controller

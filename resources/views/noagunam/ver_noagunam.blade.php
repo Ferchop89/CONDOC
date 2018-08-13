@@ -83,7 +83,7 @@
                       <tr>
                         {{-- <td> {{ Form::checkbox('encontrado', null, $expediente->encontrado) }} </td> --}}
                         <td bgcolor="BurlyWood"><strong>{{ ($agunam->Recibido_at!=null)?Carbon\Carbon::parse($agunam->Recibido_at)->format('d-m-Y; h:m'): '----' }}</strong></td>
-                        <td>{{ ($expediente->Encontrado_at!=null)?Carbon\Carbon::parse($expediente->Encontrado_at)->format('d-m-Y'): '----' }}</td>
+                        <td>{{ ($expediente->encontrado_at!=null)?Carbon\Carbon::parse($expediente->Encontrado_at)->format('d-m-Y'): '----' }}</td>
                         <td>{{$expediente->descripcion}}</td>
                       </tr>
                     </tbody>

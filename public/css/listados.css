@@ -21,8 +21,12 @@
     text-align: left;
     padding: 5px 0px;
 }
-.filtro.cell.center {
+.facesc.cell.center{
     vertical-align: top;
+    width: 35%;
+}
+.search.cell.center {
+    width: 12%;
 }
 .listados.cell.center {
     vertical-align: middle;
