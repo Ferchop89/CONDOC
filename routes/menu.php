@@ -125,6 +125,25 @@ Route::post('/rev_est/{num_cta}',[
     'roles' => ['Ofisi', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
+  
+Route::get('/autorizacion_re', [
+  'uses' => 'RevEstudiosController@showSolicitudAut',
+  'as' => 'autorizacion_re',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi', 'FacEsc']
+]);
+Route::post('/autorizacion_re', [
+  'uses' => 'RevEstudiosController@postSolicitudAut',
+  'as' => 'autorizacion_re',
+  'middleware' => 'roles',
+  'roles' => ['Ofisi', 'FacEsc']
+]);
+Route::get('imprimePDF_RE',[
+    'uses'=> 'RevEstudiosController@PdfRevEstudios',
+    'as'=> 'imprimePDF_RE',
+    'middleware' => 'roles',
+    'roles' => ['Ofisi', 'FacEsc']
+  ]);
 
 /*Solicitud de Revisión de Estudios*/
 Route::get('/facesc/solicitud_RE', [

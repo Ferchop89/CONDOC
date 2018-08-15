@@ -4,11 +4,11 @@
 @endsection
 @section('location')
     <div>
-    	<p id="navegacion">
+        <p id="navegacion">
             <a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>
-    		<a href="#"><span> >> </span>
-    		<span> </span> Licenciatura </a> >>
-    		<a href="#"> {{$title}} </a> </p>
+            <a href="#"><span> >> </span>
+            <span> </span> Licenciatura </a> >>
+            <a href="#"> {{$title}} </a> </p>
     </div>
 @endsection
 @section('estilos')
@@ -21,10 +21,14 @@
                 {{-- <div class="panel-heading">@yield('esp')</div> --}}
                 <div class="panel-body">
 
-                	@yield('ruta')
-                		{!! csrf_field() !!}
+                    @yield('ruta')
+                        {!! csrf_field() !!}
                         <label for="num_cta"> N° de cuenta: </label>
-                    	<input id="num_cta" type="text" name="num_cta" value="{{old('num_cta')}}" maxlength="9" />
+                        @if(isset($num_cta))
+                           <input id="num_cta" type="text" name="num_cta" value="{{$num_cta}}" maxlength="9" />
+                        @else
+                            <input id="num_cta" type="text" name="num_cta" maxlength="9" />
+                        @endif
                         @if ($errors->any())
                             <div id="error" class="alert alert-danger">
                                 <ul>
@@ -36,17 +40,13 @@
                         @endif
 
                         <div class="btn-derecha">
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
-                               	Consultar
-                           	</button>
+                            <input type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="consultar">
+                                Consultar
+                            </input>
                         </div>
-    				</form>
-                    {{-- {{dd($errors->all())}} --}}
-                    @if($errors->all()==null)
-                        @include('errors.flash-message')
-                    @endif
+                    </form>
                 </div>
-			</div>
+            </div>
 </div>
 @yield('info-alumno')
 @endsection

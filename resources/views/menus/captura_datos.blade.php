@@ -37,7 +37,7 @@
 			<img src="{{ asset('images/foto.png') }}" class="center">
 		</div>
 		<div class="item2">
-			<p name="num_cta">{{$num_cta}}</p>
+			<p>{{$num_cta}}</p>
 			<p>{{$identidad->nombres}} {{$identidad->apellido1}} {{$identidad->apellido2}}</p>
 			<p>Exp. Posgrado: <span name="exp_pos"></span></p>
 			<p>Exp. Sistema Incorporado: <span name="exp_inc"></span></p>
@@ -147,9 +147,9 @@
 				<div class="col-sm-3">
 					@if($firmas == null || $firmas->direccion_nombre == null)
 						@if(in_array("Direccion", $roles_us))
-							<input type="password" name="jdeptit_firma" style="width: 70%">
+							<input type="password" name="direccion_firma" style="width: 70%">
 						@else
-							<input type="password" name="jdeptit_firma" style="width: 70%" disabled>
+							<input type="password" name="direccion_firma" style="width: 70%" disabled>
 						@endif
 					@else
 						<span class="fa fa-check-square-o"/>
@@ -158,17 +158,13 @@
 			</div>
 		</div>
 		<div class="item4">
-			<p class="espe">Plan de estudios: {{$trayectoria->situaciones[$num_situaciones]->plantel_clave}}</p>
-			@if($trayectoria->situaciones[$num_situaciones]->nivel == "B")
-				<p>Nivel: BACHILLERATO</p>
-			@elseif($trayectoria->situaciones[$num_situaciones]->nivel == "L")
+			@if($lic->nivel == "L")
+				<p class="espe">Plan de estudios: {{$lic->plan_clave}}</p>
 				<p>Nivel: LICENCIATURA</p>
-			@else
-				<p>Nivel: </p>
 			@endif
 
-			<p>Carrera: {{$trayectoria->situaciones[$num_situaciones]->carrera_nombre}}</p>
-			<p>Orientación: {{$trayectoria->situaciones[$num_situaciones]->plan_nombre}}</p>
+			<p>Carrera: {{$lic->carrera_nombre}}</p>
+			<p>Orientación: {{$lic->plan_nombre}}</p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -217,7 +213,11 @@
 					<div id="campo" class="col-sm-6">
 						<select id="nacionalidad" name="nacionalidad">
 							@foreach($nacionalidades as $nacion)
-								<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+								@if($nacion->id_nacionalidad == $identidad->nacionalidad)
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}" selected>{{ $nacion->nacionalidad }}</option>
+								@else
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+								@endif
 							@endforeach
 						</select>
 					</div>
@@ -227,7 +227,7 @@
 						Fecha de nacimiento:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input class="date form-control fecha datepicker_esp" type="text" value="{{$identidad->nacimiento}}" name="fecha_nac" maxlength="10">
+						<input class="date form-control fecha datepicker_esp" type="text" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $identidad->nacimiento))) }}" name="fecha_nac" maxlength="10">
 					</div>
 				</div>
 				<div class="row">
@@ -238,8 +238,12 @@
 						<div id="paises_mexicano">
 							<select name="lugar_nac">
 								@foreach($paises as $pais)
-							    	<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
-							    @endforeach
+								  	@if($pais->pais_cve == $identidad->{'entidad-nacimiento'})
+										<option value="{{ $pais->pais_cve }}" selected>{{ $pais->pais_nombre }}</option>
+									@else
+										<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
+									@endif
+								@endforeach
 							</select>
 						</div>
 						<div id="paises_otro"> 
@@ -249,6 +253,10 @@
 						</div>
 					</div>
 				</div>
+				<hr/>
+				<div class="row" id="detalles">
+					Información proveniente de: <b>{{$sistema}}</b>
+				</div>
 			</div>
 			<div class="nacional">
 				<div class="row">
@@ -257,7 +265,8 @@
 						Documento de identidad:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<span name="documento_identidad">ACTA DE NACIMIENTO</span>
+						<span id="acta">ACTA DE NACIMIENTO</span>
+						<span id="carta">CARTA DE NATURALIZACIÓN</span>
 					</div>
 				</div>
 				<div class="row">
@@ -265,7 +274,11 @@
 						Número de folio:
 					</div>
 					<div id="campo" class="col-sm-6">
-						<input id="folio_doc" type="text" class="form-control" name="folio_doc">
+						@if(isset($identidad->folio_doc))
+							<input id="folio_doc" type="text" class="form-control" name="folio_doc" value="{{ $identidad->folio_doc }}">
+						@else
+							<input id="folio_doc" type="text" class="form-control" name="folio_doc">
+						@endif
 					</div>
 				</div>
 				<div class="row">
@@ -273,9 +286,22 @@
 						Irregularidad:
 					</div>
 					<div id="irregularidad" class="col-sm-9">
-						<select name="irregularidad_doc">
+						<select id="irre_acta" name="irregularidad_doc_act">
 							@foreach($irr_acta as $i_actanac)
-						    	<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+							  	@if(isset($identidad->irre_doc) && $identidad->irre_doc == $i_actanac->cat_subcve)
+									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
+								@else
+									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+								@endif
+						    @endforeach
+						</select>
+						<select id="irre_carta" name="irregularidad_doc_cert">
+							@foreach($irr_migr as $i_actanac)
+							  	@if($identidad->irre_doc == $i_actanac->cat_subcve)
+									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
+								@else
+									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+								@endif
 						    @endforeach
 						</select>
 					</div>
@@ -285,8 +311,13 @@
 				<p>
 					<b>Escuelas de procedencia: </b>
 					<scan id="esc_proc">
-						<a class="btn btn-default" id="agregar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
-						<a class="btn btn-default" id="quitar_esc" role="" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
+						@if($firmas == null || $firmas->actualizacion_nombre == null)
+							<a class="btn btn-default" id="agregar_esc" disabled>Agregar escuela</a>
+							<a class="btn btn-default" id="quitar_esc" disabled>Quitar escuela</a>
+						@else
+							<a class="btn btn-default" id="agregar_esc" href="{{ url('/agregar_esc/'.$num_cta) }}" target="_self">Agregar escuela</a>
+							<a class="btn btn-default" id="quitar_esc" href="{{ url('/quitar_esc/'.$num_cta) }}" target="_self">Quitar escuela</a>
+						@endif
 					</scan>
 				</p>
 				<div id="re_historial">
@@ -294,9 +325,9 @@
 			      	<ul class="nav nav-tabs">
 			      		@foreach($escuelas as $tyt)
 			      			@if($tyt == $trayectoria->situaciones[0])
-			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
+			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{{ $tyt->nivel }}</a></li>
 			        		@else
-			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>">{{ $tyt->nivel }}</a></li>
+			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{{ $tyt->nivel }}</a></li>
 			        		@endif
 			        	@endforeach
 			      	</ul>
@@ -351,24 +382,46 @@
 						      			Folio de certificado:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="folio_cert" type="text" class="form-control" name="folio_cert[]">
+						      			@if(isset($tyt->folio_cert))
+						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]" value="{{ $tyt->folio_cert }}">
+						      			@else
+						      				<input id="folio_cert" type="text" class="form-control" name="folio_cert[]">
+						      			@endif
 						      		</div>
 						      	</div>
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			<select id="seleccion_periodo" name="seleccion_fecha[]">
-						      				<option id="periodo" name="periodo" selected>Periodo de expedición</option>
-						      			    <option id="mes_anio" name="mes_anio">Fecha de expedición</option>
+						      				@if(isset($tyt->seleccion_fecha) && $tyt->seleccion_fecha == 0)
+						      					<option id="periodo" name="periodo" value="0" selected>Periodo de expedición</option>
+						      			    	<option id="mes_anio" name="mes_anio" value="1">Fecha de expedición</option>
+						      			    @else
+						      			    	<option id="periodo" name="periodo" value="0">Periodo de expedición</option>
+						      			    	<option id="mes_anio" name="mes_anio" value="1" selected>Fecha de expedición</option>
+						      			    @endif
 						      			</select>
 								    </div>
 								    <div id="campo" class="col-sm-6">
 								    	<div id="periodo_show">
-								    		De <input name="inicio_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+								    		De 
+								    		@if(isset($tyt->inicio_periodo))
+								    			<input name="inicio_periodo[]" type="text" class="yearpicker" value="{{$tyt->inicio_periodo}}" style="width: 41%"/>
+						      				@else
+						      					<input name="inicio_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+						      				@endif
 								    		 a 
-								    		<input name="fin_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+								    		@if(isset($tyt->fin_periodo))
+								    			<input name="fin_periodo[]" type="text" class="yearpicker" value="{{$tyt->fin_periodo}}" style="width: 41%"/>
+						      				@else
+						      					<input name="fin_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
+						      				@endif
 								    	</div>
 								    	<div id="mes_anio_show"> 
-								    		<input class="date form-control fecha" type="text" name="mes_anio[]" maxlength="10">
+								    		@if(isset($tyt->mes_anio))
+								    			<input class="date form-control fecha" type="text" name="mes_anio[]" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $tyt->mes_anio))) }}" maxlength="10">
+								    		@else
+								    			<input class="date form-control fecha" type="text" name="mes_anio[]" maxlength="10">
+								    		@endif
 								    	</div>
 						      		</div>
 						      	</div>
@@ -377,7 +430,11 @@
 						      			Promedio:
 						      		</div>
 						      		<div id="campo" class="col-sm-6">
-						      			<input id="promedio" type="text" class="form-control" name="promedio[]" value="" maxlength="5" >
+						      			@if(isset($tyt->promedio))
+						      				<input id="promedio" type="text" class="form-control" name="promedio[]" value="{{$tyt->promedio}}" maxlength="5" >
+						      			@else
+						      				<input id="promedio" type="text" class="form-control" name="promedio[]" maxlength="5" >
+						      			@endif
 						      		</div>
 						      	</div>
 						      	<div class="row">
@@ -387,10 +444,18 @@
 						      		<div id="irregularidad" class="col-sm-9">
 						      			<select name="irregularidad_esc[]">
 						      				@foreach($irr_cert as $i_certificado)
-						      				   	<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
+						      				  	@if(isset($tyt->irre_cert) && $tyt->irre_cert == $i_certificado->cat_subcve)
+						      						<option value="{{ $i_certificado->cat_subcve }}" selected>{{ $i_certificado->cat_nombre }}</option>
+						      					@else
+						      						<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
+						      					@endif
 						      				@endforeach
 						      			</select>
 						      		</div>
+						      	</div>
+						      	<hr/>
+						      	<div class="row" id="detalles">
+						      		Información proveniente de: <b>{{$tyt->sistema_escuela}}</b>
 						      	</div>
 						    </div>
 					    @endforeach
@@ -423,6 +488,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="{{asset('js/yearpicker.js')}}"></script>
+
+    {{-- Para mostrar irregularidades dada la nacionalidad del alumno --}}
+    <script>
+    	$(function() {
+    	  $("#nacionalidad").change(function() {
+    	    if ($("#1").is(":selected") || $("#3").is(":selected")) {
+    	      $("#acta").show();
+    	      $("#irre_acta").show();
+    	      $("#carta").hide();
+    	      $("#irre_carta").hide();
+    	    } else {
+    	      $("#acta").hide();
+    	      $("#irre_acta").hide();
+    	      $("#carta").show();
+    	      $("#irre_carta").show();
+    	    }
+    	  }).trigger('change');
+    	});
+    </script>
 
     {{-- Para mostrar el campo correspondiente para mes-año según corresponda |||| Corregir --}}
     {{-- <script src="{{asset('js/aniomes.js')}}"></script> --}}
