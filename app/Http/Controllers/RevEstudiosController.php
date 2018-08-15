@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
 use Illuminate\Support\Facades\DB;
@@ -1224,6 +1224,7 @@ class RevEstudiosController extends Controller
       return view('/menus/re_dictamenes', ['title' => $title]);
     }
 
+    //Valida número de cuenta y muestra datos necesarios para notificación a Dictámenes
     public function postSolicitudDictamenes(Request $request){
       $request->validate([
           'num_cta' => 'required|numeric|digits:9'
@@ -1234,19 +1235,42 @@ class RevEstudiosController extends Controller
       ]);
 
       $num_cta = $request->num_cta;
-      $title = "Captura a Dictámenes";
-      $condoc_personal = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
-      $condoc_tyt = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
-      $condoc_lic = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
-      $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
-      $paises = DB::connection('mysql2')->select('select * from paises');
-      $niveles = DB::connection('mysql2')->select('select * from niveles');
-      $tramites = DB::connection('mysql2')->select('select * from tramites');
-      $oficinas = DB::connection('mysql2')->select('select * from oficinas');
 
-      return view('/menus/re_dictamenes', ['title' => $title])
-                  ->with(compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 
-                                 'nacionalidades', 'paises', 'niveles', 'tramites' , 'oficinas'));
+      if($_POST['submit'] == 'consultar') { //Si se consulta, muestra la información necesaria
+
+        $title = "Captura a Dictámenes";
+        $condoc_personal = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+        $condoc_tyt = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
+        $condoc_lic = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+        $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
+        $paises = DB::connection('mysql2')->select('select * from paises');
+        $niveles = DB::connection('mysql2')->select('select * from niveles');
+        $tramites = DB::connection('mysql2')->select('select * from tramites');
+        $oficinas = DB::connection('mysql2')->select('select * from oficinas');
+        $total = (string)count($condoc_tyt);
+
+        return view('/menus/re_dictamenes', compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 'nacionalidades', 'paises', 'niveles', 'tramites' , 'oficinas', 'title', 'total'));
+     
+     }
+
+     if ($_POST['submit'] == 'guardar') { //Si se guarda, hace la inserción en la bd
+
+        $tramite = $_POST['tramite'];
+        $f_depre = $_POST['f_depre'];
+        $oficina = $_POST['oficina'];
+        $f_dictamen = $_POST['f_dictamen'];
+
+        $sql = Dictamenes::insertGetId(
+            ['id_tramite' => $tramite,
+             'fecha_solicitud' => $f_depre,
+             'id_oficina' => $oficina,
+             'fecha_dictamen' => $f_dictamen,
+             'num_cta' => $num_cta
+           ]);
+
+        return redirect()->route('home');
+      }
+    
     }
 
     //Prueba

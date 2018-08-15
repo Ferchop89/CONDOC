@@ -312,6 +312,15 @@ a.disabled {
   color: white;
 }
 
+.info-error{
+  background: #1c3d6c;
+  margin: auto;
+  width: 40%;
+  color: white;
+  text-align: center;
+  padding: 1%;
+}
+
 .tramite-dictamen{
   background: #DCDCDC;
   margin: auto;

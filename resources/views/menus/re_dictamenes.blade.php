@@ -6,26 +6,29 @@
 @endsection
 @section('estilos')
 <link href="{{ asset('css/rev_estudios.css') }}" rel="stylesheet">
-<link rel="stylesheet" href="dist/css/slider-pro.min.css"/>
 @endsection
 @section('info-alumno')
 
 	@if(isset($num_cta))
+	@if($condoc_personal != NULL)
 	<table style="width: 100%">
 		<tr>
-		<td><a href="#" class="f_izq"><img class="f_izquierda" src="{{ asset('images/flecha_izquierda.png') }}" /></a></td>
+		<td><a onclick="f_izq()"><img class="f_izquierda" src="{{ asset('images/flecha_izquierda.png') }}" /></a></td>
 		<td>
-			<div class="slider-pro" id="carrusel">
+			<div>
 			@foreach($condoc_tyt as $key=>$value)
-			<div class="info-dictamen sp-slides" id="product_".{{$key}}>
-			<div class="sp-slide">
+			@if($key == 0)
+				<div id="{{$key}}" class="info-dictamen">
+			@else
+				<div id="{{$key}}" class="info-dictamen" style="display:none;">
+			@endif
 			<table style="width: 100%">
 				<tr>
 					<td>Número de cuenta: </td>
 					<td><b>{{$condoc_personal[0]->num_cta}}</b></td>
 					<td></td>
 					<td class="der"><a class="btn btn-danger" href="{{ route('home') }}" role="button">Salir</a>
-					<button type="submit" class="btn btn-primary waves-effect waves-light" onclick="showDiv()">
+					<button class="btn btn-primary waves-effect waves-light" onclick="showDiv()">
 			  			Seleccionar
 					</button></td>
 				</tr>
@@ -83,12 +86,11 @@
 					<td>Sistema: <b>Algo2</b></td>
 				</tr>
 			</table>
-			</div>
 		</div>
 		@endforeach
 		</div>
 		</td>
-		<td><a href="#" class="f_der"><img class="f_derecha" src="{{ asset('images/flecha_derecha.png') }}" /></a></td>
+		<td><a onclick="f_der()"><img class="f_derecha" src="{{ asset('images/flecha_derecha.png') }}" /></a></td>
 		</tr>
 		<tr>
 		<td></td>
@@ -104,73 +106,66 @@
 				</tr>
 				<tr>
 					<td>
-						<select>
+						<select name="tramite">
 							@foreach($tramites as $t)
 								<option value="{{ $t->id_tramite }}">{{$t->nombre_tramite}}</option>
 							@endforeach
 						</select>
 					</td>
-					<td><p><input id="f_depre" name="f_depre"><input type="button" onclick="showDate()"/></p></td>
+					<td><p><input id="f_depre" name="f_depre" value=""><input type="button" onclick="showDate('f_depre')"/></p></td>
 					<td></td>
 					<td>
-						<select>
+						<select name="oficina">
 							@foreach($oficinas as $ofi)
 								<option value="{{ $ofi->id_oficina }}">{{$ofi->nombre_oficina}}</option>
 							@endforeach
 						</select>
 					</td>
-					<td><p><input id="f_dictamen" name="f_dictamen"><input type="button" onclick="showDate()"/></p></td>
-					<td><button type="submit" class="btn btn-primary waves-effect waves-light" onclick="showDiv()">
-			  			Guardar
-					</button></td>
+					<td><p><input id="f_dictamen" name="f_dictamen" value=""><input type="button" onclick="showDate('f_dictamen')"/></p></td>
+					<td><input type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="guardar">
+					    	Guardar
+					</input></td>
 					<td></td>
 				</tr>
 			</table>
 		</div></td>
 		</tr>
 		</table>
-		<br><br><br> 
+		<br><br><br>
+	@else
+		<div class="info-error"><b>No es posible realizar el proceso.</b></div>
+		<br><br><br>
+	@endif
 	@endif
 @endsection
 
 @section('animaciones')
 	
-	{{-- Para el carrusel --}}
-	<script src="libs/js/jquery-1.11.0.min.js"></script>
-	<script src="dist/js/jquery.sliderPro.min.js"></script>
-	<script type="text/javascript">
-		jQuery( document ).ready(function( $ ) {
-			$( '#carrusel' ).sliderPro();
-		});
+	{{-- Para el flecha derecha --}}
+	<script>
+		function f_der(){
+			//var n = $condoc_tyt;
+			var num = <?php echo json_encode($title); ?>;
+			if($('#0').css('display') == 'none'){
+		  		alert(":D");// Acción si el elemento no es visible
+		  	}else{
+		  		alert("Total: "+num);// Acción si el elemento es visible
+		  	}
+			/*var actual = 0; //Hacemos el actual el visible
+		  	if($('#'.actual).css('display') == 'none'){
+		  		// Acción si el elemento no es visible
+		  	}else{
+		  		//alert("Total: ");// Acción si el elemento es visible
+		  		document.getElementById(actual).style.display = "none";//Ocultamos el actual
+		  		document.getElementById(actual+1).style.display = "block";//Hacemos visible el siguiente (actual+1)mod(long)
+		  		//actual = actual+1;//Hacemos actual al nuevo visible
+		  	}*/
+		}
 	</script>
 	
 	{{-- Para capturar datos --}}
-	<script>
-		function showDiv() {
-		   document.getElementById('tramite-dictamen').style.display = "block";
-		}
-	</script>
+	<script src="{{asset('js/mostrar.js')}}"></script>
 
 	{{-- Para obtener la fecha actual --}}
-	<script>
-		function showDate() {
-			var hoy = new Date();
-			var dd = today.getDate();
-			var mm = today.getMonth()+1;
-			var yyyy = today.getFullYear();
-
-			if(dd<10) {
-			    dd = '0'+dd
-			} 
-			if(mm<10) {
-			    mm = '0'+mm
-			} 
-
-			hoy = mm + '/' + dd + '/' + yyyy;
-			document.getElementById('f_depre').value = hoy;
-			document.getElementById('f_depre').setAttribute('value', hoy);
-			document.getElementById('f_dictamen').value = hoy;
-			document.getElementById('f_dictamen').setAttribute('value', hoy);
-		}
-	</script>
+	<script src="{{asset('js/fecha_dictamenes.js')}}"></script>
 @endsection

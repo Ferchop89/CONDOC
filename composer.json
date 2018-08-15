@@ -8,7 +8,6 @@
         "php": ">=7.0.0",
         "asistenteweb/nusoap": "dev-master",
         "barryvdh/laravel-dompdf": "^0.8.2",
-        "edofre/laravel-slider-pro": "v1.0.4",
         "fideloper/proxy": "~3.3",
         "fx3costa/laravelchartjs": "^2.5",
         "laravel/framework": "5.5.*",
