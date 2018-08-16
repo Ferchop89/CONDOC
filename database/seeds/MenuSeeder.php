@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Seeder;
 use App\Models\Menu;
 
@@ -129,6 +128,22 @@ class MenuSeeder extends Seeder
                'parent' => $m1->id,
                'ruta' => 'recepcion',
                'order' => 2,
+               'is_structure' => 0
+           ]);
+           $m300 = factory(Menu::class)->create([
+               'name' => 'Dictámenes',
+               'slug' => 'opcion-1.4',
+               'ruta' => '',
+               'parent' => $m1->id,
+               'order' => 1,
+               'is_structure' => 1
+           ]);
+           factory(Menu::class)->create([
+               'name' => 'Captura a Dictámenes',
+               'slug' => 'opcion-1.4.1',
+               'ruta' => 're_dictamenes',
+               'parent' => $m300->id,
+               'order' => 0,
                'is_structure' => 0
            ]);
            // factory(Menu::class)->create([

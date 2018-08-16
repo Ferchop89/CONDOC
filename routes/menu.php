@@ -105,24 +105,24 @@ Route::get('/datos-personales',[
     'uses'=> 'RevEstudiosController@showSolicitudNC',
     'as'=> 'datos-personales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'Sria']
+    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria'] //Jefe depto. títulos y dirección
 ]);
 Route::post('/datos-personales',[
     'uses'=> 'RevEstudiosController@postDatosPersonales',
     'as'=> 'datos-personales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'Sria']
+    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
 ]);
 Route::get('/rev_est/{num_cta}',[
     'uses'=> 'RevEstudiosController@showDatosPersonales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'Sria']
+    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est');
 Route::post('/rev_est/{num_cta}',[
     'uses'=> 'RevEstudiosController@verificaDatosPersonales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'Sria']
+    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
   
@@ -143,6 +143,18 @@ Route::get('imprimePDF_RE',[
     'as'=> 'imprimePDF_RE',
     'middleware' => 'roles',
     'roles' => ['Ofisi', 'FacEsc']
+  ]);
+Route::get('/re_dictamenes', [
+    'uses'=> 'RevEstudiosController@showSolicitudDictamenes',
+    'as'=> 're_dictamenes',
+    'middleware' => 'roles',
+    'roles' => ['Ofisi']
+  ]);
+Route::post('/re_dictamenes', [
+    'uses'=> 'RevEstudiosController@postSolicitudDictamenes',
+    'as'=> 're_dictamenes',
+    'middleware' => 'roles',
+    'roles' => ['Ofisi']
   ]);
 
 /*Solicitud de Revisión de Estudios*/
@@ -166,6 +178,7 @@ Route::post('/facesc/solicitud_RE/{num_cta}/solicita', 'SolicitudController@crea
 Route::get('/facesc/solicitud_RE/cancelacion/{solicitud}', 'SolicitudController@cancelSolicitud')
                 // ->where('num_cta','[0-9]+')
                 ->name('cancela_RE');
+
 /*Recepción de Expedientes por Alumno*/
 Route::get('recepcion', [
   'uses' => 'UserController@showrecepcionExpedientes',
@@ -179,6 +192,7 @@ Route::post('/recepcion-expedientes', [
     'middleware' => 'roles',
     'roles' => ['Sria']
 ]);
+
 // Gestion de Listas AGUNAM -- INICIO
 Route::get('AGUNAM',[
   'uses'=> 'ListadosController@gestionAgunam',
