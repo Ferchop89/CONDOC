@@ -20,7 +20,6 @@
             <div class="panel panel-default">
                 {{-- <div class="panel-heading">@yield('esp')</div> --}}
                 <div class="panel-body">
-
                 	@yield('ruta')
                 		{!! csrf_field() !!}
                         <label for="num_cta"> N° de cuenta: </label>
@@ -41,12 +40,19 @@
                            	</button>
                         </div>
     				</form>
+
                     {{-- {{dd($errors->all())}} --}}
-                    @if($errors->all()==null)
+                    {{-- @if($errors->all()==null)
                         @include('errors.flash-message')
-                    @endif
+                    @endif --}}
                 </div>
 			</div>
 </div>
-@yield('info-alumno')
+    @yield('errores')
+<div class="capsule informacion-alumno">
+    @yield('identidadAlumno')
+</div>
+<div class="solicitudes">
+    @yield('info-alumno')
+</div>
 @endsection
