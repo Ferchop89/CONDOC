@@ -40,9 +40,9 @@
                         @endif
 
                         <div class="btn-derecha">
-                            <input type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="consultar">
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="consultar">
                                 Consultar
-                            </input>
+                            </button>
                         </div>
                     </form>
                 </div>

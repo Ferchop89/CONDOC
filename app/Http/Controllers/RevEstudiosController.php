@@ -1247,9 +1247,10 @@ class RevEstudiosController extends Controller
         $niveles = DB::connection('mysql2')->select('select * from niveles');
         $tramites = DB::connection('mysql2')->select('select * from tramites');
         $oficinas = DB::connection('mysql2')->select('select * from oficinas');
-        $total = (string)count($condoc_tyt);
 
-        return view('/menus/re_dictamenes', compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 'nacionalidades', 'paises', 'niveles', 'tramites' , 'oficinas', 'title', 'total'));
+        return view('/menus/re_dictamenes')
+          ->with(compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 'nacionalidades',
+                         'paises', 'niveles', 'tramites' , 'oficinas', 'title'));
      
      }
 

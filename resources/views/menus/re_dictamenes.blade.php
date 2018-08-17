@@ -13,14 +13,14 @@
 	@if($condoc_personal != NULL)
 	<table style="width: 100%">
 		<tr>
-		<td><a onclick="f_izq()"><img class="f_izquierda" src="{{ asset('images/flecha_izquierda.png') }}" /></a></td>
+		<td><a id="f_izq" onclick="f_izq()"><img class="f_izquierda" src="{{ asset('images/flecha_izquierda.png') }}" /></a></td>
 		<td>
 			<div>
 			@foreach($condoc_tyt as $key=>$value)
 			@if($key == 0)
-				<div id="{{$key}}" class="info-dictamen">
+				<div id="{{$key}}" value="{{$key}}" class="info-dictamen">
 			@else
-				<div id="{{$key}}" class="info-dictamen" style="display:none;">
+				<div id="{{$key}}" value="{{$key}}" class="info-dictamen" style="display:none;">
 			@endif
 			<table style="width: 100%">
 				<tr>
@@ -28,7 +28,7 @@
 					<td><b>{{$condoc_personal[0]->num_cta}}</b></td>
 					<td></td>
 					<td class="der"><a class="btn btn-danger" href="{{ route('home') }}" role="button">Salir</a>
-					<button class="btn btn-primary waves-effect waves-light" onclick="showDiv()">
+					<button class="btn btn-primary waves-effect waves-light" onclick="showDiv()" id="seleccionar" value={{count($condoc_tyt)}}>
 			  			Seleccionar
 					</button></td>
 				</tr>
@@ -90,7 +90,7 @@
 		@endforeach
 		</div>
 		</td>
-		<td><a onclick="f_der()"><img class="f_derecha" src="{{ asset('images/flecha_derecha.png') }}" /></a></td>
+		<td><a id="f_der" onclick="f_der()"><img class="f_derecha" src="{{ asset('images/flecha_derecha.png') }}" /></a></td>
 		</tr>
 		<tr>
 		<td></td>
@@ -122,9 +122,9 @@
 						</select>
 					</td>
 					<td><p><input id="f_dictamen" name="f_dictamen" value=""><input type="button" onclick="showDate('f_dictamen')"/></p></td>
-					<td><input type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="guardar">
+					<td><button type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="guardar">
 					    	Guardar
-					</input></td>
+					</button></td>
 					<td></td>
 				</tr>
 			</table>
@@ -141,30 +141,8 @@
 
 @section('animaciones')
 	
-	{{-- Para el flecha derecha --}}
-	<script>
-		//var num = <?php echo json_encode($condoc_tyt); ?>;
-		function f_der(){
-			//var n = $condoc_tyt;
-			var num = <?php echo json_encode($title); ?>;
-			if($('#0').css('display') == 'none'){
-		  		alert("Prueba");// Acción si el elemento no es visible
-		  	}else{
-		  		alert("Total: "+num);// Acción si el elemento es visible
-		  	}
-			/*var actual = 0; //Hacemos el actual el visible
-			num.forEach(function(escuela){
-				if($('#'.actual).css('display') == 'none'){
-					// Acción si el elemento no es visible
-				}else{
-					//alert("Total: ");// Acción si el elemento es visible
-					document.getElementById(actual).style.display = "none";//Ocultamos el actual
-					document.getElementById(actual+1).style.display = "block";//Hacemos visible el siguiente (actual+1)mod(long)
-					//actual = actual+1;//Hacemos actual al nuevo visible
-				}
-			});*/
-		}
-	</script>
+	{{-- Para carrusel --}}
+	<script src="{{asset('js/flechas.js')}}"></script>
 	
 	{{-- Para capturar datos --}}
 	<script src="{{asset('js/mostrar.js')}}"></script>
