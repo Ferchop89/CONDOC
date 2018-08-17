@@ -22,7 +22,7 @@
 			@else
 				<div id="{{$key}}" value="{{$key}}" class="info-dictamen" style="display:none;">
 			@endif
-			<table style="width: 100%">
+			{{-- <table style="width: 100%">
 				<tr>
 					<td>Número de cuenta: </td>
 					<td><b>{{$condoc_personal[0]->num_cta}}</b></td>
@@ -34,7 +34,7 @@
 				</tr>
 				<tr>
 					<td>Nombre: </td>
-					<td><b>{{$condoc_personal[0]->primer_apellido}} * {{$condoc_personal[0]->segundo_apellido}} * 
+					<td><b>{{$condoc_personal[0]->primer_apellido}} * {{$condoc_personal[0]->segundo_apellido}} *
 						{{$condoc_personal[0]->nombre_alumno}}</b></td>
 					<td>Sexo: <b>{{$condoc_personal[0]->sexo}}</b></td>
 					<td>Fecha Nac: <b>{{date('d/m/Y', strtotime(str_replace('/', '-', $condoc_personal[0]->fecha_nacimiento)))}}</b></td>
@@ -58,7 +58,7 @@
 					@else
 						<td>Fecha de Ingreso: <b>{{date('d/m/Y', strtotime(str_replace('/', '-', $condoc_tyt[$key]->mes_anio)))}}</b></td>
 					@endif
-					<td>Tipo Ingreso: </td> 
+					<td>Tipo Ingreso: </td>
 					<td><b>{{$condoc_tyt[$key]->tipo_ingreso}}</b></td>
 				</tr>
 				<tr>
@@ -85,7 +85,7 @@
 					@endforeach
 					<td>Sistema: <b>Algo2</b></td>
 				</tr>
-			</table>
+			</table> --}}
 		</div>
 		@endforeach
 		</div>

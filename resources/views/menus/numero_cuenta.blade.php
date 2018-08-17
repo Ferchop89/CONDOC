@@ -48,5 +48,11 @@
                 </div>
             </div>
 </div>
-@yield('info-alumno')
+    @yield('errores')
+<div class="capsule informacion-alumno">
+    @yield('identidadAlumno')
+</div>
+<div class="solicitudes">
+    @yield('info-alumno')
+</div>
 @endsection
