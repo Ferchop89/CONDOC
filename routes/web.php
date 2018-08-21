@@ -78,3 +78,4 @@ Route::get('/prueba/{num_cta}', 'RevEstudiosController@prueba')
   ->name('prueba');
 
 Route::get('prueba/menu', 'PruebasController@prueba');
+Route::get('prueba/seederCtas', 'PruebasController@seederCtas');

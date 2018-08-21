@@ -184,13 +184,20 @@ Route::get('recepcion', [
   'uses' => 'UserController@showrecepcionExpedientes',
   'as' => 'recepcion',
   'middleware' => 'roles',
-  'roles' => ['Sria']
+  'roles' => ['Sria', 'Admin']
 ]);
 Route::post('/recepcion-expedientes', [
     'uses' => 'UserController@post_numcta_Validate',
     'as' => 'postRecepcion',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
+]);
+
+Route::post('/recepcion-expedientes/guardar', [
+    'uses' => 'UserController@saveRecepcion',
+    'as' => 'saveRecepcion',
+    'middleware' => 'roles',
+    'roles' => ['Sria', 'Admin']
 ]);
 
 // Gestion de Listas AGUNAM -- INICIO

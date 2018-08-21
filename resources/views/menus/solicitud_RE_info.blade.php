@@ -20,17 +20,17 @@
                 <div class="info-personal">
                     <img src="{{ asset('images/sin_imagen.png') }}" alt="">
                     <div class="info-personal-header">
-                            <div class="fila">
-                                <label for="">Nombre: </label> {!! $identidad->nombres."*".$identidad->apellido1."*".$identidad->apellido2 !!}
-                            </div>
-                            <div class="fila">
-                                <label for="">Nº de Cuenta: </label> {!! $identidad->cuenta !!}
-                            </div>
-                            <div class="fila">
-                                <label for="">CURP: </label>@if($identidad->curp) {!! $identidad->curp !!} @endif
-                            </div>
+                        <div class="fila">
+                            <label for="">Nombre: </label> {!! $identidad->nombres."*".$identidad->apellido1."*".$identidad->apellido2 !!}
+                        </div>
+                        <div class="fila">
+                            <label for="">Nº de Cuenta: </label> {!! $identidad->cuenta !!}
+                        </div>
+                        <div class="fila">
+                            <label for="">CURP: </label>@if($identidad->curp) {!! $identidad->curp !!} @endif
                         </div>
                     </div>
+                </div>
                     @if ($trayectoria!=null)
                         {{-- <div class="info-platel">
                             <div class="fila">

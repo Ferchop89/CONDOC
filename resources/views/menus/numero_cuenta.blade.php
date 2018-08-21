@@ -49,4 +49,8 @@
         </div>
     @yield('info-alumno')
 </form>
+    @yield('errores')
+<div class="capsule informacion-alumno">
+    @yield('identidadAlumno')
+</div>
 @endsection

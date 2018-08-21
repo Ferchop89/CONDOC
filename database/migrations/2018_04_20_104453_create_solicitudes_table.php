@@ -17,6 +17,11 @@ class CreateSolicitudesTable extends Migration
             $table->increments('id');
             $table->text('cuenta');
             $table->text('nombre');
+            $table->string('CURP', 20)->nullable();
+            $table->date('fecha_nac');
+            $table->string('genero', 20);
+            $table->string('nivel', 1);
+            $table->string('generacion', 5);
             $table->unsignedDecimal('avance',8,2);
             $table->unsignedInteger('plantel_id');
             $table->unsignedInteger('carrera_id');
@@ -27,6 +32,8 @@ class CreateSolicitudesTable extends Migration
             $table->boolean('cancelada')->default(false);
             $table->unsignedInteger('cancelada_id')->nullable();
             $table->unsignedInteger('user_id');
+            $table->string('sistema', 20);
+
             $table->timestamps();
             // Llaves foraneas
             $table->index(['pasoACorte']);
