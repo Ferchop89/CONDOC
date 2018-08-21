@@ -2,7 +2,7 @@
 @section('esp', $title)
 
 @section('ruta')
-<form class="form-group solicitud" method="POST" action="{{ url( '/re_dictamenes') }}">
+<form class="form-group" method="POST" action="{{ url( '/re_dictamenes') }}">
 @endsection
 @section('estilos')
 <link href="{{ asset('css/rev_estudios.css') }}" rel="stylesheet">
@@ -13,14 +13,14 @@
 	@if($condoc_personal != NULL)
 	<table style="width: 100%">
 		<tr>
-		<td><a onclick="f_izq()"><img class="f_izquierda" src="{{ asset('images/flecha_izquierda.png') }}" /></a></td>
+		<td><a id="f_izq" onclick="f_izq()"><img class="f_izquierda" src="{{ asset('images/flecha_izquierda.png') }}" /></a></td>
 		<td>
 			<div>
 			@foreach($condoc_tyt as $key=>$value)
 			@if($key == 0)
-				<div id="{{$key}}" class="info-dictamen">
+				<div id="{{$key}}" value="{{$key}}" class="info-dictamen">
 			@else
-				<div id="{{$key}}" class="info-dictamen" style="display:none;">
+				<div id="{{$key}}" value="{{$key}}" class="info-dictamen" style="display:none;">
 			@endif
 			<table style="width: 100%">
 				<tr>
@@ -28,7 +28,7 @@
 					<td><b>{{$condoc_personal[0]->num_cta}}</b></td>
 					<td></td>
 					<td class="der"><a class="btn btn-danger" href="{{ route('home') }}" role="button">Salir</a>
-					<button class="btn btn-primary waves-effect waves-light" onclick="showDiv()">
+					<button type="button" class="btn btn-primary waves-effect waves-light" onclick="showDiv()" id="seleccionar" value="{{count($condoc_tyt)}}">
 			  			Seleccionar
 					</button></td>
 				</tr>
@@ -90,7 +90,7 @@
 		@endforeach
 		</div>
 		</td>
-		<td><a onclick="f_der()"><img class="f_derecha" src="{{ asset('images/flecha_derecha.png') }}" /></a></td>
+		<td><a id="f_der" onclick="f_der()"><img class="f_derecha" src="{{ asset('images/flecha_derecha.png') }}" /></a></td>
 		</tr>
 		<tr>
 		<td></td>
@@ -108,27 +108,46 @@
 					<td>
 						<select name="tramite">
 							@foreach($tramites as $t)
-								<option value="{{ $t->id_tramite }}">{{$t->nombre_tramite}}</option>
+								@if(isset($dictamenes[0]->id_tramite) && ($dictamenes[0]->id_tramite == $t->id_tramite))
+									<option value="{{ $t->id_tramite }}" selected>{{$t->nombre_tramite}}</option>
+								@else
+									<option value="{{ $t->id_tramite }}">{{$t->nombre_tramite}}</option>
+								@endif
 							@endforeach
 						</select>
 					</td>
-					<td><p><input id="f_depre" name="f_depre" value=""><input type="button" onclick="showDate('f_depre')"/></p></td>
+					<td><p>
+						@if(isset($dictamenes[0]->fecha_solicitud))
+							<input id="f_depre" name="f_depre" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $dictamenes[0]->fecha_solicitud))) }}" maxlength="10" readonly="true"><input type="button" disabled/>
+						@else
+							<input id="f_depre" name="f_depre" value="" maxlength="10"><input type="button" onclick="showDate('f_depre')"/>
+						@endif
+					</p></td>
 					<td></td>
 					<td>
 						<select name="oficina">
 							@foreach($oficinas as $ofi)
-								<option value="{{ $ofi->id_oficina }}">{{$ofi->nombre_oficina}}</option>
+								@if(isset($dictamenes[0]->id_tramite) && ($dictamenes[0]->id_tramite == $t->id_tramite))
+									<option value="{{ $ofi->id_oficina }}" selected>{{$ofi->nombre_oficina}}</option>
+								@else
+									<option value="{{ $ofi->id_oficina }}">{{$ofi->nombre_oficina}}</option>
+								@endif
 							@endforeach
 						</select>
 					</td>
-					<td><p><input id="f_dictamen" name="f_dictamen" value=""><input type="button" onclick="showDate('f_dictamen')"/></p></td>
-					<td><input type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="guardar">
-					    	Guardar
-					</input></td>
+					<td><p>
+						@if(isset($dictamenes[0]->fecha_dictamen))
+							<input id="f_dictamen" name="f_dictamen" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $dictamenes[0]->fecha_dictamen))) }}" maxlength="10" readonly="true"><input type="button" disabled/>
+						@else
+							<input id="f_dictamen" name="f_dictamen" value=""><input type="button" onclick="showDate('f_dictamen')"/>
+						@endif
+					</p></td>
+					<td><input type="submit" class="btn btn-primary waves-effect waves-light" name="guardar" value="Guardar"/></td>
 					<td></td>
 				</tr>
 			</table>
-		</div></td>
+			</div>
+		</td>
 		</tr>
 		</table>
 		<br><br><br>
@@ -140,28 +159,8 @@
 @endsection
 
 @section('animaciones')
-	
-	{{-- Para el flecha derecha --}}
-	<script>
-		function f_der(){
-			//var n = $condoc_tyt;
-			var num = <?php echo json_encode($title); ?>;
-			if($('#0').css('display') == 'none'){
-		  		alert(":D");// Acción si el elemento no es visible
-		  	}else{
-		  		alert("Total: "+num);// Acción si el elemento es visible
-		  	}
-			/*var actual = 0; //Hacemos el actual el visible
-		  	if($('#'.actual).css('display') == 'none'){
-		  		// Acción si el elemento no es visible
-		  	}else{
-		  		//alert("Total: ");// Acción si el elemento es visible
-		  		document.getElementById(actual).style.display = "none";//Ocultamos el actual
-		  		document.getElementById(actual+1).style.display = "block";//Hacemos visible el siguiente (actual+1)mod(long)
-		  		//actual = actual+1;//Hacemos actual al nuevo visible
-		  	}*/
-		}
-	</script>
+	{{-- Para carrusel --}}
+	<script src="{{asset('js/flechas.js')}}"></script>
 	
 	{{-- Para capturar datos --}}
 	<script src="{{asset('js/mostrar.js')}}"></script>

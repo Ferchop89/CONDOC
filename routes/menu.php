@@ -14,7 +14,7 @@ Route::get('/m8',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm8',
   'middleware' => 'roles',
-  'roles' => ['FacEsc', 'Ofisi']
+  'roles' => ['FacEsc', 'Ofisi', 'Sria']
   ]);
 Route::get('/m9',[
   'uses'=> 'RutasController@Menu1',
@@ -42,16 +42,17 @@ Route::put('/creaListas',[
     'uses'=> 'InformesController@creaListas',
     'as'=> 'creaListas',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
     ]);
 
 Route::get('/listas',[
   'uses'=> 'ListadosController@listas',
   'as'=> 'listas',
   'middleware' => 'roles',
-  'roles' => ['Sria']
+  'roles' => ['Sria', 'Admin']
   ]);
-  Route::get('solicitudes', function(){
+
+Route::get('solicitudes', function(){
     $data = DB::table('solicitudes')
              ->select(db::raw('DATE_FORMAT(created_at, "%d.%m.%Y") as listado_corte'),
                DB::raw('count(*) as total'))
@@ -63,7 +64,7 @@ Route::get('/listas',[
     return $data;
   });
 
-  Route::get('grupoListas', function(){
+Route::get('grupoListas', function(){
     $data = DB::table('cortes')
              ->select('listado_corte as corte',
                       DB::raw('count(*) as cuenta'),
@@ -73,7 +74,7 @@ Route::get('/listas',[
     return $data;
   });
 
-  Route::get('fechaCorte',function(){
+Route::get('fechaCorte',function(){
      $fCorte = Corte::all()->last()->listado_corte;
      return $fCorte;
   });
@@ -82,21 +83,21 @@ Route::get('/listas',[
     'uses'=> 'ListadosController@Pdfs',
     'as'=> 'imprimePDF',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
   /*Impresión de Vales*/
   Route::get('imprimeVale',[
     'uses'=> 'ListadosController@Vales',
     'as'=> 'imprimeVale',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
   /*Impresión de Etiquetas*/
   Route::get('imprimeEtiqueta',[
     'uses'=> 'ListadosController@Etiquetas',
     'as'=> 'imprimeEtiqueta',
     'middleware' => 'roles',
-    'roles' => ['Sria']
+    'roles' => ['Sria', 'Admin']
   ]);
  // Fin de rutas y cortes.
 /*Revisiones de Estudio*/
@@ -124,7 +125,7 @@ Route::post('/rev_est/{num_cta}',[
     'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
-
+  
 Route::get('/autorizacion_re', [
   'uses' => 'RevEstudiosController@showSolicitudAut',
   'as' => 'autorizacion_re',
@@ -157,11 +158,26 @@ Route::post('/re_dictamenes', [
   ]);
 
 /*Solicitud de Revisión de Estudios*/
-    Route::get('/FacEsc/solicitud_RE', 'RevEstudiosController@showSolicitudRE');
-    Route::post('/FacEsc/solicitud_RE', 'RevEstudiosController@postSolicitudRE');
-    Route::get('/FacEsc/solicitud_RE/{num_cta}', 'RevEstudiosController@showInfoSolicitudRE')
+Route::get('/facesc/solicitud_RE', [
+  'uses' => 'SolicitudController@showSolicitudRE',
+  'as' => 'FacEsc/solicitud_RE',
+  'middleware' => 'roles',
+  'roles' => ['FacEsc','Admin']
+]);
+
+Route::post('/facesc/solicitud_RE', 'SolicitudController@postSolicitudRE');
+
+Route::get('/facesc/solicitud_RE/{num_cta}', 'SolicitudController@showInfoSolicitudRE')
         ->where('num_cta','[0-9]+')
         ->name('solicitud_RE');
+
+Route::post('/facesc/solicitud_RE/{num_cta}/solicita', 'SolicitudController@createSolicitud')
+        ->where('num_cta','[0-9]+')
+        ->name('solicita_RE');
+
+Route::get('/facesc/solicitud_RE/cancelacion/{solicitud}', 'SolicitudController@cancelSolicitud')
+                // ->where('num_cta','[0-9]+')
+                ->name('cancela_RE');
 
 /*Recepción de Expedientes por Alumno*/
 Route::get('recepcion', [
@@ -248,3 +264,18 @@ Route::get('graficas' ,[
     'roles' => ['Admin']
 ]);
 /*Fin de Tablero de Control*/
+
+/*Ruta de trazabilidad una o varias solicitudes*/
+Route::get('traza' ,[
+    'uses'=> 'TrazabilidadController@traza',
+    'as' => 'traza',
+    'roles' => ['Admin','Sria']
+]);
+
+/*Ruta de trazabilidad detalle por solicitud*/
+Route::get('trazabilidad/{cuenta}/{carrera}/{plan}' ,[
+    'uses'=> 'TrazabilidadController@TrazaConsulta',
+    'as' => 'trazabilidad',
+    'roles' => ['Admin','Sria']
+]);
+/*Fin uta trazabilidad*/

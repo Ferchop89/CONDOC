@@ -25,11 +25,13 @@ class CreateSolicitudesTable extends Migration
             $table->boolean('citatorio')->defaul(false);
             $table->boolean('pasoACorte')->default(false);
             $table->boolean('cancelada')->default(false);
+            $table->unsignedInteger('cancelada_id')->nullable();
             $table->unsignedInteger('user_id');
             $table->timestamps();
             // Llaves foraneas
             $table->index(['pasoACorte']);
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('cancelada_id')->references('id')->on('cancelacion_solicitud');
         });
     }
 

@@ -41,7 +41,7 @@
                 <input type='text' name="lista" value="{{old('lista')}}" id='lista'  maxlength="2" size="2">
 				<button type="submit" class="btn btn-primary">Generar Listados</button>
             </div>
-            <div class="filtro cell center">
+            <div class="facesc cell center">
                 <label for="facultad">Escuelas/Facultades</label>
                 {!! $esc_Html !!}
             </div>
@@ -52,7 +52,7 @@
         </div>
 		<div class="form-group">
           <div>
-            <label for="pruebas">Regeneracion de registros para pruebas.</label>
+            <label for="pruebas">Regeneración de registros para pruebas.</label>
             <input type="checkbox" name="pruebas">
           </div>
         </div>

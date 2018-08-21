@@ -1670,3 +1670,21 @@ button {
     padding: 2% 0% 1% 0%;
     margin-bottom: 1%;
 }
+.info-personal-header {
+    display: inline-block;
+    vertical-align: bottom;
+    padding: 0cm 2cm;
+}
+.info-trayectorias {
+    margin: 2% 0 2% 0;
+}
+.info-trayectorias td{
+    text-align: center;
+}
+.info-trayectorias .btn.btn-default{
+    margin: auto;
+}
+.capsule.solicitud_re .contenido {
+    width: 90%;
+    margin: auto;
+}

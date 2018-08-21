@@ -49,18 +49,21 @@
               @foreach ($data as $key => $value)
                <td class="tab_num"><strong>{{$key}}</strong></td>
               @endforeach
+            <td class="row_table">Total</td>
           </tr>
           <tr>
             <td class="row_table">Solicitud</td>
               @foreach ($data as $key => $value)
                <td class="tab_num">{{$value[0]}}</td>
               @endforeach
+              <td>{{$totales[0]}}</td>
           </tr>
           <tr>
             <td class="row_table">Citatorios</td>
               @foreach ($data as $key => $value)
                <td class="tab_num">{{$value[1]}}</td>
               @endforeach
+              <td>{{$totales[1]}}</td>
           </tr>
         </table>
 

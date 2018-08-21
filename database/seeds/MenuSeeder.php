@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Database\Seeder;
 use App\Models\Menu;
+
 class MenuSeeder extends Seeder
 {
     /**
@@ -39,6 +40,15 @@ class MenuSeeder extends Seeder
                'is_structure' => 1
            ]);
            $m4 = factory(Menu::class)->create([
+               'name' => 'Facultades/Escuelas',
+               'slug' => 'opcion5',
+               // 'ruta' => 'o4',
+               'ruta' => '#',
+               'parent' => 0,
+               'order' => 4,
+               'is_structure' => 1
+           ]);
+           $m5 = factory(Menu::class)->create([
                'name' => 'Tablero de Control',
                'slug' => 'opcion4',
                // 'ruta' => 'o4',
@@ -179,16 +189,24 @@ class MenuSeeder extends Seeder
            factory(Menu::class)->create([
                'name' => 'Solicitudes de Revisión de Estudio',
                'slug' => 'opcion-4.1',
-               'ruta' => 'graficas',
+               'ruta' => 'facesc/solicitud_RE',
                'parent' => $m4->id,
                'order' => 0,
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
+               'name' => 'Solicitudes de Revisión de Estudio',
+               'slug' => 'opcion-5.1',
+               'ruta' => 'graficas',
+               'parent' => $m5->id,
+               'order' => 0,
+               'is_structure' => 0
+           ]);
+           factory(Menu::class)->create([
                'name' => 'm8',
-               'slug' => 'opcion-4.2',
+               'slug' => 'opcion-5.2',
                'ruta' => 'm8',
-               'parent' => $m4->id,
+               'parent' => $m5->id,
                'order' => 1,
                'is_structure' => 0
            ]);

@@ -1,8 +1,6 @@
 <?php
 use Illuminate\Database\Seeder;
-use App\Models\Solicitud;
-use App\Models\User;
-use App\Models\Procedencia;
+use App\Models\{Solicitud, User, Procedencia, CancelacionSolicitud};
 use Carbon\Carbon;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Faker\Factory as Faker;
@@ -23,7 +21,7 @@ class SolicitudSeeder extends Seeder
         $user->name = 'Administrador';
         $user->username = 'Administrador';
         $user->email = 'Admon@correo.com';
-        $user->procedencia_id = '1001'; // Departamento de Rev. de Estudios
+        $user->procedencia_id = '9000'; // Departamento de Rev. de Estudios
         $user->password = bcrypt('111111');
         $user->is_active = true;
         $user->remember_token = str_random(10);
@@ -32,7 +30,9 @@ class SolicitudSeeder extends Seeder
         $cuentas = $this->cuentas();
         // peso de los registros para la bandera cancelar
         $pesoCancelada = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1];
-        $generacionX = array('08','09','10');
+        $pesoActiva = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0];
+        $generacionX = array('06','07','08');
+        
         // Fecha de inicio para simular el seeder. (año, mes, dia, hora, min, seg,local)
         $inicioSeed = Carbon::create(2018, 7, 2, 13, 0, 0, 'America/Mexico_City');
         // Fechas de inicio del seed hasta el dia de ahora.
@@ -78,7 +78,7 @@ class SolicitudSeeder extends Seeder
                   $user->procedencia_id = $diario[3];
                   $user->password = bcrypt('111111');
                   $user->remember_token = str_random(10);
-                  $user->is_active = rand(0,1);
+                  $user->is_active = $pesoActiva[rand(0,count($pesoActiva)-1)];
                   $user->save();
                   // Consultamos el ID del nuevo usuario y lo asignamos a la solicitud.
                   $solicitud->user_id = User::where('procedencia_id',$diario[3])->pluck('id')[0];
@@ -89,7 +89,16 @@ class SolicitudSeeder extends Seeder
               $solicitud->tipo = (in_array(substr($diario[1],1,2),$generacionX))? 0: 1;
               $solicitud->citatorio = (in_array(substr($diario[1],1,2),$generacionX))? 1: 0;
               $solicitud->pasoACorte = false;
-              $solicitud->cancelada = $pesoCancelada[rand(0,count($pesoCancelada)-1)]; // 4 a 1 cumple vs citatorio
+
+              $cancelada = $pesoCancelada[rand(0,count($pesoCancelada)-1)];
+              if ($cancelada) {
+                  $table = new CancelacionSolicitud();
+                  $table->causa_id = rand(1,2);
+                  $table->user_id = $solicitud->user_id;
+                  $table->save();
+                  $solicitud->cancelada_id = CancelacionSolicitud::all()->last()->id;
+              }
+
               $solicitud->created_at = $laburo;
               $solicitud->updated_at = $laburo;
               $solicitud->save();
@@ -101,7 +110,7 @@ class SolicitudSeeder extends Seeder
     }
     public function particion($list,$p)
     {
-      // Nos divide un arreglo en un numero de partes particiones
+      // Nos divide las solicitudes $list en $p partes para darlas de alta, una parte por cada dia habil.
       // Se utiliza para devidir las solicitudes en los dias trancurridos desde el inicio del seeder hasta hoy sin fines de semana
       $listlen = count( $list ); $partlen = floor( $listlen / $p );
       $partrem = $listlen % $p;
@@ -438,7 +447,7 @@ class SolicitudSeeder extends Seeder
           $Acuentas[319] = ['GALLOSA*LOPEZ*TADEUS',(string)'311560961','100','90','128','1521'];
           $Acuentas[320] = ['MARTINEZ*GAYOSSO*ADRIAN',(string)'311561487','100','12','208','1438'];
           $Acuentas[321] = ['DURAN*FERNANDEZ*CARLOS',(string)'311621042','100','6','301','1538'];
-          $Acuentas[322] = ['BUSTAMANTE*NADER*PATRICK ALBERTO',(string)'311650147','100','314','202','55'];
+          // $Acuentas[322] = ['BUSTAMANTE*NADER*PATRICK ALBERTO',(string)'311650147','100','314','202','55'];
           $Acuentas[323] = ['BAÑUELOS*RUIZ*LEONARDO FABIAN',(string)'311656149','100','90','128','1521'];
           $Acuentas[324] = ['VEGA*CASTRO*DIEGO ENRIQUE',(string)'311672123','100','210','411','1180'];
           $Acuentas[325] = ['MANZANILLA*LOPEZ*RAFAEL JESUS',(string)'311723184','100','12','208','1438'];

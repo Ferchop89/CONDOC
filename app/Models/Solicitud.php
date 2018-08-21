@@ -19,7 +19,7 @@ class Solicitud extends Model
       return $this->hasManyThrough(
         'App\Models\Procedencia',   // modelo final
         'App\Models\User',          // modelo intermedio
-        'id',
+        'procedencia_id',
         'id'
       );
     }

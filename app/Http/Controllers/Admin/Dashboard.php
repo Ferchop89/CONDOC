@@ -90,7 +90,7 @@ class Dashboard extends Controller
         if( isset($_POST['Ofisi'])) { $user->roles()->attach( $_POST['Ofisi'] ); }
         $user->roles()->attach( '9' ); // por omision, el usuario tiene el rol de invitado
 
-        return redirect()->route('users');  // redireccionamos al listado de usuarios
+        return redirect()->route('admin/usuarios');  // redireccionamos al listado de usuarios
     }
 
     function update(User $user)
@@ -156,6 +156,6 @@ class Dashboard extends Controller
         $user->roles()->detach();
 
         $user->delete();
-        return redirect()->route('users'); // equivalente a la ruta 'usuarios'
+        return redirect()->route('admin/usuarios'); // equivalente a la ruta 'usuarios'
     }
 }

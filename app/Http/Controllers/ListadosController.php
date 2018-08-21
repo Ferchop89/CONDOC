@@ -106,7 +106,8 @@ class ListadosController extends Controller
             $composite .= "<th class='num_cta'scope='col'><strong>NO. CTA.</strong></th>";
             $composite .= "<th class='nombre' scope='col'><strong>NOMBRE</strong></th>";
             $composite .= "<th class='fac' scope='col'><strong>ESCUELA O FACULTAD</strong></th>";
-            $composite .= "<th class='fecha' scope='col'><strong>FECHA; HORA</strong></th>";
+            // $composite .= "<th class='fecha' scope='col'><strong>FECHA; HORA</strong></th>";
+            $composite .= "<th class='fecha' scope='col'><strong>FECHA</strong></th>";
             $composite .= "</tr>";
             $composite .= "</thead>";
             $composite .= "<tbody>";
@@ -120,8 +121,9 @@ class ListadosController extends Controller
                 $composite .= "<td class='columna_3'>".strtoupper($data[$x]->procedencia)."</td>";
                 $composite .= "<td class='columna_4'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2].'-'
                                .explode('-',explode(' ',$data[$x]->created_at)[0])[1].'-'
-                               .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
-                               .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</td>";
+                               .explode('-',explode(' ',$data[$x]->created_at)[0])[0];
+                               // .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
+                               // .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</td>";
                 $composite .= "</tr>";
             }
             $composite .= "</tbody>";
@@ -139,7 +141,13 @@ class ListadosController extends Controller
 
     public function listaValesHTML($data,$corte,$lista,$limitesPDF)
     {
-        // numero de hojas
+        $day = substr($corte, 0, 2);
+        $month = substr($corte, 3, 2);
+        $year = substr($corte, 6, 4);
+        $fecha = Carbon::create($year, $month, $day);
+        $day = $fecha->formatLocalized('%d');
+        $month = $fecha->formatLocalized('%B');
+        $year = $fecha->formatLocalized('%Y');
         $composite = "";
         $paginas = count($limitesPDF);
         for ($i=0; $i < $paginas ; $i++)
@@ -165,11 +173,11 @@ class ListadosController extends Controller
                 $composite .= "<p class='test elem_$y'>Impresión de prueba</p>";
                 $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
                 $composite .= "<p class='nombre elem_".($y)."'>".strtoupper($data[$x]->nombre)."</p>";
-                $composite .= "<p class='oficina elem_$y'>Oficina: REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
+                $composite .= "<p class='oficina elem_$y'>REV DE ESTUDIOS PROFESIONALES Y POSGRADO</p>";
                 $composite .= "<div class='fecha elem_$y'>";
-                $composite .= "<p class='dia elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[2]."</p>";
-                $composite .= "<p class='mes elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[1]."</p>";
-                $composite .= "<p class='dia elem_$y'>".explode('-',explode(' ',$data[$x]->created_at)[0])[0]."</p>";
+                $composite .= "<p class='dia elem_$y'>".$day."</p>";
+                $composite .= "<p class='mes elem_$y'>".$month."</p>";
+                $composite .= "<p class='dia elem_$y'>".$year."</p>";
                 $composite .= "</div>";
                 $composite .= "</div>";
                 // var_dump($y%3);
@@ -177,18 +185,13 @@ class ListadosController extends Controller
                     $composite .= "<div class='linea'>";
                     $composite .= "</div>";
                 }
-                // elseif ($y%3==0 && $x == $limitesPDF[$i][1]-1 ) {
-                //     $composite .= "<div class='linea'>";
-                //     $composite .= "</div>";
-                // }
-
-                    $y++;
-                    if($y==9)
-                    {
-                        $composite .= "</div>";
-                        $y=0;
-                    }
+                $y++;
+                if($y==9)
+                {
+                    $composite .= "</div>";
+                    $y=0;
                 }
+            }
 
         $composite .= "</main>";
         $composite .= "<footer>";

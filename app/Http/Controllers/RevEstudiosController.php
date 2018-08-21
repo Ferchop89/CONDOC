@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use \Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
 use Illuminate\Support\Facades\DB;
 use App\Models\{Web_Service, IrregularidadesRE, Paises,
                 Niveles, User, Trayectoria, Nacionalidades,
-                Registro_RE, Alumno, Esc_Proc};
+                Registro_RE, Alumno, Esc_Proc, Dictamenes};
 use Illuminate\Support\Facades\Auth;
 use Hash;
 use Session;
@@ -1236,37 +1236,76 @@ class RevEstudiosController extends Controller
 
       $num_cta = $request->num_cta;
 
-      if($_POST['submit'] == 'consultar') { //Si se consulta, muestra la información necesaria
+      if(isset($_POST['consultar'])) { //Si se consulta, muestra la información necesaria
 
         $title = "Captura a Dictámenes";
         $condoc_personal = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
         $condoc_tyt = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
         $condoc_lic = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+        $dictamenes = DB::connection('mysql2')->select('select * from dictamenes WHERE num_cta = '.$num_cta);
         $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
         $paises = DB::connection('mysql2')->select('select * from paises');
         $niveles = DB::connection('mysql2')->select('select * from niveles');
         $tramites = DB::connection('mysql2')->select('select * from tramites');
         $oficinas = DB::connection('mysql2')->select('select * from oficinas');
-        $total = (string)count($condoc_tyt);
 
-        return view('/menus/re_dictamenes', compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 'nacionalidades', 'paises', 'niveles', 'tramites' , 'oficinas', 'title', 'total'));
+        return view('/menus/re_dictamenes')
+          ->with(compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 'nacionalidades',
+                         'paises', 'niveles', 'tramites' , 'oficinas', 'title', 'dictamenes'));
      
-     }
+      }
 
-     if ($_POST['submit'] == 'guardar') { //Si se guarda, hace la inserción en la bd
+      elseif(isset($_POST['guardar'])) { //Si se guarda, hace la inserción en la bd
 
-        $tramite = $_POST['tramite'];
+        $id_tramite = $_POST['tramite'];
         $f_depre = $_POST['f_depre'];
         $oficina = $_POST['oficina'];
         $f_dictamen = $_POST['f_dictamen'];
 
-        $sql = Dictamenes::insertGetId(
-            ['id_tramite' => $tramite,
-             'fecha_solicitud' => $f_depre,
-             'id_oficina' => $oficina,
-             'fecha_dictamen' => $f_dictamen,
+        $condoc = DB::connection('mysql2')->select('select * from dictamenes WHERE num_cta = '.$num_cta);
+
+        if($condoc != NULL){ //Si ya existe un registro asociado al número de cuenta, actualizamos
+
+          if((int)$id_tramite != $condoc[0]->id_tramite){
+            DB::connection('mysql2')->table('dictamenes')
+              ->where('num_cta', $num_cta)
+              ->update(['id_tramite' => (int)$id_tramite]);
+          }
+          if($f_depre =! date('d/m/Y', strtotime($condoc[0]->fecha_solicitud))){
+            DB::connection('mysql2')->table('dictamenes')
+              ->where('num_cta', $num_cta)
+              ->update(['fecha_solicitud' => date('Y-m-d', strtotime(str_replace('/', '-', $f_depre)))]);
+          }
+          if((int)$oficina != $condoc[0]->id_oficina){
+            DB::connection('mysql2')->table('dictamenes')
+              ->where('num_cta', $num_cta)
+              ->update(['id_oficina' => (int)$oficina]);
+          }
+          if($f_dictamen =! date('d/m/Y', strtotime($condoc[0]->fecha_dictamen))){
+            DB::connection('mysql2')->table('dictamenes')
+              ->where('num_cta', $num_cta)
+              ->update(['fecha_dictamen' => date('Y-m-d', strtotime(str_replace('/', '-', $f_dictamen)))]);
+          }
+
+        }
+        else{ //En caso contrario, se hace la inserción
+
+          if($f_depre != NULL){
+            $fecha_depre = date('Y-m-d', strtotime(str_replace('/', '-', $f_depre)));
+          }else{ $fecha_depre = NULL; }
+          if($f_dictamen != NULL){
+            $fecha_dic = date('Y-m-d', strtotime(str_replace('/', '-', $f_dictamen)));
+          }else{ $fecha_dic = NULL; }
+
+          $sql = Dictamenes::insertGetId(
+            ['id_tramite' => (int)$id_tramite,
+             'fecha_solicitud' => $fecha_depre,
+             'id_oficina' => (int)$oficina,
+             'fecha_dictamen' => $fecha_dic,
              'num_cta' => $num_cta
            ]);
+
+        } 
 
         return redirect()->route('home');
       }

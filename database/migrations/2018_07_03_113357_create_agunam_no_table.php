@@ -14,7 +14,7 @@ class CreateAgunamNoTable extends Migration
      */
     public function up()
     {
-        Schema::create('agunamNo', function (Blueprint $table) {
+        Schema::create('agunam_no', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('corte_id');
             $table->text('descripcion')->nullable();
@@ -30,6 +30,6 @@ class CreateAgunamNoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('agunamNo');
+        Schema::dropIfExists('agunam_no');
     }
 }
