@@ -2,7 +2,7 @@
 @section('esp', $title)
 
 @section('ruta')
-<form class="form-group solicitud" method="POST" action="{{ url( '/re_dictamenes') }}">
+<form class="form-group" method="POST" action="{{ url( '/re_dictamenes') }}">
 @endsection
 @section('estilos')
 <link href="{{ asset('css/rev_estudios.css') }}" rel="stylesheet">
@@ -22,19 +22,19 @@
 			@else
 				<div id="{{$key}}" value="{{$key}}" class="info-dictamen" style="display:none;">
 			@endif
-			{{-- <table style="width: 100%">
+			<table style="width: 100%">
 				<tr>
 					<td>Número de cuenta: </td>
 					<td><b>{{$condoc_personal[0]->num_cta}}</b></td>
 					<td></td>
 					<td class="der"><a class="btn btn-danger" href="{{ route('home') }}" role="button">Salir</a>
-					<button class="btn btn-primary waves-effect waves-light" onclick="showDiv()" id="seleccionar" value={{count($condoc_tyt)}}>
+					<button type="button" class="btn btn-primary waves-effect waves-light" onclick="showDiv()" id="seleccionar" value="{{count($condoc_tyt)}}">
 			  			Seleccionar
 					</button></td>
 				</tr>
 				<tr>
 					<td>Nombre: </td>
-					<td><b>{{$condoc_personal[0]->primer_apellido}} * {{$condoc_personal[0]->segundo_apellido}} *
+					<td><b>{{$condoc_personal[0]->primer_apellido}} * {{$condoc_personal[0]->segundo_apellido}} * 
 						{{$condoc_personal[0]->nombre_alumno}}</b></td>
 					<td>Sexo: <b>{{$condoc_personal[0]->sexo}}</b></td>
 					<td>Fecha Nac: <b>{{date('d/m/Y', strtotime(str_replace('/', '-', $condoc_personal[0]->fecha_nacimiento)))}}</b></td>
@@ -58,7 +58,7 @@
 					@else
 						<td>Fecha de Ingreso: <b>{{date('d/m/Y', strtotime(str_replace('/', '-', $condoc_tyt[$key]->mes_anio)))}}</b></td>
 					@endif
-					<td>Tipo Ingreso: </td>
+					<td>Tipo Ingreso: </td> 
 					<td><b>{{$condoc_tyt[$key]->tipo_ingreso}}</b></td>
 				</tr>
 				<tr>
@@ -85,7 +85,7 @@
 					@endforeach
 					<td>Sistema: <b>Algo2</b></td>
 				</tr>
-			</table> --}}
+			</table>
 		</div>
 		@endforeach
 		</div>
@@ -108,27 +108,46 @@
 					<td>
 						<select name="tramite">
 							@foreach($tramites as $t)
-								<option value="{{ $t->id_tramite }}">{{$t->nombre_tramite}}</option>
+								@if(isset($dictamenes[0]->id_tramite) && ($dictamenes[0]->id_tramite == $t->id_tramite))
+									<option value="{{ $t->id_tramite }}" selected>{{$t->nombre_tramite}}</option>
+								@else
+									<option value="{{ $t->id_tramite }}">{{$t->nombre_tramite}}</option>
+								@endif
 							@endforeach
 						</select>
 					</td>
-					<td><p><input id="f_depre" name="f_depre" value=""><input type="button" onclick="showDate('f_depre')"/></p></td>
+					<td><p>
+						@if(isset($dictamenes[0]->fecha_solicitud))
+							<input id="f_depre" name="f_depre" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $dictamenes[0]->fecha_solicitud))) }}" maxlength="10" readonly="true"><input type="button" disabled/>
+						@else
+							<input id="f_depre" name="f_depre" value="" maxlength="10"><input type="button" onclick="showDate('f_depre')"/>
+						@endif
+					</p></td>
 					<td></td>
 					<td>
 						<select name="oficina">
 							@foreach($oficinas as $ofi)
-								<option value="{{ $ofi->id_oficina }}">{{$ofi->nombre_oficina}}</option>
+								@if(isset($dictamenes[0]->id_tramite) && ($dictamenes[0]->id_tramite == $t->id_tramite))
+									<option value="{{ $ofi->id_oficina }}" selected>{{$ofi->nombre_oficina}}</option>
+								@else
+									<option value="{{ $ofi->id_oficina }}">{{$ofi->nombre_oficina}}</option>
+								@endif
 							@endforeach
 						</select>
 					</td>
-					<td><p><input id="f_dictamen" name="f_dictamen" value=""><input type="button" onclick="showDate('f_dictamen')"/></p></td>
-					<td><button type="submit" class="btn btn-primary waves-effect waves-light" name="submit" value="guardar">
-					    	Guardar
-					</button></td>
+					<td><p>
+						@if(isset($dictamenes[0]->fecha_dictamen))
+							<input id="f_dictamen" name="f_dictamen" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $dictamenes[0]->fecha_dictamen))) }}" maxlength="10" readonly="true"><input type="button" disabled/>
+						@else
+							<input id="f_dictamen" name="f_dictamen" value=""><input type="button" onclick="showDate('f_dictamen')"/>
+						@endif
+					</p></td>
+					<td><input type="submit" class="btn btn-primary waves-effect waves-light" name="guardar" value="Guardar"/></td>
 					<td></td>
 				</tr>
 			</table>
-		</div></td>
+			</div>
+		</td>
 		</tr>
 		</table>
 		<br><br><br>
@@ -140,7 +159,6 @@
 @endsection
 
 @section('animaciones')
-	
 	{{-- Para carrusel --}}
 	<script src="{{asset('js/flechas.js')}}"></script>
 	
