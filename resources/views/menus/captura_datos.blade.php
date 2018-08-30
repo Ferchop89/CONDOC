@@ -5,7 +5,7 @@
 	<p id="navegacion">
 		<a href="{{ route('home') }}"><i class="fa fa-home" style="font-size:28px"></i></a>  >>
 		{{-- <a href="#"><span class="glyphicon glyphicon-home"> </span> --}}
-		<a href="{{ url('/datos-personales') }}"> Realizar Revisión de Estudios </a> >> 
+		<a href="{{ url('/datos-personales') }}"> Realizar Revisión de Estudios </a> >>
 		<a href="{{ url('/rev_est/'.$num_cta) }}"> {{$title}} </a> </p>
 </div>
 @endsection
@@ -34,7 +34,7 @@
 
 	<div class="grid-container">
 		<div class="item1">
-			<img src="{{ asset('images/foto.png') }}" class="center">
+			<img src="data:image/jpge;base64,{{base64_encode( $foto->foto_foto )}}" class="center"/>
 		</div>
 		<div class="item2">
 			<p>{{$num_cta}}</p>
@@ -100,7 +100,7 @@
 						<p><i>En espera...</i></p>
 					@else
 						<p><i>{{ $firmas->jdepre_nombre }} | {{ date('d-m-Y', strtotime($firmas->jdepre_fecha)) }}</i></p>
-					@endif 
+					@endif
 				</div>
 				<div class="col-sm-3">
 					@if($firmas == null || $firmas->jdepre_nombre == null)
@@ -121,7 +121,7 @@
 						<p><i>En espera...</i></p>
 					@else
 						<p><i>{{ $firmas->jdeptit_nombre }} | {{ date('d-m-Y', strtotime($firmas->jdeptit_fecha)) }}</i></p>
-					@endif 
+					@endif
 				</div>
 				<div class="col-sm-3">
 					@if($firmas == null || $firmas->jdeptit_nombre == null)
@@ -238,15 +238,15 @@
 						<div id="paises_mexicano">
 							<select name="lugar_nac">
 								@foreach($paises as $pais)
-								  	@if($pais->pais_cve == $identidad->{'entidad-nacimiento'})
-										<option value="{{ $pais->pais_cve }}" selected>{{ $pais->pais_nombre }}</option>
+								  	@if((int)$pais->pais_cve == $identidad->{'entidad-nacimiento'})
+										<option value="{{ (int)$pais->pais_cve }}" selected>{{ $pais->pais_nombre }}</option>
 									@else
-										<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
+										<option value="{{ (int)$pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
 									@endif
 								@endforeach
 							</select>
 						</div>
-						<div id="paises_otro"> 
+						<div id="paises_otro">
 							<select name="lugar_nac" disabled>
 							    <option> </option>
 							</select>
@@ -372,7 +372,7 @@
 						      		<div id="campo" class="col-sm-6">
 						      			<select name="entidad_esc[]">
 						      			    @foreach($paises as $pais)
-						    					<option value="{{ $pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
+						    					<option value="{{ (int)$pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
 						    				@endforeach
 						      			</select>
 						      		</div>
@@ -403,20 +403,20 @@
 								    </div>
 								    <div id="campo" class="col-sm-6">
 								    	<div id="periodo_show">
-								    		De 
+								    		De
 								    		@if(isset($tyt->inicio_periodo))
 								    			<input name="inicio_periodo[]" type="text" class="yearpicker" value="{{$tyt->inicio_periodo}}" style="width: 41%"/>
 						      				@else
 						      					<input name="inicio_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
 						      				@endif
-								    		 a 
+								    		 a
 								    		@if(isset($tyt->fin_periodo))
 								    			<input name="fin_periodo[]" type="text" class="yearpicker" value="{{$tyt->fin_periodo}}" style="width: 41%"/>
 						      				@else
 						      					<input name="fin_periodo[]" type="text" class="yearpicker" style="width: 41%"/>
 						      				@endif
 								    	</div>
-								    	<div id="mes_anio_show"> 
+								    	<div id="mes_anio_show">
 								    		@if(isset($tyt->mes_anio))
 								    			<input class="date form-control fecha" type="text" name="mes_anio[]" value="{{ date('d/m/Y', strtotime( str_replace('/', '-', $tyt->mes_anio))) }}" maxlength="10">
 								    		@else

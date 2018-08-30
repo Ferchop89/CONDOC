@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alumno extends Model
 {
     //
-	protected $connection = 'condoc_old';
+	protected $connection = 'condoc';
 
     protected $fillable = [
 		'num_cta',

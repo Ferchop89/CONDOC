@@ -5,8 +5,7 @@ use \Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\WSController;
 use Illuminate\Support\Facades\DB;
-use App\Models\{Web_Service, IrregularidadesRE, Paises,
-                Niveles, User, Trayectoria, Nacionalidades,
+use App\Models\{Web_Service, IrregularidadesRE, User, Trayectoria,
                 Registro_RE, Alumno, Esc_Proc, Dictamenes};
 use Illuminate\Support\Facades\Auth;
 use Hash;
@@ -85,11 +84,15 @@ class RevEstudiosController extends Controller
     {
         $title = "Revisión de Estudios";
         //Contenido de catálogos (Irregularidades, países y nacionalidades)
-        $irr_acta = DB::connection('mysql2')->select('select * from irregularidades WHERE cat_cve = 1');
-        $irr_cert = DB::connection('mysql2')->select('select * from irregularidades WHERE cat_cve = 2');
-        $irr_migr = DB::connection('mysql2')->select('select * from irregularidades WHERE cat_cve = 3');
-        $paises = DB::connection('mysql2')->select('select * from paises');
-        $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
+        $ncta = substr($num_cta, 0, 8);
+        $fotos = DB::connection('sybase_fotos')->select("select foto_foto from Fotos WHERE foto_ncta = '$ncta'");
+        $total_fotos = count($fotos);
+        $foto = $fotos[$total_fotos-1];
+        $irr_acta = DB::connection('condoc_eti')->select('select * from irregularidades_res WHERE cat_cve = 1');
+        $irr_cert = DB::connection('condoc_eti')->select('select * from irregularidades_res WHERE cat_cve = 2');
+        $irr_migr = DB::connection('condoc_eti')->select('select * from irregularidades_res WHERE cat_cve = 3');
+        $paises = DB::connection('sybase')->select('select * from Paises');
+        $nacionalidades = DB::connection('condoc_eti')->select('select * from nacionalidades');
 
         //Roles (nombres) que tiene el usuario actual en el sistema
         $rol = Auth::user()->roles()->get();
@@ -99,11 +102,12 @@ class RevEstudiosController extends Controller
         }
 
         //Registro de las firmas en el sistema del alumno
-        $firmas = DB::connection('mysql2')->select('select * from registro__r_es WHERE num_cta = '.$num_cta);
+        $firmas = DB::connection('condoc')->select('select * from registro_re WHERE num_cta = '.$num_cta);
         $datos = [
           'sistema' => NULL,
-          'title' => NULL, 
-          'num_cta'=> $num_cta, 
+          'title' => NULL,
+          'foto' => $foto,
+          'num_cta'=> $num_cta,
           'trayectoria' => NULL,
           'identidad' => NULL,
           'irr_acta' => NULL,
@@ -117,7 +121,7 @@ class RevEstudiosController extends Controller
           'lic' => NULL
         ];
 
-        $condoc = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$datos['num_cta']);
+        $condoc = DB::connection('condoc')->select('select * from alumnos WHERE num_cta = '.$datos['num_cta']);
 
         //Verificamos si el alumno se encuentra en la BD del CONDOC
         if($condoc != NULL){
@@ -125,11 +129,11 @@ class RevEstudiosController extends Controller
           $vista = '/menus/captura_datos';
 
           $situaciones = array();
-          $total_situaciones = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
+          $total_situaciones = DB::connection('condoc')->select('select * from esc_proc WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
 
-          $alumno = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+          $alumno = DB::connection('condoc')->select('select * from alumnos WHERE num_cta = '.$num_cta);
           //Informacion de nivel licenciatura
-          $value_lic = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+          $value_lic = DB::connection('condoc')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
 
           //Datos necesarios para identidad
           $identidad = (object) [
@@ -176,7 +180,7 @@ class RevEstudiosController extends Controller
             'sistema' => $alumno[0]->sistema_personal,
             'title' => $title,
             'num_cta'=> $num_cta,
-            'trayectoria' => $trayectoria, 
+            'trayectoria' => $trayectoria,
             'identidad' => $identidad,
             'irr_acta' => $irr_acta,
             'irr_cert' => $irr_cert,
@@ -193,7 +197,11 @@ class RevEstudiosController extends Controller
           //Registro de las firmas en el sistema del alumno
           $dbcondoc['firmas'] = $firmas[0];
 
-          DB::disconnect('mysql2');
+          $dbcondoc['foto'] = $foto;
+
+          DB::disconnect('condoc');
+          DB::disconnect('condoc_eti');
+          DB::disconnect('sybase');
           $datos = $dbcondoc;
 
         }
@@ -225,7 +233,7 @@ class RevEstudiosController extends Controller
             $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
 
             $siae['trayectoria'] = $trayectoria;
-            
+
             //Escuelas de interés (Finalizadas o en curso que cubran al menos el 70% de créditos)
             $siae['escuelas'] = array();
             foreach ($trayectoria->situaciones as $situacion) {
@@ -238,6 +246,8 @@ class RevEstudiosController extends Controller
 
             //Registro de las firmas en el sistema del alumno
             $siae['firmas'] = $firmas;
+
+            $siae['foto'] = $foto;
 
             //Informacion de nivel licenciatura
             foreach ($trayectoria->situaciones as $value) {
@@ -264,7 +274,9 @@ class RevEstudiosController extends Controller
               }
             }
 
-            DB::disconnect('mysql2');
+            DB::disconnect('condoc');
+            DB::disconnect('condoc_eti');
+            DB::disconnect('sybase');
 
           }
           //Si en SIAE tampoco se encontró, se busca en DGIRE
@@ -359,8 +371,8 @@ class RevEstudiosController extends Controller
                 ];
 
                 //Obtenemos el nombre de la carrera
-                $carrera = DB::connection('mysql2')->select('select car_car_siae from carreras WHERE car_cve_plt_car = '.$info->cveCarrera);
-                $res = DB::connection('mysql2')->select('select carr_siae_nombre from carr_siae WHERE carr_siae_cve = '.$carrera[0]->car_car_siae);
+                $carrera = DB::connection('sybase')->select('select car_car_siae from Carreras WHERE car_cve_plt_car = '.$info->cveCarrera);
+                $res = DB::connection('sybase')->select('select carr_siae_nombre from Carr_siae WHERE carr_siae_cve = '.$carrera[0]->car_car_siae);
 
                 $lic = (object) [
                   'nivel' => "L",
@@ -390,9 +402,13 @@ class RevEstudiosController extends Controller
                 //Registro de las firmas en el sistema del alumno
                 $dgire['firmas'] = $firmas;
 
-                DB::disconnect('mysql2');
+                $dgire['foto'] = $foto;
+
+                DB::disconnect('condoc');
+                DB::disconnect('condoc_eti');
+                DB::disconnect('sybase');
                 $datos = $dgire;
-              
+
               }
               //En caso contrario, se notifica que no procede la Revisión de Estudios
               else{
@@ -439,7 +455,7 @@ class RevEstudiosController extends Controller
       ]);
 
       $num_cta = $request->num_cta;
-      $db = DB::connection('mysql2')->select('select nivel, nombre_plan from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
+      $db = DB::connection('condoc')->select('select nivel, nombre_plan from esc_proc WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
       $db_nivel = array();
       $db_plan = array();
       foreach ($db as $consulta) {
@@ -474,16 +490,16 @@ class RevEstudiosController extends Controller
       $jdeptit_firma = $request->input('jdeptit_firma');
       $direccion_firma = $request->input('direccion_firma');
 
-      $condoc = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+      $condoc = DB::connection('condoc')->select('select * from alumnos WHERE num_cta = '.$num_cta);
 
         //Verificamos si el alumno se encuentra en la BD del CONDOC
         if($condoc != NULL){
 
-          $alumno = DB::connection('mysql2')->table('alumnos')->where('num_cta', $num_cta);
-          $esc_proc = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
-          //$esc = DB::connection('mysql2')->table('esc__procs')->where('num_cta', $num_cta);
-          $trayectoria = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
-          $registro = DB::connection('mysql2')->select('select * from registro__r_es WHERE num_cta = '.$num_cta);
+          $alumno = DB::connection('condoc')->table('alumnos')->where('num_cta', $num_cta);
+          $esc_proc = DB::connection('condoc')->select('select * from esc_proc WHERE num_cta = '.$num_cta.' ORDER BY FIELD(nivel, "S","B", "T", "L")');
+          //$esc = DB::connection('mysql2')->table('esc_proc')->where('num_cta', $num_cta);
+          $trayectoria = DB::connection('condoc')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+          $registro = DB::connection('condoc')->select('select * from registro_re WHERE num_cta = '.$num_cta);
 
           if($curp != $condoc[0]->curp){
             $alumno->update(['curp' => $curp, 'sistema_personal' => "CONDOC"]);
@@ -508,28 +524,28 @@ class RevEstudiosController extends Controller
           }
           foreach ($esc_proc as $key=>$value) {
             if($escuela_proc[$key] != $esc_proc[$key]->nombre_escproc){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
                   ->update(['nombre_escproc' => $escuela_proc[$key], 'sistema_escuela' => "CONDOC"]);
             }
             if($cct[$key] != $esc_proc[$key]->clave){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
                   ->update(['clave' => $cct[$key], 'sistema_escuela' => "CONDOC"]);
             }
             if($folio_cert[$key] != (int)$esc_proc[$key]->folio_cert){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
                   ->update(['folio_cert' => (int)$folio_cert[$key], 'sistema_escuela' => "CONDOC"]);
             }
             if($seleccion_fecha[$key] != (int)$esc_proc[$key]->seleccion_fecha){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
@@ -537,7 +553,7 @@ class RevEstudiosController extends Controller
             }
             //Si se seleccionó el periodo, hacemos null la fecha
             if($seleccion_fecha[$key] == 0){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
@@ -545,21 +561,21 @@ class RevEstudiosController extends Controller
             }
             //En caso contrario, hacemos null periodo
             else{
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
                   ->update(['inicio_periodo' => NULL, 'fin_periodo' => NULL, 'mes_anio' => date('Y-m-d', strtotime(str_replace('/', '-', $mes_anio[$key]))), 'sistema_escuela' => "CONDOC"]);
             }
             if($promedio[$key] != (float)$esc_proc[$key]->promedio){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
                   ->update(['promedio' => (float)$promedio[$key], 'sistema_escuela' => "CONDOC"]);
             }
             if($irregularidad_esc[$key] != $esc_proc[$key]->irre_cert){
-              DB::connection('mysql2')->table('esc__procs')
+              DB::connection('condoc')->table('esc_proc')
                   ->where('num_cta', $num_cta)
                   ->where('nivel', $db_nivel[$key])
                   ->where('nombre_plan', $db_plan[$key])
@@ -577,7 +593,7 @@ class RevEstudiosController extends Controller
 
           //Verificamos si la información proviene del SIAE
           if(isset($identidad) && (isset($identidad->mensaje) && $identidad->mensaje == "El Alumno existe")){
-               
+
             $ws_SIAE = Web_Service::find(1);
             $trayectoria = new WSController();
             $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
@@ -601,7 +617,7 @@ class RevEstudiosController extends Controller
                 array_push($info_sit, $situacion);
               }
             }
-                
+
             $sql = Alumno::insert(
               array('num_cta' => $num_cta,
                     'curp' => $curp,
@@ -668,8 +684,8 @@ class RevEstudiosController extends Controller
             $info = $ws_DGIRE->respuesta->datosAlumnos->datosAlumno;
 
             //Obtenemos el nombre de la carrera
-            $carrera = DB::connection('mysql2')->select('select car_car_siae from carreras WHERE car_cve_plt_car = '.$info->cveCarrera);
-            $res = DB::connection('mysql2')->select('select carr_siae_nombre from carr_siae WHERE carr_siae_cve = '.$carrera[0]->car_car_siae);
+            $carrera = DB::connection('sybase')->select('select car_car_siae from Carreras WHERE car_cve_plt_car = '.$info->cveCarrera);
+            $res = DB::connection('sybase')->select('select carr_siae_nombre from Carr_siae WHERE carr_siae_cve = '.$carrera[0]->car_car_siae);
 
             $sql = Alumno::insert(
               array('num_cta' => $num_cta,
@@ -694,7 +710,7 @@ class RevEstudiosController extends Controller
                     'num_cta'=> $num_cta,
                     'avance_creditos' => NULL,
                     'cumple_requisitos' => 1, //Para este punto ya debe cumplirlo
-                    'id_nivel' => "L", //También debe cumplirlo 
+                    'id_nivel' => "L", //También debe cumplirlo
                     'nombre_carrera' => $res[0]->carr_siae_nombre
             ));
 
@@ -738,7 +754,7 @@ class RevEstudiosController extends Controller
 
         //Firmas
         $hoy = new DateTime();
-        $firmas_db = DB::connection('mysql2')->select('select actualizacion_nombre from registro__r_es WHERE num_cta = '.$num_cta);
+        $firmas_db = DB::connection('condoc')->select('select actualizacion_nombre from registro_re WHERE num_cta = '.$num_cta);
         if($firmas_db == NULL){
           $sql2 = Registro_RE::insertGetId(
                   array('actualizacion_nombre' => Auth::user()->name,
@@ -746,14 +762,14 @@ class RevEstudiosController extends Controller
                         'num_cta' => $num_cta
           ));
         }else{
-          DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['actualizacion_nombre' => Auth::user()->name,
+          DB::connection('condoc')->table('registro_re')->where('num_cta', $num_cta)->update(['actualizacion_nombre' => Auth::user()->name,
                         'actualizacion_fecha' => $hoy->format("Y-m-d")]);
         }
 
         if($jsec_firma != NULL){
           $pass = Hash::check($jsec_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
           if($pass){
-            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jsec_nombre' => Auth::user()->name,
+            DB::connection('condoc')->table('registro_re')->where('num_cta', $num_cta)->update(['jsec_nombre' => Auth::user()->name,
                           'jsec_fecha' => $hoy->format("Y-m-d")]);
           }else{
             dd("Código incorrecto");
@@ -762,7 +778,7 @@ class RevEstudiosController extends Controller
         if($jarea_firma != NULL){
           $pass = Hash::check($jarea_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
           if($pass){
-            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jarea_nombre' => Auth::user()->name,
+            DB::connection('condoc')->table('registro_re')->where('num_cta', $num_cta)->update(['jarea_nombre' => Auth::user()->name,
                           'jarea_fecha' => $hoy->format("Y-m-d")]);
           }else{
             dd("Código incorrecto");
@@ -771,7 +787,7 @@ class RevEstudiosController extends Controller
         if($jdepre_firma != NULL){
           $pass = Hash::check($jdepre_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
           if($pass){
-            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jdepre_nombre' => Auth::user()->name,
+            DB::connection('condoc')->table('registro_re')->where('num_cta', $num_cta)->update(['jdepre_nombre' => Auth::user()->name,
                           'jdepre_fecha' => $hoy->format("Y-m-d")]);
           }else{
             dd("Código incorrecto");
@@ -780,7 +796,7 @@ class RevEstudiosController extends Controller
         if($jdeptit_firma != NULL){
           $pass = Hash::check($jdeptit_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
           if($pass){
-            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['jdeptit_nombre' => Auth::user()->name,
+            DB::connection('condoc')->table('registro_re')->where('num_cta', $num_cta)->update(['jdeptit_nombre' => Auth::user()->name,
                           'jdeptit_fecha' => $hoy->format("Y-m-d")]);
           }else{
             dd("Código incorrecto");
@@ -789,7 +805,7 @@ class RevEstudiosController extends Controller
         if($direccion_firma != NULL){
           $pass = Hash::check($direccion_firma, Auth::user()->password); //Suponemos firma = contraseña por ahora
           if($pass){
-            DB::connection('mysql2')->table('registro__r_es')->where('num_cta', $num_cta)->update(['direccion_nombre' => Auth::user()->name,
+            DB::connection('condoc')->table('registro_re')->where('num_cta', $num_cta)->update(['direccion_nombre' => Auth::user()->name,
                             'direccion_fecha' => $hoy->format("Y-m-d")]);
           }else{
             dd("Código incorrecto");
@@ -797,7 +813,9 @@ class RevEstudiosController extends Controller
         }
 
 
-      DB::disconnect('mysql2');
+      DB::disconnect('condoc');
+      DB::disconnect('sybase');
+      DB::disconnect('condoc_eti');
       return redirect()->route('home');
     }
 
@@ -821,7 +839,7 @@ class RevEstudiosController extends Controller
       $title = "Autorización Revisión de Estudios";
       $num_cta = $request->num_cta;
 
-      $sql = DB::connection('mysql2')->select('select jdepre_fecha from registro__r_es WHERE num_cta = '.$num_cta);
+      $sql = DB::connection('condoc')->select('select jdepre_fecha from registro_re WHERE num_cta = '.$num_cta);
 
       //Si la Revisión de Estudios no está finalizada, mostramos el error
       if($sql == null || $sql[0]->jdepre_fecha == null){
@@ -838,13 +856,13 @@ class RevEstudiosController extends Controller
 
       $num_cta = $_GET['num_cta'];
 
-      $alumno = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
-      $nacionalidad = DB::connection('mysql2')->select('select nacionalidad from nacionalidades WHERE id_nacionalidad = '.$alumno[0]->id_nacionalidad);
-      $carrera = DB::connection('mysql2')->select('select nombre_carrera from trayectorias WHERE num_cta = '.$num_cta);
-      $f = DB::connection('mysql2')->select('select jdepre_fecha from registro__r_es WHERE num_cta = '.$num_cta);
+      $alumno = DB::connection('condoc')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+      $nacionalidad = DB::connection('condoc_eti')->select('select nacionalidad from nacionalidades WHERE id_nacionalidad = '.$alumno[0]->id_nacionalidad);
+      $carrera = DB::connection('condoc')->select('select nombre_carrera from trayectorias WHERE num_cta = '.$num_cta);
+      $f = DB::connection('condoc')->select('select jdepre_fecha from registro_re WHERE num_cta = '.$num_cta);
       setlocale(LC_ALL, "es_ES", 'Spanish_Spain', 'Spanish'); //Para mostrar en español
       $fecha = strftime("%d de %B de %Y", strtotime($f[0]->jdepre_fecha));
-      $facultad = DB::connection('mysql2')->select('select clave from esc__procs WHERE num_cta = '.$num_cta.' AND nivel = "L"');
+      $facultad = DB::connection('condoc')->select('select clave from esc_proc WHERE num_cta = '.$num_cta.' AND nivel = "L"');
       $num_ctag = substr($alumno[0]->num_cta, 0, -8)."-".substr($alumno[0]->num_cta, 1, -1)."-".substr($alumno[0]->num_cta, -1);
       //Adaptamos el formato de la clave para poder hacer la consulta
       if(strlen($facultad[0]->clave) == 1){
@@ -856,14 +874,14 @@ class RevEstudiosController extends Controller
       else{
         $plan_est = (string)$facultad[0]->clave;
       }
-      $encargado_info = DB::connection('mysql2')->select('select plan_nombre, plan_encargado, plan_cargo from planteles WHERE plan_cve = '.$plan_est);
+      $encargado_info = DB::connection('sybase')->select("select plan_nombre, plan_encargado, plan_cargo from Planteles WHERE plan_cve = '$plan_est'");
       $alumno_info = array('nombre_completo' => $alumno[0]->primer_apellido." * ".$alumno[0]->segundo_apellido." * ".$alumno[0]->nombre_alumno,
-                           'num_cta' => $num_ctag, 
+                           'num_cta' => $num_ctag,
                            'nacionalidad' => $nacionalidad[0]->nacionalidad,
                            'carrera_nombre' => $carrera[0]->nombre_carrera);
-      $jefe_oficina_re = DB::connection('mysql2')->select('select firm_nombre,firm_cargo,firm_firma from firmas WHERE firm_cargo = "Jefe de la Oficina de Revisiones" and firm_ofic is not null');
-      $jefe_depto_re = DB::connection('mysql2')->select('select firm_nombre,firm_cargo,firm_firma from firmas WHERE firm_cargo = "Jefa del Departamento de Revisión" and firm_ofic is not null');
-
+      $jefe_oficina_re = DB::connection('sybase')->select("select firm_nombre,firm_cargo,firm_firma from Firmas WHERE firm_cargo = 'Jefe de la Oficina de Revisiones' and firm_ofic is not null");
+      $jefe_depto_re = DB::connection('sybase')->select("select firm_nombre,firm_cargo,firm_firma from Firmas WHERE firm_cargo LIKE 'Jefa del Departamento de Revisi%' and firm_ofic is not null");
+      
       //Creamos el contenido del documento
       $vista = $this->finalizacionRE($encargado_info,$alumno_info,$fecha,$jefe_oficina_re,$jefe_depto_re);
       $view = \View::make('consultas.autorizacionRE_PDF', compact('vista'))->render();
@@ -995,7 +1013,7 @@ class RevEstudiosController extends Controller
         $ws_SIAE = Web_Service::find(1);
         $trayectoria = new WSController();
         $trayectoria = $trayectoria->ws_SIAE($ws_SIAE->nombre, $num_cta, $ws_SIAE->key);
-        
+
         //Niveles de interés dado el número de cuenta
         $niveles = array();
 
@@ -1004,8 +1022,8 @@ class RevEstudiosController extends Controller
 
         foreach ($trayectoria->situaciones as $situacion) {
           if($situacion->causa_fin == '14' || $situacion->causa_fin == '34' || $situacion->causa_fin == '35' || $situacion->causa_fin == '11'
-            || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){          
-            $existe = DB::connection('mysql2')->select("select * from esc__procs WHERE num_cta = ".$num_cta." and nivel = '".$situacion->nivel."' and nombre_escproc = '".$situacion->plantel_nombre."'");
+            || ($situacion->causa_fin == null and $situacion->porcentaje_totales >= 70.00)){
+            $existe = DB::connection('condoc')->select("select * from esc_proc WHERE num_cta = ".$num_cta." and nivel = '".$situacion->nivel."' and nombre_escproc = '".$situacion->plantel_nombre."'");
             if($existe == NULL){
               array_push($escuelas, $situacion);
               if(!in_array($situacion, $niveles)){ //No duplicamos niveles
@@ -1019,7 +1037,7 @@ class RevEstudiosController extends Controller
         //Nombres completos de cada nivel
         $nombres_nivel = array();
         foreach($niveles as $nvl){
-          $value = DB::connection('mysql2')->select('select id_nivel, nombre_nivel from niveles WHERE id_nivel = "'.$nvl.'"');
+          $value = DB::connection('condoc_eti')->select('select id_nivel, nombre_nivel from niveles WHERE id_nivel = "'.$nvl.'"');
           array_push($nombres_nivel, $value[0]);
         }
         if($escuelas == NULL){
@@ -1032,24 +1050,26 @@ class RevEstudiosController extends Controller
             'nombres_nivel' => $nombres_nivel,
             'escuelas' => $escuelas
           ];
-          DB::disconnect('mysql2');
+          DB::disconnect('condoc');
+          DB::disconnect('condoc_eti');
+          DB::disconnect('sybase');
           $vista = '/menus/agregar_esc';
           $datos = $siae;
         }
-      
+
       }else{ //Si no se encontró en SIAE, se obtiene de DGIRE
 
         $ws_DGIRE = new WSController();
         $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
         $info = $ws_DGIRE->respuesta->datosAlumnos->datosAlumno;
 
-        $niveles = [(object)['id_nivel' => "B", 'nombre_nivel' => "BACHILLERATO"], 
+        $niveles = [(object)['id_nivel' => "B", 'nombre_nivel' => "BACHILLERATO"],
                     (object)['id_nivel' => "L", 'nombre_nivel' => "LICENCIATURA"]];
 
         $escuelas = array();
         $nombres_nivel = array();
         foreach($niveles as $nvl){
-          $existe = DB::connection('mysql2')->select("select * from esc__procs WHERE num_cta = ".$num_cta." and nivel = '".$nvl->id_nivel."'");
+          $existe = DB::connection('condoc')->select("select * from esc_proc WHERE num_cta = ".$num_cta." and nivel = '".$nvl->id_nivel."'");
           if($existe == NULL){
             if($nvl->id_nivel == "L"){
               array_push($escuelas, (object)['nivel' => $nvl, 'plantel_nombre' => $info->nombreEscuelaBachillerato, 'plan_nombre' => $info->nombrePlanLicenciatura]);
@@ -1059,7 +1079,7 @@ class RevEstudiosController extends Controller
             }
             if(!in_array($nvl, $nombres_nivel)){ //No duplicamos niveles
               array_push($nombres_nivel, $nvl);
-            } 
+            }
           }
         }
 
@@ -1073,7 +1093,9 @@ class RevEstudiosController extends Controller
             'nombres_nivel' => $nombres_nivel,
             'escuelas' => $escuelas
           ];
-          DB::disconnect('mysql2');
+          DB::disconnect('condoc');
+          DB::disconnect('condoc_eti');
+          DB::disconnect('sybase');
           $vista = '/menus/agregar_esc';
           $datos = $dgire;
         }
@@ -1123,8 +1145,8 @@ class RevEstudiosController extends Controller
                     'inicio_periodo' => NULL,
                     'fin_periodo' => NULL,
                     'promedio' => NULL,
-                    'num_cta' => $num_cta,  
-                    'irre_cert' => NULL, 
+                    'num_cta' => $num_cta,
+                    'irre_cert' => NULL,
                     'folio_cert' => NULL,
                     'sistema_escuela' => 'SIAE',
                     'nombre_plan' => $situacion->plan_nombre
@@ -1139,13 +1161,13 @@ class RevEstudiosController extends Controller
                     'inicio_periodo' => NULL,
                     'fin_periodo' => NULL,
                     'promedio' => NULL,
-                    'num_cta' => $num_cta,  
-                    'irre_cert' => NULL, 
+                    'num_cta' => $num_cta,
+                    'irre_cert' => NULL,
                     'folio_cert' => NULL,
                     'sistema_escuela' => 'SIAE',
                     'nombre_plan' => $situacion->plan_nombre
             ));
-          } 
+          }
         }
 
       }else{
@@ -1167,16 +1189,16 @@ class RevEstudiosController extends Controller
         'num_cta' => $num_cta
       ];
 
-      $niveles_bd = DB::connection('mysql2')->select('select nivel from esc__procs WHERE num_cta = '.$num_cta);
+      $niveles_bd = DB::connection('condoc')->select('select nivel from esc_proc WHERE num_cta = '.$num_cta);
       $niveles = array();
       $escuelas_temp = array();
       $escuelas = array();
       foreach ($niveles_bd as $nvl) {
         //Niveles en la base de datos
-        $value = DB::connection('mysql2')->select('select * from niveles WHERE id_nivel = "'.$nvl->nivel.'"');
+        $value = DB::connection('condoc_eti')->select('select * from niveles WHERE id_nivel = "'.$nvl->nivel.'"');
         array_push($niveles, $value[0]);
         //Información de cada nivel
-        $value2 = DB::connection('mysql2')->select('select nombre_escproc, nombre_plan, nivel from esc__procs WHERE num_cta = '.$num_cta.' and nivel = "'.$nvl->nivel.'"');
+        $value2 = DB::connection('condoc')->select('select nombre_escproc, nombre_plan, nivel from esc_proc WHERE num_cta = '.$num_cta.' and nivel = "'.$nvl->nivel.'"');
         array_push($escuelas_temp, $value2[0]);
       }
 
@@ -1189,7 +1211,7 @@ class RevEstudiosController extends Controller
       $datos['escuelas'] = $escuelas;
 
       return view($vista, $datos);
-      
+
     }
 
     //Valida la información y hace las respectivas eliminaciones
@@ -1210,9 +1232,9 @@ class RevEstudiosController extends Controller
       $plan_estudios = $request->input('plan');
 
       if($nivel_escuela == "L"){
-        $sql = DB::connection('mysql2')->delete("delete from esc__procs WHERE num_cta = ".$num_cta." and nivel ='".$nivel_escuela."' and nombre_plan = '".$plan_estudios."'");
+        $sql = DB::connection('condoc')->delete("delete from esc_proc WHERE num_cta = ".$num_cta." and nivel ='".$nivel_escuela."' and nombre_plan = '".$plan_estudios."'");
       }else{
-        $sql = DB::connection('mysql2')->delete("delete from esc__procs WHERE num_cta = ".$num_cta." and nivel ='".$nivel_escuela."' and nombre_escproc = '".$nombre_escuela."'");
+        $sql = DB::connection('condoc')->delete("delete from esc_proc WHERE num_cta = ".$num_cta." and nivel ='".$nivel_escuela."' and nombre_escproc = '".$nombre_escuela."'");
       }
 
       return redirect()->route('rev_est', ['num_cta' => $request->num_cta]);
@@ -1239,20 +1261,20 @@ class RevEstudiosController extends Controller
       if(isset($_POST['consultar'])) { //Si se consulta, muestra la información necesaria
 
         $title = "Captura a Dictámenes";
-        $condoc_personal = DB::connection('mysql2')->select('select * from alumnos WHERE num_cta = '.$num_cta);
-        $condoc_tyt = DB::connection('mysql2')->select('select * from esc__procs WHERE num_cta = '.$num_cta);
-        $condoc_lic = DB::connection('mysql2')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
-        $dictamenes = DB::connection('mysql2')->select('select * from dictamenes WHERE num_cta = '.$num_cta);
-        $nacionalidades = DB::connection('mysql2')->select('select * from nacionalidades');
-        $paises = DB::connection('mysql2')->select('select * from paises');
-        $niveles = DB::connection('mysql2')->select('select * from niveles');
-        $tramites = DB::connection('mysql2')->select('select * from tramites');
-        $oficinas = DB::connection('mysql2')->select('select * from oficinas');
+        $condoc_personal = DB::connection('condoc')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+        $condoc_tyt = DB::connection('condoc')->select('select * from esc_proc WHERE num_cta = '.$num_cta);
+        $condoc_lic = DB::connection('condoc')->select('select * from trayectorias WHERE num_cta = '.$num_cta);
+        $dictamenes = DB::connection('condoc')->select('select * from dictamenes WHERE num_cta = '.$num_cta);
+        $nacionalidades = DB::connection('condoc_eti')->select('select * from nacionalidades');
+        $paises = DB::connection('sybase')->select('select * from Paises');
+        $niveles = DB::connection('condoc_eti')->select('select * from niveles');
+        $tramites = DB::connection('condoc')->select('select * from tramites');
+        $oficinas = DB::connection('condoc')->select('select * from oficinas');
 
         return view('/menus/re_dictamenes')
           ->with(compact('num_cta', 'condoc_personal', 'condoc_tyt', 'condoc_lic', 'nacionalidades',
                          'paises', 'niveles', 'tramites' , 'oficinas', 'title', 'dictamenes'));
-     
+
       }
 
       elseif(isset($_POST['guardar'])) { //Si se guarda, hace la inserción en la bd
@@ -1262,27 +1284,27 @@ class RevEstudiosController extends Controller
         $oficina = $_POST['oficina'];
         $f_dictamen = $_POST['f_dictamen'];
 
-        $condoc = DB::connection('mysql2')->select('select * from dictamenes WHERE num_cta = '.$num_cta);
+        $condoc = DB::connection('condoc')->select('select * from dictamenes WHERE num_cta = '.$num_cta);
 
         if($condoc != NULL){ //Si ya existe un registro asociado al número de cuenta, actualizamos
 
           if((int)$id_tramite != $condoc[0]->id_tramite){
-            DB::connection('mysql2')->table('dictamenes')
+            DB::connection('condoc')->table('dictamenes')
               ->where('num_cta', $num_cta)
               ->update(['id_tramite' => (int)$id_tramite]);
           }
           if($f_depre =! date('d/m/Y', strtotime($condoc[0]->fecha_solicitud))){
-            DB::connection('mysql2')->table('dictamenes')
+            DB::connection('condoc')->table('dictamenes')
               ->where('num_cta', $num_cta)
               ->update(['fecha_solicitud' => date('Y-m-d', strtotime(str_replace('/', '-', $f_depre)))]);
           }
           if((int)$oficina != $condoc[0]->id_oficina){
-            DB::connection('mysql2')->table('dictamenes')
+            DB::connection('condoc')->table('dictamenes')
               ->where('num_cta', $num_cta)
               ->update(['id_oficina' => (int)$oficina]);
           }
           if($f_dictamen =! date('d/m/Y', strtotime($condoc[0]->fecha_dictamen))){
-            DB::connection('mysql2')->table('dictamenes')
+            DB::connection('condoc')->table('dictamenes')
               ->where('num_cta', $num_cta)
               ->update(['fecha_dictamen' => date('Y-m-d', strtotime(str_replace('/', '-', $f_dictamen)))]);
           }
@@ -1305,11 +1327,11 @@ class RevEstudiosController extends Controller
              'num_cta' => $num_cta
            ]);
 
-        } 
+        }
 
         return redirect()->route('home');
       }
-    
+
     }
 
     //Prueba

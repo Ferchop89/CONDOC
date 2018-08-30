@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Registro_RE extends Model
 {
     //
-	protected $connection = 'condoc_old';
+	protected $connection = 'condoc';
 
 	//protected $dates = ['expired_at'];
+
+		protected $table = 'registro_re';
 
     protected $fillable = [
 		'id_registro_re',

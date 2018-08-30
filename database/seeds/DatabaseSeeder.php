@@ -21,11 +21,13 @@ class DatabaseSeeder extends Seeder
           'users',
           'role_user',
           'menus',
-          'irregularidades_r_es',
+          'irregularidades_res',
           'cortes',
           'agunam',
           'agunam_no',
-          // 'firmas'
+          'nacionalidades',
+          'niveles',
+          'tramites'
       ]);
       // En este orden porque los roles deben existir antes que los usuarios
         $this->call(Web_Service_Seeder::class);
@@ -35,11 +37,13 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(MenuSeeder::class);
-        $this->call(IrregularidadesRESeeder::class);
+        $this->call(IrregularidadesReSeeder::class);
         $this->call(CorteSeeder::class);
         $this->call(AgunamSeeder::class);
         $this->call(AgunamNoSeeder::class);
-        // $this->call(FirmasRESeeder::class);
+        $this->call(NacionalidadesSeeder::class);
+        $this->call(NivelesSeeder::class);
+        $this->call(TramitesSeeder::class);
     }
 
     public function truncateTables(array $tables){

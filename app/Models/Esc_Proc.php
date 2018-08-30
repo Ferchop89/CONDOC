@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Esc_Proc extends Model
 {
     //
-	protected $connection = 'condoc_old';
+	protected $connection = 'condoc';
+
+		protected $table = 'esc_proc';
 
     protected $fillable = [
 		'id_esc_proc',

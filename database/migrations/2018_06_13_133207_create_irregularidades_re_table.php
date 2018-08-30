@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateIrregularidadesREsTable extends Migration
+class CreateIrregularidadesReTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateIrregularidadesREsTable extends Migration
      */
     public function up()
     {
-        Schema::create('irregularidades_r_es', function (Blueprint $table) {
+        Schema::create('irregularidades_res', function (Blueprint $table) {
             $table->charset = 'utf8';
             $table->collation = 'utf8_spanish_ci';
 
@@ -33,6 +33,6 @@ class CreateIrregularidadesREsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('irregularidades_r_es');
+        Schema::dropIfExists('irregularidades_res');
     }
 }

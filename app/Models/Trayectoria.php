@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Trayectoria extends Model
 {
     //
-	protected $connection = 'condoc_old';
+	protected $connection = 'condoc';
 
     protected $fillable = [
 		'id_trayectoria',

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'condoc_eti'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,34 +39,76 @@ return [
             'prefix' => '',
         ],
 
-        'mysql' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8',
-            'collation' => 'utf8_spanish_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
+        'condoc' => [
+          'driver'    => 'mysql',
+          'host'      => env('DB_HOST_FIRST', '127.0.0.1'),
+          'port'      => env('DB_PORT_FIRST', '3306'),
+          'database'  => env('DB_DATABASE_FIRST', 'condoc'),
+          'username'  => env('DB_USERNAME_FIRST', 'neon'),
+          'password'  => env('DB_PASSWORD_FIRST', 'neon4977'),
+          'charset'   => 'utf8',
+          'prefix'    => '',
         ],
+
         'condoc_old' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST_SECOND', 'localhost'),
-            'port' => env('DB_PORT_SECOND', '3306'),
-            'database' => env('DB_DATABASE_SECOND', 'condoc_old'),
-            'username' => env('DB_USERNAME_SECOND', 'root'),
-            'password' => env('DB_PASSWORD_SECOND', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8',
-            'collation' => 'utf8_spanish_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
+          'driver'    => 'mysql',
+          'host'      => env('DB_HOST_SECOND', '127.0.0.1'),
+          'port'      => env('DB_PORT_SECOND', '3306'),
+          'database'  => env('DB_DATABASE_SECOND', 'condoc_old'),
+          'username'  => env('DB_USERNAME_SECOND', 'neon'),
+          'password'  => env('DB_PASSWORD_SECOND', 'neon4977'),
+          'charset'   => 'utf8',
+          'prefix'    => '',
         ],
+
+        'sybase' => [
+          'driver'    => 'sqlsrv',
+          'host'      => env('DB_HOST_THIRD', '132.248.205.170'),
+          'port'      => env('DB_PORT_THIRD', '4101'),
+          'database'  => env('DB_DATABASE_THIRD', 'ConDocDB_prb'),
+          'username'  => env('DB_USERNAME_THIRD', 'cercondoc'),
+          'password'  => env('DB_PASSWORD_THIRD', 'zeR0nd.81-'),
+          'charset'   => 'utf8',
+          'prefix'    => '',
+        ],
+
+        'sybase_fotos' => [
+          'driver'    => 'sqlsrv',
+          'host'      => env('DB_HOST_FOURTH', '132.248.205.82'),
+          'port'      => env('DB_PORT_FOURTH', '4100'),
+          'database'  => env('DB_DATABASE_FOURTH', 'AlumFotosDB'),
+          'username'  => env('DB_USERNAME_FOURTH', 'cercondoc'),
+          'password'  => env('DB_PASSWORD_FOURTH', 'zeR0nd.81-'),
+          'charset'   => 'utf8',
+          'prefix'    => '',
+        ],
+
+
+        'condoc_eti' => [
+          'driver'    => 'mysql',
+          'host'      => env('DB_HOST_FIFTH', '127.0.0.1'),
+          'port'      => env('DB_PORT_FIFTH', '3306'),
+          'database'  => env('DB_DATABASE_FIFTH', 'condoc_etitulos'),
+          'username'  => env('DB_USERNAME_FIFTH', 'neon'),
+          'password'  => env('DB_PASSWORD_FIFTH', 'neon4977'),
+          'charset'   => 'utf8',
+          'prefix'    => '',
+        ],
+
+        // 'mysql' => [
+        //     'driver' => 'mysql',
+        //     'host' => env('DB_HOST', '127.0.0.1'),
+        //     'port' => env('DB_PORT', '3306'),
+        //     'database' => env('DB_DATABASE', 'forge'),
+        //     'username' => env('DB_USERNAME', 'forge'),
+        //     'password' => env('DB_PASSWORD', ''),
+        //     'unix_socket' => env('DB_SOCKET', ''),
+        //     'charset' => 'utf8',
+        //     'collation' => 'utf8_spanish_ci',
+        //     'prefix' => '',
+        //     'strict' => true,
+        //     'engine' => null,
+        // ],
 
         'mysql_tests' => [
             'driver' => 'mysql',
@@ -106,31 +148,6 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
-
-        'sybase' => [
-            'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST_SECOND', ''),
-            'database' => env('DB_DATABASE_SECOND', ''),
-            'username' => env('DB_USERNAME_SECOND', ''),
-            'password' => env('DB_PASSWORD_SECOND', ''),
-            //'charset'  => 'utf8',
-            'prefix'   => '',
-        ],
-
-        // 'mysql2' => [
-        //     'driver' => 'mysql',
-        //     'host' => env('DB_HOST_THIRD', '127.0.0.1'),
-        //     'port' => env('DB_PORT_THIRD', '3306'),
-        //     'database' => env('DB_DATABASE_THIRD', 'bdcondoc'),
-        //     'username' => env('DB_USERNAME_THIRD', 'root'),
-        //     'password' => env('DB_PASSWORD_THIRD', ''),
-        //     'unix_socket' => env('DB_SOCKET_THIRD', ''),
-        //     'charset' => 'utf8',
-        //     'collation' => 'utf8_spanish_ci',
-        //     'prefix' => '',
-        //     'strict' => true,
-        //     'engine' => null,
-        // ],
 
     ],
 

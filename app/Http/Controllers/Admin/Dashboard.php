@@ -14,14 +14,14 @@ use App\Models\Role;
 class Dashboard extends Controller
 {
     public function index(User $user){
-        return view('admin/users/HomeAdmin', ['user' => $user]);
+        return view('Admin/Users/HomeAdmin', ['user' => $user]);
     }
 
     /*Método para listar usuarios*/
     public function usuarios(){
       $users = User::paginate(8);
       $title = 'Listado de Usuarios';
-      return view('admin/users/lista_usuarios', compact('title','users'));
+      return view('Admin/Users/lista_usuarios', compact('title','users'));
     }
 
     /*Método para ver información de un usuario*/
@@ -29,7 +29,7 @@ class Dashboard extends Controller
     {
         $title = "Perfil del Usuario";
         $roles = Role::orderBy('id','asc')->get();
-        return view('admin/users/ver_usuario', /*[compact('user'),*/["title" => $title, 'user' => $user, 'roles'=>$roles]);
+        return view('Admin/Users/ver_usuario', /*[compact('user'),*/["title" => $title, 'user' => $user, 'roles'=>$roles]);
     }
 
     /*Método para editar información de un usuario*/
@@ -37,7 +37,7 @@ class Dashboard extends Controller
     {
         $title = "Edición de Usuario";
         $roles = Role::orderBy('id','asc')->get();
-        return view('admin/users/editar_usuario',['title'=>$title, 'user'=> $user, 'roles' => $roles]);
+        return view('Admin/Users/editar_usuario',['title'=>$title, 'user'=> $user, 'roles' => $roles]);
     }
 
     //Método para actualizar usuarios
@@ -146,7 +146,7 @@ class Dashboard extends Controller
         // Se agregan los roles para crearlos dinámicamente vista de nuevos usuarios (create)
         $title = "Creación de usuario";
         $roles = Role::orderBy('id','asc')->get();
-        return view('admin/users/crear_usuario',['title'=>$title,'roles'=>$roles]);
+        return view('Admin/Users/crear_usuario',['title'=>$title,'roles'=>$roles]);
     }
 
     /*Método para eliminar un usuario*/
