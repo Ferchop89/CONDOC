@@ -83,7 +83,7 @@ class RevEstudiosController extends Controller
     public function showDatosPersonales($num_cta)
     {
         $title = "Revisión de Estudios";
-        //Contenido de catálogos (Irregularidades, países y nacionalidades)
+        //Contenido de Fotos y catálogos (Irregularidades, países y nacionalidades)
         $ncta = substr($num_cta, 0, 8);
         $fotos = DB::connection('sybase_fotos')->select("select foto_foto from Fotos WHERE foto_ncta = '$ncta'");
         $total_fotos = count($fotos);
@@ -106,7 +106,7 @@ class RevEstudiosController extends Controller
         $datos = [
           'sistema' => NULL,
           'title' => NULL,
-          'foto' => $foto,
+          'foto' => $foto->foto_foto,
           'num_cta'=> $num_cta,
           'trayectoria' => NULL,
           'identidad' => NULL,
@@ -197,11 +197,12 @@ class RevEstudiosController extends Controller
           //Registro de las firmas en el sistema del alumno
           $dbcondoc['firmas'] = $firmas[0];
 
-          $dbcondoc['foto'] = $foto;
+          $dbcondoc['foto'] = $foto->foto_foto;
 
           DB::disconnect('condoc');
           DB::disconnect('condoc_eti');
           DB::disconnect('sybase');
+          DB::disconnect('sybase_fotos');
           $datos = $dbcondoc;
 
         }
@@ -247,7 +248,7 @@ class RevEstudiosController extends Controller
             //Registro de las firmas en el sistema del alumno
             $siae['firmas'] = $firmas;
 
-            $siae['foto'] = $foto;
+            $siae['foto'] = $foto->foto_foto;
 
             //Informacion de nivel licenciatura
             foreach ($trayectoria->situaciones as $value) {
@@ -277,6 +278,7 @@ class RevEstudiosController extends Controller
             DB::disconnect('condoc');
             DB::disconnect('condoc_eti');
             DB::disconnect('sybase');
+            DB::disconnect('sybase_fotos');
 
           }
           //Si en SIAE tampoco se encontró, se busca en DGIRE
@@ -402,11 +404,12 @@ class RevEstudiosController extends Controller
                 //Registro de las firmas en el sistema del alumno
                 $dgire['firmas'] = $firmas;
 
-                $dgire['foto'] = $foto;
+                $dgire['foto'] = $foto->foto_foto;
 
                 DB::disconnect('condoc');
                 DB::disconnect('condoc_eti');
                 DB::disconnect('sybase');
+                DB::disconnect('sybase_fotos');
                 $datos = $dgire;
 
               }
@@ -491,6 +494,10 @@ class RevEstudiosController extends Controller
       $direccion_firma = $request->input('direccion_firma');
 
       $condoc = DB::connection('condoc')->select('select * from alumnos WHERE num_cta = '.$num_cta);
+      $ncta = substr($num_cta, 0, 8);
+      $fotos = DB::connection('sybase_fotos')->select("select foto_foto from Fotos WHERE foto_ncta = '$ncta'");
+      $total_fotos = count($fotos);
+      $foto = $fotos[$total_fotos-1];
 
         //Verificamos si el alumno se encuentra en la BD del CONDOC
         if($condoc != NULL){
@@ -621,7 +628,7 @@ class RevEstudiosController extends Controller
             $sql = Alumno::insert(
               array('num_cta' => $num_cta,
                     'curp' => $curp,
-                    'foto' => null,
+                    'foto' => $foto->foto_foto,
                     'nombre_alumno' => $nombres,
                     'primer_apellido' => $apellido1,
                     'segundo_apellido' => $apellido2,
@@ -690,7 +697,7 @@ class RevEstudiosController extends Controller
             $sql = Alumno::insert(
               array('num_cta' => $num_cta,
                     'curp' => $curp,
-                    'foto' => null,
+                    'foto' => $foto->foto_foto,
                     'nombre_alumno' => $info->nombre,
                     'primer_apellido' => $info->apellidoPaterno,
                     'segundo_apellido' => $info->apellidoMaterno,
@@ -816,6 +823,7 @@ class RevEstudiosController extends Controller
       DB::disconnect('condoc');
       DB::disconnect('sybase');
       DB::disconnect('condoc_eti');
+      DB::disconnect('sybase_fotos');
       return redirect()->route('home');
     }
 
@@ -881,9 +889,10 @@ class RevEstudiosController extends Controller
                            'carrera_nombre' => $carrera[0]->nombre_carrera);
       $jefe_oficina_re = DB::connection('sybase')->select("select firm_nombre,firm_cargo,firm_firma from Firmas WHERE firm_cargo = 'Jefe de la Oficina de Revisiones' and firm_ofic is not null");
       $jefe_depto_re = DB::connection('sybase')->select("select firm_nombre,firm_cargo,firm_firma from Firmas WHERE firm_cargo LIKE 'Jefa del Departamento de Revisi%' and firm_ofic is not null");
-      
+
       //Creamos el contenido del documento
       $vista = $this->finalizacionRE($encargado_info,$alumno_info,$fecha,$jefe_oficina_re,$jefe_depto_re);
+      //return view("consultas.listasPDF", compact('vista'));
       $view = \View::make('consultas.autorizacionRE_PDF', compact('vista'))->render();
       $pdf = \App::make('dompdf.wrapper');
       $pdf->loadHTML($view);
@@ -891,7 +900,7 @@ class RevEstudiosController extends Controller
 
     }
 
-    //PDF
+    //PDF para la autorización de Revisión de Estudios
     public function finalizacionRE($encargado_info, $alumno_info, $fecha, $jefe_oficina_re, $jefe_depto_re){
 
       $composite = "";
@@ -968,8 +977,8 @@ class RevEstudiosController extends Controller
       $composite .= "<p>";
       $composite .= "<table style='width: 100%;'>";
       $composite .= "<tr class='t_dos'>";
-      $composite .= "<td><img src='data:image/png;base64,".base64_encode( $jefe_oficina_re[0]->firm_firma )."' height='120' width='120'/></td>";
-      $composite .= "<td><img src='data:image/png;base64,".base64_encode( $jefe_depto_re[0]->firm_firma )."' height='120' width='230'/></td>";
+      $composite .= "<td><img src='data:image/jpge;base64,".base64_encode( $jefe_oficina_re[0]->firm_firma )."' height='120' width='120'/></td>";
+      $composite .= "<td><img src='data:image/jpge;base64,".base64_encode( $jefe_depto_re[0]->firm_firma )."' height='120' width='230'/></td>";
       $composite .= "</tr>";
       $composite .= "<tr class='t_dos'>";
       $composite .= "<td>".$jefe_oficina_re[0]->firm_nombre."</td>";
@@ -1053,6 +1062,7 @@ class RevEstudiosController extends Controller
           DB::disconnect('condoc');
           DB::disconnect('condoc_eti');
           DB::disconnect('sybase');
+          DB::disconnect('sybase_fotos');
           $vista = '/menus/agregar_esc';
           $datos = $siae;
         }
@@ -1096,6 +1106,7 @@ class RevEstudiosController extends Controller
           DB::disconnect('condoc');
           DB::disconnect('condoc_eti');
           DB::disconnect('sybase');
+          DB::disconnect('sybase_fotos');
           $vista = '/menus/agregar_esc';
           $datos = $dgire;
         }
@@ -1105,7 +1116,7 @@ class RevEstudiosController extends Controller
       return view($vista, $datos);
     }
 
-    //Valida número de cuenta y hace las respectivas incersiones
+    //Valida número de cuenta y hace las respectivas incersiones con respecto a las escuelas
     public function validarInformacion(Request $request)
     {
 
@@ -1214,7 +1225,7 @@ class RevEstudiosController extends Controller
 
     }
 
-    //Valida la información y hace las respectivas eliminaciones
+    //Valida la información y hace las respectivas eliminaciones con respecto a las escuelas
     public function validarQuitarInformacion(Request $request)
     {
 
@@ -1268,7 +1279,7 @@ class RevEstudiosController extends Controller
         $nacionalidades = DB::connection('condoc_eti')->select('select * from nacionalidades');
         $paises = DB::connection('sybase')->select('select * from Paises');
         $niveles = DB::connection('condoc_eti')->select('select * from niveles');
-        $tramites = DB::connection('condoc')->select('select * from tramites');
+        $tramites = DB::connection('condoc_eti')->select('select * from tramites');
         $oficinas = DB::connection('condoc')->select('select * from oficinas');
 
         return view('/menus/re_dictamenes')
@@ -1348,7 +1359,7 @@ class RevEstudiosController extends Controller
       $ws_DGIRE = new WSController();
       $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
 
-      dd($trayectoria);
+      dd($identidad);
     }
 
 }

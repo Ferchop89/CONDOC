@@ -34,11 +34,11 @@
 
 	<div class="grid-container">
 		<div class="item1">
-			<img src="data:image/jpge;base64,{{base64_encode( $foto->foto_foto )}}" class="center"/>
+			<img src="data:image/jpge;base64,{{base64_encode( $foto )}}" class="center"/>
 		</div>
 		<div class="item2">
-			<p>{{$num_cta}}</p>
-			<p>{{$identidad->nombres}} {{$identidad->apellido1}} {{$identidad->apellido2}}</p>
+			<p>{!!$num_cta!!}</p>
+			<p>{!!$identidad->nombres!!} {!!$identidad->apellido1!!} {!!$identidad->apellido2!!}</p>
 			<p>Exp. Posgrado: <span name="exp_pos"></span></p>
 			<p>Exp. Sistema Incorporado: <span name="exp_inc"></span></p>
 		</div>
@@ -57,7 +57,7 @@
 					@if($firmas == null || $firmas->jsec_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i>{{ $firmas->jsec_nombre }} | {{ date('d-m-Y', strtotime($firmas->jsec_fecha)) }}</i></p>
+						<p><i>{!! $firmas->jsec_nombre !!} | {!! date('d-m-Y', strtotime($firmas->jsec_fecha)) !!}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -78,7 +78,7 @@
 					@if($firmas == null || $firmas->jarea_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i>{{ $firmas->jarea_nombre }} | {{ date('d-m-Y', strtotime($firmas->jarea_fecha)) }}</i></p>
+						<p><i>{!! $firmas->jarea_nombre !!} | {!! date('d-m-Y', strtotime($firmas->jarea_fecha)) !!}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -99,7 +99,7 @@
 					@if($firmas == null || $firmas->jdepre_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i>{{ $firmas->jdepre_nombre }} | {{ date('d-m-Y', strtotime($firmas->jdepre_fecha)) }}</i></p>
+						<p><i>{!! $firmas->jdepre_nombre !!} | {!! date('d-m-Y', strtotime($firmas->jdepre_fecha)) !!}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -120,7 +120,7 @@
 					@if($firmas == null || $firmas->jdeptit_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i>{{ $firmas->jdeptit_nombre }} | {{ date('d-m-Y', strtotime($firmas->jdeptit_fecha)) }}</i></p>
+						<p><i>{!! $firmas->jdeptit_nombre !!} | {!! date('d-m-Y', strtotime($firmas->jdeptit_fecha)) !!}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -141,7 +141,7 @@
 					@if($firmas == null || $firmas->direccion_nombre == null)
 						<p><i>En espera...</i></p>
 					@else
-						<p><i>{{ $firmas->direccion_nombre }} | {{ date('d-m-Y', strtotime($firmas->direccion_fecha)) }}</i></p>
+						<p><i>{!! $firmas->direccion_nombre !!} | {!! date('d-m-Y', strtotime($firmas->direccion_fecha)) !!}</i></p>
 					@endif
 				</div>
 				<div class="col-sm-3">
@@ -159,12 +159,12 @@
 		</div>
 		<div class="item4">
 			@if($lic->nivel == "L")
-				<p class="espe">Plan de estudios: {{$lic->plan_clave}}</p>
+				<p class="espe">Plan de estudios: {!!$lic->plan_clave!!}</p>
 				<p>Nivel: LICENCIATURA</p>
 			@endif
 
-			<p>Carrera: {{$lic->carrera_nombre}}</p>
-			<p>Orientación: {{$lic->plan_nombre}}</p>
+			<p>Carrera: {!!$lic->carrera_nombre!!}</p>
+			<p>Orientación: {!!$lic->plan_nombre!!}</p>
 		</div>
 	</div>
 	<div id="c_datos">
@@ -214,9 +214,9 @@
 						<select id="nacionalidad" name="nacionalidad">
 							@foreach($nacionalidades as $nacion)
 								@if($nacion->id_nacionalidad == $identidad->nacionalidad)
-									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}" selected>{{ $nacion->nacionalidad }}</option>
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}" selected>{!! $nacion->nacionalidad !!}</option>
 								@else
-									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{{ $nacion->nacionalidad }}</option>
+									<option id="{{ $nacion->id_nacionalidad }}" value="{{ $nacion->id_nacionalidad }}">{!! $nacion->nacionalidad !!}</option>
 								@endif
 							@endforeach
 						</select>
@@ -239,9 +239,9 @@
 							<select name="lugar_nac">
 								@foreach($paises as $pais)
 								  	@if((int)$pais->pais_cve == $identidad->{'entidad-nacimiento'})
-										<option value="{{ (int)$pais->pais_cve }}" selected>{{ $pais->pais_nombre }}</option>
+										<option value="{{ (int)$pais->pais_cve }}" selected>{!! $pais->pais_nombre !!}</option>
 									@else
-										<option value="{{ (int)$pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
+										<option value="{{ (int)$pais->pais_cve }}">{!! $pais->pais_nombre !!}</option>
 									@endif
 								@endforeach
 							</select>
@@ -255,7 +255,7 @@
 				</div>
 				<hr/>
 				<div class="row" id="detalles">
-					Información proveniente de: <b>{{$sistema}}</b>
+					Información proveniente de: <b>{!!$sistema!!}</b>
 				</div>
 			</div>
 			<div class="nacional">
@@ -289,18 +289,18 @@
 						<select id="irre_acta" name="irregularidad_doc_act">
 							@foreach($irr_acta as $i_actanac)
 							  	@if(isset($identidad->irre_doc) && $identidad->irre_doc == $i_actanac->cat_subcve)
-									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
+									<option value="{{ $i_actanac->cat_subcve }}" selected>{!! $i_actanac->cat_nombre !!}</option>
 								@else
-									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+									<option value="{{ $i_actanac->cat_subcve }}">{!! $i_actanac->cat_nombre !!}</option>
 								@endif
 						    @endforeach
 						</select>
 						<select id="irre_carta" name="irregularidad_doc_cert">
 							@foreach($irr_migr as $i_actanac)
 							  	@if($identidad->irre_doc == $i_actanac->cat_subcve)
-									<option value="{{ $i_actanac->cat_subcve }}" selected>{{ $i_actanac->cat_nombre }}</option>
+									<option value="{{ $i_actanac->cat_subcve }}" selected>{!! $i_actanac->cat_nombre !!}</option>
 								@else
-									<option value="{{ $i_actanac->cat_subcve }}">{{ $i_actanac->cat_nombre }}</option>
+									<option value="{{ $i_actanac->cat_subcve }}">{!! $i_actanac->cat_nombre !!}</option>
 								@endif
 						    @endforeach
 						</select>
@@ -325,9 +325,9 @@
 			      	<ul class="nav nav-tabs">
 			      		@foreach($escuelas as $tyt)
 			      			@if($tyt == $trayectoria->situaciones[0])
-			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{{ $tyt->nivel }}</a></li>
+			        			<li class="active"><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{!! $tyt->nivel !!}</a></li>
 			        		@else
-			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{{ $tyt->nivel }}</a></li>
+			        			<li><a data-toggle="tab" href="#<?=$tyt->nivel?>" name="niveles[]">{!! $tyt->nivel !!}</a></li>
 			        		@endif
 			        	@endforeach
 			      	</ul>
@@ -339,8 +339,6 @@
 	        				@else
 	        					<div id="<?=$tyt->nivel?>" class="tab-pane fade">
 	        				@endif
-
-	        					{{-- {{ count($escuelas)}} --}}
 						      	<div class="row">
 						      		<div id="texto" class="col-sm-6">
 						      			Tipo escuela de procedencia:
@@ -372,7 +370,7 @@
 						      		<div id="campo" class="col-sm-6">
 						      			<select name="entidad_esc[]">
 						      			    @foreach($paises as $pais)
-						    					<option value="{{ (int)$pais->pais_cve }}">{{ $pais->pais_nombre }}</option>
+						    					<option value="{{ (int)$pais->pais_cve }}">{!! $pais->pais_nombre !!}</option>
 						    				@endforeach
 						      			</select>
 						      		</div>
@@ -445,9 +443,9 @@
 						      			<select name="irregularidad_esc[]">
 						      				@foreach($irr_cert as $i_certificado)
 						      				  	@if(isset($tyt->irre_cert) && $tyt->irre_cert == $i_certificado->cat_subcve)
-						      						<option value="{{ $i_certificado->cat_subcve }}" selected>{{ $i_certificado->cat_nombre }}</option>
+						      						<option value="{{ $i_certificado->cat_subcve }}" selected>{!! $i_certificado->cat_nombre !!}</option>
 						      					@else
-						      						<option value="{{ $i_certificado->cat_subcve }}">{{ $i_certificado->cat_nombre }}</option>
+						      						<option value="{{ $i_certificado->cat_subcve }}">{!! $i_certificado->cat_nombre !!}</option>
 						      					@endif
 						      				@endforeach
 						      			</select>
@@ -455,7 +453,7 @@
 						      	</div>
 						      	<hr/>
 						      	<div class="row" id="detalles">
-						      		Información proveniente de: <b>{{$tyt->sistema_escuela}}</b>
+						      		Información proveniente de: <b>{!!$tyt->sistema_escuela!!}</b>
 						      	</div>
 						    </div>
 					    @endforeach

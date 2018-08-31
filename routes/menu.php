@@ -125,7 +125,7 @@ Route::post('/rev_est/{num_cta}',[
     'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
-  
+
 Route::get('/autorizacion_re', [
   'uses' => 'RevEstudiosController@showSolicitudAut',
   'as' => 'autorizacion_re',
@@ -155,6 +155,12 @@ Route::post('/re_dictamenes', [
     'as'=> 're_dictamenes',
     'middleware' => 'roles',
     'roles' => ['Ofisi']
+  ]);
+Route::get('/captura_re',[
+    'uses'=> 'ListadosController@listasAutRE',
+    'as'=> 'listas_re',
+    'middleware' => 'roles',
+    'roles' => ['Sria', 'Admin']
   ]);
 
 /*Solicitud de Revisión de Estudios*/
