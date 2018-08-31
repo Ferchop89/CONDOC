@@ -472,4 +472,85 @@ class ListadosController extends Controller
       // Una ves actualizado el registro, regresamos a la vista de Cortes-Listado.
       return redirect()->route('AGUNAM',['mes'=>$A_mes]);
     }
+
+    /** PROCESO PARA AUTORIZAR EL INICIO DE LA REVISIÓN DE ESTUDIOS **/
+    //Muestra la vista y documentos necesarios
+    public function listasAutRE(){
+      // Generación de Listas por corte para ser impresas en PDF
+        $title = "Captura a Revisión de Estudios";
+        // Eleccion de la fecha de corte. Si no se ha elegido, se escoge la ultima.
+        $reqFecha = request()->input('datepicker');
+        if ($reqFecha==null) {
+            $corte = $this->ultimoCorte();
+        } else {
+            $vfecha = explode("/",$reqFecha);
+            $xfecha = $vfecha[0].".".$vfecha[1].".".$vfecha[2];
+            $corte = $xfecha;
+        }
+        //Permitirá imprimir Etiquetas para Citatorios
+        if (isset($_GET['btnEtiqueta'])) {
+            $afecha = explode('/',$_GET['datepicker']); // Cambiar fecha de formate mm/dd/aaaa a dd.mm.aaaa
+            $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
+            $lista = $_GET['btnEtiqueta'];
+        return redirect()->route('imprimeEtiqueta',compact('corte','lista'));
+        }
+        else {// Cambio de fecha de corte y listado del mismo.
+            $data = $this->encontrados($corte);
+            $data_c = $this->citatorios($corte);
+            $nListas = count($data);
+            $xProcede  = $this->procedencias($data);
+            return view('consultas.listasAutRE',[
+                'title'=>$title,
+                'data'=>$data, //Encontrados en agunam
+                'data_c'=>$data_c, //Citatorios
+                'corte' =>$corte,
+                'nListas' => $nListas, // la consulta no arrojo listas
+                'procede' => $xProcede
+                ]);
+      }
+    }
+
+    //Información de alumnos cuyo expediente fue encontrado en AGUNAM
+    public function encontrados($corte){
+      $res = DB::table('solicitudes')
+                  ->join('cortes','solicitudes.id','=','cortes.solicitud_id')
+                  ->join('agunam', 'cortes.listado_corte', '=', 'agunam.listado_corte')
+                  ->join('users','solicitudes.user_id','=','users.id')
+                  ->join('procedencias','users.procedencia_id','=','procedencias.id')
+                  ->select('cortes.listado_corte','cortes.listado_id',
+                           'solicitudes.cuenta','solicitudes.nombre','solicitudes.user_id',
+                           'solicitudes.cancelada', 'solicitudes.citatorio',
+                           'procedencias.procedencia','solicitudes.created_at')
+                  ->where('cortes.listado_corte',$corte)
+                  ->where('solicitudes.cancelada', '=', 0) //Consideramos las que no hayan sido canceladas
+                  ->where('solicitudes.citatorio', '=', 0) //Consideramos las que no tuvieron citario
+                  //->except() //Quitamos aquellos que no hayan sido encontrados
+                  ->orderBy('cortes.listado_id','ASC')
+                  ->orderBy('solicitudes.cuenta','ASC')
+                  ->GET()->toArray();
+
+      return $res;
+    }
+
+    //Información de alumnos a los cuales les fueron solicitados documentos por Citatorio
+    public function citatorios($corte){
+      $res = DB::table('solicitudes')
+                  ->join('cortes','solicitudes.id','=','cortes.solicitud_id')
+                  ->join('agunam', 'cortes.listado_corte', '=', 'agunam.listado_corte')
+                  ->join('users','solicitudes.user_id','=','users.id')
+                  ->join('procedencias','users.procedencia_id','=','procedencias.id')
+                  ->select('cortes.listado_corte','cortes.listado_id',
+                           'solicitudes.cuenta','solicitudes.nombre','solicitudes.user_id',
+                           'solicitudes.cancelada', 'solicitudes.citatorio',
+                           'procedencias.procedencia','solicitudes.created_at')
+                  ->where('cortes.listado_corte',$corte)
+                  ->where('solicitudes.cancelada', '=', 0) //Consideramos las que no hayan sido canceladas
+                  ->where('solicitudes.citatorio', '=', 1) //Consideramos solo las que tuvieron citario
+                  ->orderBy('cortes.listado_id','ASC')
+                  ->orderBy('solicitudes.cuenta','ASC')
+                  ->GET()->toArray();
+
+      return $res;
+    }
+
 }
