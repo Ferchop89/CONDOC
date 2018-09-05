@@ -29,6 +29,7 @@ class CreateSolicitudesTable extends Migration
             $table->unsignedInteger('tipo');
             $table->boolean('citatorio')->defaul(false);
             $table->boolean('pasoACorte')->default(false);
+            $table->boolean('pasoARevEst')->default(false);
             $table->boolean('cancelada')->default(false);
             $table->unsignedInteger('cancelada_id')->nullable();
             $table->unsignedInteger('user_id');

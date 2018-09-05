@@ -15,34 +15,28 @@
 @section('content')
   <div class="capsule">
     <h2 id="titulo">{{$title}}</h2>
-        <form id="gestionListas" method="GET" action="{{ route("listas") }}">
-              {{-- {{ method_field('PUT') }} --}}
-              {{-- {!! csrf_field() !!} --}}
-              {{-- <p>Fecha: <input type="text" id="datepicker" name="datepicker"></p> --}}
+        <form id="gestionListas" method="POST" action="{{ route("captura_re") }}">
+          {{ method_field('PUT') }}
+          {!! csrf_field() !!}
               <div class="form-group">
                  <label for="datepicker1">Fecha de Listado</label>
-                 {{-- <p>Date: <div type="text" id="datepicker"></div></p> --}}
                  {{ Form::text('datepicker','',array('id'=>'datepicker','readonly', 'class' => '')) }}
-                 <button id = "gestionL" type="submit" class="btn btn-primary">Consultar</button>
+                 <button id = "gestionL" type="submit" class="btn btn-primary waves-effect waves-light" name="consultar" value="consultar">Consultar<button/>
               </div>
 
           @if ($nListas!=0)
             <div class="panel-group" id="accordion">
-                @for ($i=0; $i < count($data); $i++)
                     <div class="panel panel-default">
                       <div class="panel-heading">
                         <h3 class="panel-title">
-                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$i+1}}">
-                          Corte: {{str_replace('.','/',$corte)}}        Lista: {{$i+1}}        
-                          # Solicitudes: {{str_pad(count($data[$i]),2,'0',STR_PAD_LEFT)}}        {{$procede[$i]}}
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{1}}">
+                          Corte: {{str_replace('.','/',$corte)}}        Lista: {{$t_solicitudes}}        
+                          # Total: {{str_pad(count($data),2,'0',STR_PAD_LEFT)}}
                           </a>
                         </h3>
                       </div>
-                    <div id="collapse{{$i+1}}" class="panel-collapse collapse {{$in = (count($data)==1)? "in": ''}}">
+                    <div id="collapse{{1}}" class="panel-collapse collapse {{$in = (count($data)==1)? "in": ''}}">
                       <div class="panel-body">
-                          <button name="btnLista" type="submit" value="{{$i+1}}" class="btn btn-danger btn-xs">PDF</button>
-                          <button name="btnVale" type="submit" value="{{$i+1}}" class="btn btn-success btn-xs">Vales</button>
-                          <button name="btnEtiqueta" type="submit" value="{{$i+1}}" class="btn btn-info btn-xs">Etiquetas</button>
                     <div class="table-responsive">
                         <table class="table table-striped">
                         <thead>
@@ -55,30 +49,82 @@
                           </tr>
                         </thead>
                           <tbody>
-                          @for ($x=0; $x < count($data[$i]); $x++)
+                          @foreach ($data as $key=>$value)
                             <tr>
-                              <th scope="row">{{($x+1)}}</th>
-                              <td>{{$data[$i][$x]->cuenta}}</td>
-                              <td>{{$data[$i][$x]->nombre}}</td>
-                              <td>{{$data[$i][$x]->procedencia}}</td>
-                              <td>{{explode('-',explode(' ',$data[$i][$x]->created_at)[0])[2].'-'
-                                   .explode('-',explode(' ',$data[$i][$x]->created_at)[0])[1].'-'
-                                   .explode('-',explode(' ',$data[$i][$x]->created_at)[0])[0].'; '
-                                   .explode(' ',$data[$i][$x]->created_at)[1]}}</td>
+                              <th scope="row">{{($key+1)}}</th>
+                              <td>{{$data[$key]->cuenta}}</td>
+                              <td>{{$data[$key]->nombre}}</td>
+                              <td>{{$data[$key]->procedencia}}</td>
+                              <td>{{explode('-',explode(' ',$data[$key]->created_at)[0])[2].'-'
+                                   .explode('-',explode(' ',$data[$key]->created_at)[0])[1].'-'
+                                   .explode('-',explode(' ',$data[$key]->created_at)[0])[0].'; '
+                                   .explode(' ',$data[$key]->created_at)[1]}}</td>
                             </tr>
-                          @endfor
+                          @endforeach
                           </tbody>
                         </table>
+                        <hr>
+                        <input type="submit" class="btn btn-primary waves-effect waves-light bAut" name="autorizarS" value="Autorizar"/>
                     </div>
                     </div>
                     </div>
                     </div>
-                  @endfor
             <div>
-          </form>
           @else
-            <h4>LA FECHA SELECCIONADA NO TIENE LISTAS</h4>
+            <h4>LA FECHA SELECCIONADA NO TIENE SOLICITUDES. </h4>
           @endif
+          <hr/>
+          @if ($nCitatorios!=0)
+            <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{2}}">
+                          Corte: {{str_replace('.','/',$corte)}}        Lista: {{$t_citatorios}}        
+                          # Total: {{str_pad(count($data_c),2,'0',STR_PAD_LEFT)}}
+                          </a>
+                        </h3>
+                      </div>
+                    <div id="collapse{{2}}" class="panel-collapse collapse {{$in = (count($data_c)==2)? "in": ''}}">
+                      <div class="panel-body">
+                          <button name="btnEtiqueta" type="submit" value="{{1}}" class="btn btn-info btn-xs">Etiquetas</button>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                        <thead>
+                          <tr>
+                              <th scope="col">#</th>
+                              <th scope="col"><strong>No. Cta</strong></th>
+                              <th scope="col"><strong>Nombre</strong></th>
+                              <th scope="col"><strong>Escuela o Facultad</strong></th>
+                              <th scope="col"><strong>Fecha; Hora</strong></th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                          @foreach ($data_c as $key=>$value)
+                            <tr>
+                              <th scope="row">{{($key+1)}}</th>
+                              <td>{{$data_c[$key]->cuenta}}</td>
+                              <td>{{$data_c[$key]->nombre}}</td>
+                              <td>{{$data_c[$key]->procedencia}}</td>
+                              <td>{{explode('-',explode(' ',$data_c[$key]->created_at)[0])[2].'-'
+                                   .explode('-',explode(' ',$data_c[$key]->created_at)[0])[1].'-'
+                                   .explode('-',explode(' ',$data_c[$key]->created_at)[0])[0].'; '
+                                   .explode(' ',$data_c[$key]->created_at)[1]}}</td>
+                            </tr>
+                          @endforeach
+                          </tbody>
+                        </table>
+                        <hr>
+                        <input type="submit" class="btn btn-primary waves-effect waves-light bAut" name="autorizarC" value="Autorizar"/>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+            <div>
+          @else
+            <h4>LA FECHA SELECCIONADA NO TIENE SOLICITUDES CON CITATORIOS. </h4>
+          @endif
+          </form>
   </div>
 @endsection
 

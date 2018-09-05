@@ -158,7 +158,13 @@ Route::post('/re_dictamenes', [
   ]);
 Route::get('/captura_re',[
     'uses'=> 'ListadosController@listasAutRE',
-    'as'=> 'listas_re',
+    'as'=> 'captura_re',
+    'middleware' => 'roles',
+    'roles' => ['Sria', 'Admin']
+  ]);
+Route::put('/captura_re',[
+    'uses'=> 'ListadosController@postListasAutRE',
+    'as'=> 'captura_re',
     'middleware' => 'roles',
     'roles' => ['Sria', 'Admin']
   ]);

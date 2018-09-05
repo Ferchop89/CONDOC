@@ -91,11 +91,19 @@ class MenuSeeder extends Seeder
                'is_structure' => 0
            ]);
            factory(Menu::class)->create([
-               'name' => 'Autorización Revisión de Estudios',
+               'name' => 'Captura a Revisión de Estudios',
                'slug' => 'opcion-1.1.4',
-               'ruta' => 'autorizacion_re',
+               'ruta' => 'captura_re',
                'parent' => $m100->id,
                'order' => 3,
+               'is_structure' => 0
+           ]);
+           factory(Menu::class)->create([
+               'name' => 'Autorización Revisión de Estudios',
+               'slug' => 'opcion-1.1.5',
+               'ruta' => 'autorizacion_re',
+               'parent' => $m100->id,
+               'order' => 4,
                'is_structure' => 0
            ]);
            $m200 = factory(Menu::class)->create([

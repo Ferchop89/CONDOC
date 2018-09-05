@@ -97,6 +97,7 @@ class SolicitudSeeder extends Seeder
               $solicitud->tipo = (in_array(substr($diario[1],1,2),$generacionX))? 0: 1;
               $solicitud->citatorio = (in_array(substr($diario[1],1,2),$generacionX))? 1: 0;
               $solicitud->pasoACorte = false;
+              $solicitud->pasoARevEst = false;
 
               $cancelada = $pesoCancelada[rand(0,count($pesoCancelada)-1)];
               if ($cancelada) {

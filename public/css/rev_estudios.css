@@ -337,4 +337,10 @@ a.disabled {
 .der{ text-align: right; }
 .f_izquierda{ width: 10%; margin-left: 88%; }
 .f_derecha{ width: 10%; margin-left: 2%; }
+
+.bAut{
+  display: block;
+  margin-top: 1.5%;
+  margin-left: 90%;
+}
 /* */
