@@ -168,6 +168,25 @@ Route::put('/captura_re',[
     'middleware' => 'roles',
     'roles' => ['Sria', 'Admin']
   ]);
+Route::get('/separacion_oficinas', [
+  'uses'=> 'ListadosController@solicitudesRE',
+  'as'=> 'separacion_oficinas',
+  'middleware' => 'roles',
+  'roles' => ['Sria', 'Admin']
+]);
+Route::put('/separacion_oficinas', [
+  'uses'=> 'ListadosController@separacion',
+  'as'=> 'separacion_oficinas',
+  'middleware' => 'roles',
+  'roles' => ['Sria', 'Admin']
+]);
+/*Impresión de ListadosXOficina*/
+Route::get('imprimeListadoArea',[
+  'uses'=> 'ListadosController@listadoArea',
+  'as'=> 'imprimeListadoArea',
+  'middleware' => 'roles',
+  'roles' => ['Sria', 'Admin']
+]);
 
 /*Solicitud de Revisión de Estudios*/
 Route::get('/facesc/solicitud_RE', [

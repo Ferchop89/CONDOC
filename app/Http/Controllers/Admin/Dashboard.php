@@ -55,7 +55,8 @@ class Dashboard extends Controller
             'Sria' => '',
             'JSecc' => '',
             'JArea' => '',
-            'Ofisi' => '',
+            'Ofisi03' => '',
+            'Ofisi08' => '',
             'Invit' => '',
         ],[
             'name.required' => 'El campo nombre es obligatorio',
@@ -87,8 +88,9 @@ class Dashboard extends Controller
         if( isset($_POST['Sria'])) { $user->roles()->attach( $_POST['Sria'] ); }
         if( isset($_POST['JSecc'])) { $user->roles()->attach( $_POST['JSecc'] ); }
         if( isset($_POST['JArea'])) { $user->roles()->attach( $_POST['JArea'] ); }
-        if( isset($_POST['Ofisi'])) { $user->roles()->attach( $_POST['Ofisi'] ); }
-        $user->roles()->attach( '9' ); // por omision, el usuario tiene el rol de invitado
+        if( isset($_POST['Ofisi03'])) { $user->roles()->attach( $_POST['Ofisi03'] ); }
+        if( isset($_POST['Ofisi08'])) { $user->roles()->attach( $_POST['Ofisi08'] ); }
+        $user->roles()->attach( '10' ); // por omision, el usuario tiene el rol de invitado
 
         return redirect()->route('admin/usuarios');  // redireccionamos al listado de usuarios
     }
@@ -133,8 +135,9 @@ class Dashboard extends Controller
         if( isset($_POST['Sria'])) { $user->roles()->attach( $_POST['Sria'] ); }
         if( isset($_POST['JSecc'])) { $user->roles()->attach( $_POST['JSecc'] ); }
         if( isset($_POST['JArea'])) { $user->roles()->attach( $_POST['JArea'] ); }
-        if( isset($_POST['Ofisi'])) { $user->roles()->attach( $_POST['Ofisi'] ); }
-        $user->roles()->attach( '9' ); // por omision, el usuario tiene el rol de invitado
+        if( isset($_POST['Ofisi03'])) { $user->roles()->attach( $_POST['Ofisi03'] ); }
+        if( isset($_POST['Ofisi08'])) { $user->roles()->attach( $_POST['Ofisi08'] ); }
+        $user->roles()->attach( '10' ); // por omision, el usuario tiene el rol de invitado
 
         $user->update($data);
         return redirect()->route('ver_usuario',['user'=>$user]); // Eloquet toma el Id por lo que se pudo especificar explicitamente $user->id

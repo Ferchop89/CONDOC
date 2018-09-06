@@ -125,13 +125,19 @@
                 </td>
                 <td>
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" {{ $user->roles()->where('nombre','Ofisi')->count()>0 ? 'Checked' : '' }} class="filled-in form-check-input" name="Ofisi" id="Ofisi" value="8">
-                        <label class="form-check-label" for="Ofisi">Ofisi</label>
+                        <input type="checkbox" {{ $user->roles()->where('nombre','Ofisi03')->count()>0 ? 'Checked' : '' }} class="filled-in form-check-input" name="Ofisi03" id="Ofisi03" value="8">
+                        <label class="form-check-label" for="Ofisi03">Ofisi03</label>
                     </div>
                 </td>
                 <td>
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" name="Invit" id="Invit" value="9" checked="checked" disabled>
+                        <input type="checkbox" {{ $user->roles()->where('nombre','Ofisi08')->count()>0 ? 'Checked' : '' }} class="filled-in form-check-input" name="Ofisi08" id="Ofisi08" value="9">
+                        <label class="form-check-label" for="Ofisi08">Ofisi08</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" class="form-check-input" name="Invit" id="Invit" value="10" checked="checked" disabled>
                         <label class="form-check-label" for="Invit">Invit</label>
                     </div>
                 </td>

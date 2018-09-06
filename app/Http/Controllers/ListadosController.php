@@ -263,7 +263,7 @@ class ListadosController extends Controller
         return $composite;
     }
 
-    // Eleccion de la fecha de corte. Si no se ha elegido, se escoge la ultima.
+    // Eleccion de la fecha de corte. Si no se ha elegido, se escoge la última.
     public function getDate(){
         $reqFecha = request()->input('datepicker');
         if ($reqFecha==null) {
@@ -567,9 +567,8 @@ class ListadosController extends Controller
       return $no_cuenta;
     }
 
-    //Información de alumnos cuyo expediente SÍ fue encontrado en AGUNAM
-    public function encontrados($corte){
-
+    //Consulta sobre información de alumnos que pertenecen al mismo corte
+    public function consulta($corte){
       $res = DB::table('solicitudes')
                   ->join('cortes','solicitudes.id','=','cortes.solicitud_id')
                   ->join('agunam', 'cortes.listado_corte', '=', 'agunam.listado_corte')
@@ -579,7 +578,13 @@ class ListadosController extends Controller
                            'solicitudes.cuenta','solicitudes.nombre','solicitudes.user_id',
                            'solicitudes.cancelada', 'solicitudes.citatorio',
                            'procedencias.procedencia','solicitudes.created_at')
-                  ->where('cortes.listado_corte',$corte)
+                  ->where('cortes.listado_corte',$corte);
+      return $res;
+    }
+
+    //Información de alumnos cuyo expediente SÍ fue encontrado en AGUNAM
+    public function encontrados($corte){
+      $res = $this->consulta($corte)
                   ->where('solicitudes.cancelada', '=', 0) //Consideramos las que NO hayan sido canceladas
                   ->where('solicitudes.citatorio', '=', 0) //Consideramos las que NO tuvieron citario
                   ->where('solicitudes.pasoARevEst', '=', 0) //Consideramos las que NO tengan la revisión autorizada previamente
@@ -593,16 +598,7 @@ class ListadosController extends Controller
 
     //Información de alumnos a los cuales les fueron solicitados documentos por Citatorio
     public function citatorios($corte){
-      $res = DB::table('solicitudes')
-                  ->join('cortes','solicitudes.id','=','cortes.solicitud_id')
-                  ->join('agunam', 'cortes.listado_corte', '=', 'agunam.listado_corte')
-                  ->join('users','solicitudes.user_id','=','users.id')
-                  ->join('procedencias','users.procedencia_id','=','procedencias.id')
-                  ->select('cortes.listado_corte','cortes.listado_id',
-                           'solicitudes.cuenta','solicitudes.nombre','solicitudes.user_id',
-                           'solicitudes.cancelada', 'solicitudes.citatorio',
-                           'procedencias.procedencia','solicitudes.created_at')
-                  ->where('cortes.listado_corte',$corte)
+      $res = $this->consulta($corte)
                   ->where('solicitudes.cancelada', '=', 0) //Consideramos las que NO hayan sido canceladas
                   ->where('solicitudes.citatorio', '=', 1) //Consideramos solo las que SI tuvieron citario
                   ->where('solicitudes.pasoARevEst', '=', 0) //Consideramos las que NO tengan la revisión autorizada previamente
@@ -612,6 +608,150 @@ class ListadosController extends Controller
                   ->GET()->toArray();
 
       return $res;
+    }
+
+    //Muestra los alumnos cuyas revisiones de estudios hayan sido autorizadas (para imprimir posteriormente)
+    public function solicitudesRE(){
+      $title = "Separación por Oficinas";
+      $corte = $this->getDate();
+      $data = $this->total_solicitudes($corte);
+      $t_solicitudes = "Solicitudes";
+      $nListas = count($data);
+      return view('consultas.listasOficinas',[
+          'title'=>$title,
+          'data'=>$data, //Encontrados en agunam
+          't_solicitudes'=>$t_solicitudes,
+          'corte' =>$corte,
+          'nListas' => $nListas // la consulta no arrojo listas
+      ]);
+    }
+
+    public function separacion(Request $request){
+      if(isset($_POST['consultar'])){ //Si se desea consultar otra fecha, se hace
+        return $this->solicitudesRE();
+      }elseif(isset($_POST['imprime03'])){ //Muestra documento a imprimir para OFICINA 03
+        $afecha = explode('/',$_POST['datepicker']);
+        $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
+        $oficina = "OFICINA 03";
+        return redirect()->route('imprimeListadoArea',compact('corte','oficina'));
+      }elseif(isset($_POST['imprime08'])){ //Muestra documento a imprimir para OFICINA 08
+        $afecha = explode('/',$_POST['datepicker']);
+        $corte = $afecha[0].'.'.$afecha[1].'.'.$afecha[2];
+        $oficina = "OFICINA 08";
+        return redirect()->route('imprimeListadoArea',compact('corte','oficina'));
+      }
+    }
+
+    //Permite generar el "Listado de Expedientes entregados por area" (Oficina 03, Oficina 08)
+    public function listadoArea()
+    {
+        $corte = $_GET['corte']; // fecha de corte
+        $oficina = $_GET['oficina']; // numero de lista a imprimir del corte
+        $data = $this->infoAlumnos($corte, $oficina); //Información a mostrar en el PDF
+        $rpp = 40; // registros por pagina del archivo PDF
+        $limitesPDF = $this->paginas(count($data),$rpp); // limites de iteracion para registros del PDF
+        $vista = $this->listaHTMLOficina($data,$corte,$oficina,$limitesPDF); // generacion del content del PDF
+        // return view("consultas.listasPDF", compact('vista'));
+        $view = \View::make('consultas.listasPDF', compact('vista'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($view);
+        return $pdf->stream('Corte_'.str_replace('.','-',$corte).'_'.$oficina.'.pdf');
+    }
+
+    //Información de alumnos cuya Revisión de Estudios ya fue autorizada (se incluyen citatorios)
+    public function total_solicitudes ($corte){
+      $res = $this->consulta($corte)
+                  ->where('solicitudes.cancelada', '=', 0) //Consideramos las que NO hayan sido canceladas
+                  ->where('solicitudes.pasoARevEst', '=', 1) //Consideramos las que YA tengan la revisión autorizada
+                  ->whereNotIn('solicitudes.cuenta', $this->no_encontrados_agunam()) //Quitamos aquellos que NO hayan sido encontrados
+                  ->orderBy('cortes.listado_id','ASC')
+                  ->orderBy('solicitudes.cuenta','ASC')
+                  ->GET()->toArray();
+
+      return $res;
+    }
+
+    //Información de alumnos para oficina especificada
+    public function infoAlumnos($corte, $oficina){
+      $res = DB::table('solicitudes')
+                    ->join('cortes','solicitudes.id','=','cortes.solicitud_id')
+                    ->join('agunam', 'cortes.listado_corte', '=', 'agunam.listado_corte')
+                    ->join('users','solicitudes.user_id','=','users.id')
+                    ->join('procedencias','users.procedencia_id','=','procedencias.id')
+                    ->select('cortes.listado_corte','cortes.listado_id',
+                             'solicitudes.cuenta','solicitudes.nombre','solicitudes.user_id',
+                             'solicitudes.cancelada', 'solicitudes.citatorio', 'solicitudes.nivel',
+                             'procedencias.procedencia','solicitudes.created_at', 'procedencias.responsabilidad')
+                    ->where('cortes.listado_corte',$corte)
+                    ->where('procedencias.responsabilidad', $oficina)
+                    ->whereNotIn('solicitudes.cuenta', $this->no_encontrados_agunam()) //Quitamos aquellos que NO hayan sido encontrados
+                    ->orderBy('solicitudes.cuenta','ASC')
+                    ->GET()->toArray();
+      return $res;
+    }
+
+    public function listaHTMLOficina($data,$corte,$oficina,$limitesPDF)
+    {
+        // numero de hojas
+        $composite = "";
+        $paginas = count($limitesPDF);
+        for ($i=0; $i < $paginas ; $i++)
+        {
+            $composite .= "<header id='details' class='clearfix'>";
+            $composite .= "<table align='left' class='table-header'>";
+            $composite .= "<tr>";
+            $composite .= "<td class='logo'><img src='images/escudo_unam_solowblack.svg' alt=''></td>";
+            $composite .= "<td>";
+            $composite .= "<h1>UNIVERSIDAD NACIONAL AUTONOMA DE MÉXICO</h1>";
+            $composite .= "<h2>DIRECCIÓN GENERAL DE ADMINISTRACIÓN ESCOLAR</h2>";
+            $composite .= "<h3>DEPARTAMENTO DE REVISIÓN DE ESTUDIOS PROFESIONALES</h3>";
+            $composite .= "<h3>Listado de Expedientes entregados por área [".$oficina."]  </h3>";
+            $composite .= "<h3>Corte:".str_replace('.','/',$corte)."</h3>";
+            $composite .= "</td>";
+            $composite .= "</tr>";
+            $composite .= "</table>";
+            // $composite .= "<div id='invoice'>";
+            // // $composite .=     "<h1>CORTE: ".$corte."</h1>";
+            // $composite .= "</div>";
+            $composite .= "</header>";
+            $composite .= "<main>";
+            $composite .= "<br>";
+            $composite .= "<div class='test'>Impresión de prueba</div>";
+            $composite .= "<table class='lista'>";
+            $composite .= "<thead>";
+            $composite .= "<tr>";
+            $composite .= "<th class='num' scope='col'><strong>#</strong></th>";
+            $composite .= "<th class='num_cta columna_2'scope='col'><strong>NO. CTA.</strong></th>";
+            $composite .= "<th class='nombre columna_2' scope='col'><strong>NOMBRE</strong></th>";
+            $composite .= "<th class='columna_2' scope='col'><strong>NIVEL</strong></th>";
+            $composite .= "<th class='fac columna_2' scope='col'><strong>ESCUELA O FACULTAD</strong></th>";
+            $composite .= "</tr>";
+            $composite .= "</thead>";
+            $composite .= "<tbody>";
+            for ($x=$limitesPDF[$i][0]; $x < $limitesPDF[$i][1] ; $x++)
+            {
+                $composite .= "<tr>";
+                $composite .= "<th scope='row'>".($x+1)."</th>";
+                $composite .= "<td class='columna_1'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</td>";
+                // $composite .= "<p class='num_cta elem_".($y)."'>".substr($data[$x]->cuenta,0,1)."-".substr($data[$x]->cuenta,1,7)."-".substr($data[$x]->cuenta,8,1)."</p>";
+                $composite .= "<td class='columna_2'>".strtoupper($data[$x]->nombre)."</td>";
+                $composite .= "<td class='columna_2'>".strtoupper($data[$x]->nivel)."</td>";
+                $composite .= "<td class='columna_2'>".strtoupper($data[$x]->procedencia)."</td>";
+                               // .explode('-',explode(' ',$data[$x]->created_at)[0])[0].'; '
+                               // .substr(explode(' ',$data[$x]->created_at)[1],0,5)."</td>";
+                $composite .= "</tr>";
+            }
+            $composite .= "</tbody>";
+            $composite .= "</table>";
+            $composite .= "</main>";
+            $composite .= "<footer>";
+            $composite .= "Hoja ".($i+1)." de ".$paginas;
+            $composite .= "   --   ";
+            $composite .= "fecha ".date('d/m/Y');
+            $composite .= "</footer>";
+            $composite .= (($i+1)!=$paginas)? "<div class='page-break'></div>": "";
+        }
+        return $composite;
     }
 
 }

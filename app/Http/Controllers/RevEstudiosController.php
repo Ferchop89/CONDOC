@@ -74,7 +74,7 @@ class RevEstudiosController extends Controller
     //Muestra la vista que solicita en número de cuenta
     public function showSolicitudNC()
     {
-        $title = "Realizar Revisión de Estudios";
+        $title = "Certificado Global";
 
         return view('/menus/datos_personales', ['title' => $title]);
     }
@@ -1359,7 +1359,7 @@ class RevEstudiosController extends Controller
       $ws_DGIRE = new WSController();
       $ws_DGIRE = $ws_DGIRE->ws_DGIRE($num_cta);
 
-      dd($identidad);
+      dd($trayectoria);
     }
 
 }
