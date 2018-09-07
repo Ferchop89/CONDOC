@@ -14,13 +14,13 @@ Route::get('/m8',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm8',
   'middleware' => 'roles',
-  'roles' => ['FacEsc', 'Ofisi', 'Sria']
+  'roles' => ['FacEsc', 'Ofisi03', 'Ofisi08', 'Sria']
   ]);
 Route::get('/m9',[
   'uses'=> 'RutasController@Menu1',
   'as'=> 'm9',
   'middleware' => 'roles',
-  'roles' => ['Jud','Ofisi']
+  'roles' => ['Jud', 'Ofisi03', 'Ofisi08']
   ]);
 
 /* Rutas de listas y cortes.*/
@@ -105,24 +105,24 @@ Route::get('/datos-personales',[
     'uses'=> 'RevEstudiosController@showSolicitudNC',
     'as'=> 'datos-personales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria'] //Jefe depto. títulos y dirección
+    'roles' => ['Ofisi03', 'Ofisi08', 'JSecc', 'JArea', 'Jud', 'Sria'] //Jefe depto. títulos y dirección
 ]);
 Route::post('/datos-personales',[
     'uses'=> 'RevEstudiosController@postDatosPersonales',
     'as'=> 'datos-personales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
+    'roles' => ['Ofisi03', 'Ofisi08', 'JSecc', 'JArea', 'Jud', 'Sria']
 ]);
 Route::get('/rev_est/{num_cta}',[
     'uses'=> 'RevEstudiosController@showDatosPersonales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
+    'roles' => ['Ofisi03', 'Ofisi08', 'JSecc', 'JArea', 'Jud', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est');
 Route::post('/rev_est/{num_cta}',[
     'uses'=> 'RevEstudiosController@verificaDatosPersonales',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'JSecc', 'JArea', 'Jud', 'Sria']
+    'roles' => ['Ofisi03', 'Ofisi08', 'JSecc', 'JArea', 'Jud', 'Sria']
 ])->where('num_cta','[0-9]+')
   ->name('rev_est_post');
 
@@ -130,31 +130,31 @@ Route::get('/autorizacion_re', [
   'uses' => 'RevEstudiosController@showSolicitudAut',
   'as' => 'autorizacion_re',
   'middleware' => 'roles',
-  'roles' => ['Ofisi', 'FacEsc']
+  'roles' => ['Ofisi03', 'Ofisi08', 'FacEsc']
 ]);
 Route::post('/autorizacion_re', [
   'uses' => 'RevEstudiosController@postSolicitudAut',
   'as' => 'autorizacion_re',
   'middleware' => 'roles',
-  'roles' => ['Ofisi', 'FacEsc']
+  'roles' => ['Ofisi03', 'Ofisi08', 'FacEsc']
 ]);
 Route::get('imprimePDF_RE',[
     'uses'=> 'RevEstudiosController@PdfRevEstudios',
     'as'=> 'imprimePDF_RE',
     'middleware' => 'roles',
-    'roles' => ['Ofisi', 'FacEsc']
+    'roles' => ['Ofisi03', 'Ofisi08', 'FacEsc']
   ]);
 Route::get('/re_dictamenes', [
     'uses'=> 'RevEstudiosController@showSolicitudDictamenes',
     'as'=> 're_dictamenes',
     'middleware' => 'roles',
-    'roles' => ['Ofisi']
+    'roles' => ['Ofisi03', 'Ofisi08']
   ]);
 Route::post('/re_dictamenes', [
     'uses'=> 'RevEstudiosController@postSolicitudDictamenes',
     'as'=> 're_dictamenes',
     'middleware' => 'roles',
-    'roles' => ['Ofisi']
+    'roles' => ['Ofisi03', 'Ofisi08']
   ]);
 Route::get('/captura_re',[
     'uses'=> 'ListadosController@listasAutRE',

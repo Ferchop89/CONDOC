@@ -58,23 +58,11 @@ Route::post('/agregar_esc/{num_cta}', 'RevEstudiosController@validarInformacion'
 //Route::post('/datos_personales', 'RevEstudiosController@postDatosPersonales');
 
 // Rutas de prueba para conexión a segunda BD local
-Route::get('/c-c', function () {
-    $users = DB::connection("mysql")->table("users")->get();
-    dd($users);
-});
-Route::get('/c-c-2', function () {
-
-    $sbs = DB::connection("mysql2")->table("paises")->where('pais_nombre', '=', 'AGUACALIENTES')->first();
-    dd($sbs);
-});
-
-Route::get('/c-c-3', function () {
-    $con = DB::connection("mysql2")->table("trayectorias")->get();
-    dd($con);
-});
-
 Route::get('/prueba/{num_cta}', 'RevEstudiosController@prueba')
   ->where('num_cta','[0-9]+')
   ->name('prueba');
 Route::get('prueba/menu', 'PruebasController@prueba');
 Route::get('prueba/seederCtas', 'PruebasController@seederCtas');
+
+Route::get('/ati', 'AutorizacionController@showATI');
+Route::post('/ati', 'AutorizacionController@postATI');
