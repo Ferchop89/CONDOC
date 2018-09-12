@@ -893,7 +893,8 @@ class RevEstudiosController extends Controller
       //Creamos el contenido del documento
       $vista = $this->finalizacionRE($encargado_info,$alumno_info,$fecha,$jefe_oficina_re,$jefe_depto_re);
       //return view("consultas.listasPDF", compact('vista'));
-      $view = \View::make('consultas.autorizacionRE_PDF', compact('vista'))->render();
+      $titulo = "Impresión de Autorización RE";
+      $view = \View::make('consultas.autorizacionPDF', compact('vista', 'titulo'))->render();
       $pdf = \App::make('dompdf.wrapper');
       $pdf->loadHTML($view);
       return $pdf->stream('RE_'.$alumno_info['num_cta'].'.pdf');

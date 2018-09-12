@@ -53,10 +53,6 @@ Route::post('/agregar_esc/{num_cta}', 'RevEstudiosController@validarInformacion'
     // $decrypted = Crypt::decryptString($encrypted);
 // });
 
-//Route::get('/datos_personales', 'RevEstudiosController@showSolicitudNC');
-
-//Route::post('/datos_personales', 'RevEstudiosController@postDatosPersonales');
-
 // Rutas de prueba para conexión a segunda BD local
 Route::get('/prueba/{num_cta}', 'RevEstudiosController@prueba')
   ->where('num_cta','[0-9]+')
@@ -64,5 +60,12 @@ Route::get('/prueba/{num_cta}', 'RevEstudiosController@prueba')
 Route::get('prueba/menu', 'PruebasController@prueba');
 Route::get('prueba/seederCtas', 'PruebasController@seederCtas');
 
+/* RUTAS PARA << AUTORIZACIÓN DE TRANSFERENCIA DE INFORMACIÓN >> */
 Route::get('/ati', 'AutorizacionController@showATI');
 Route::post('/ati', 'AutorizacionController@postATI');
+Route::get('imprimePDF_ATI',[
+    'uses'=> 'AutorizacionController@PdfAutTransInfo',
+    'as'=> 'imprimePDF_ATI',
+    'middleware' => 'roles',
+    'roles' => ['Invit', 'Admin']
+  ]);

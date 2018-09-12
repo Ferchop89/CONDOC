@@ -25,7 +25,7 @@ class CreateAtiTable extends Migration
           $table->string('correo');
           $table->date('fecha');
           $table->boolean('autoriza')->default(false);
-          $table->timestamps();
+          $table->text('num_cta');
         });
     }
 
